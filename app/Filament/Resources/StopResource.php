@@ -17,41 +17,53 @@ class StopResource extends Resource
     protected static ?string $navigationIcon = 'heroicon-o-flag';
 
 
-    protected static ?string $navigationLabel = 'المحطات';
-
-    protected static ?string $modelLabel = 'محطة';
-
-    protected static ?string $pluralModelLabel = 'المحطات';
-
     protected static ?int $navigationSort = 11;
 
-    protected static ?string $navigationGroup = 'إدارة المواقع';
+
+    public static function getNavigationLabel(): string
+    {
+        return __('Stops');
+    }
+
+    public static function getModelLabel(): string
+    {
+        return __('Stop');
+    }
+
+    public static function getPluralModelLabel(): string
+    {
+        return __('Stops');
+    }
+
+    public static function getNavigationGroup(): ?string
+    {
+        return __('Locations Management');
+    }
 
     public static function form(Form $form): Form
     {
         return $form
             ->schema([
-                Forms\Components\Section::make('معلومات المحطة')
+                Forms\Components\Section::make(__('Stop Information'))
                     ->schema([
                         Forms\Components\Grid::make(2)
                             ->schema([
                                 Forms\Components\TextInput::make('name.ar')
-                                    ->label('اسم المحطة (عربي)')
+                                    ->label(__('Stop Name (Arabic)'))
                                     ->required()
                                     ->maxLength(255),
 
                                 Forms\Components\TextInput::make('name.en')
-                                    ->label('اسم المحطة (English)')
+                                    ->label(__('Stop Name (English)'))
                                     ->required()
                                     ->maxLength(255),
                             ]),
 
                         Forms\Components\Toggle::make('is_active')
-                            ->label('نشط')
+                            ->label(__('Active'))
                             ->default(true)
                             ->required(),
 
-                        // حقول مخفية للإحداثيات
                         Forms\Components\Hidden::make('lat')
                             ->default(24.7136),
 
@@ -59,8 +71,8 @@ class StopResource extends Resource
                             ->default(46.6753),
                     ]),
 
-                Forms\Components\Section::make('تحديد الموقع على الخريطة')
-                    ->description('انقر على الخريطة لتحديد موقع المحطة')
+                Forms\Components\Section::make(__('Select Location On Map'))
+                    ->description(__('Click on the map to select the stop location'))
                     ->schema([
                         Forms\Components\View::make('filament.forms.components.map-picker')
                             ->columnSpanFull(),
@@ -74,7 +86,7 @@ class StopResource extends Resource
         return $table
             ->columns([
                 Tables\Columns\TextColumn::make('name')
-                    ->label('اسم المحطة')
+                    ->label(__('Stop Name'))
                     ->getStateUsing(fn ($record) => $record->getTranslation('name', 'ar'))
                     ->searchable(query: function ($query, $search) {
                         $query->where('name->ar', 'like', "%{$search}%");
@@ -82,7 +94,7 @@ class StopResource extends Resource
                     ->sortable(),
 
                 Tables\Columns\IconColumn::make('is_active')
-                    ->label('الحالة')
+                    ->label(__('Status'))
                     ->boolean()
                     ->trueIcon('heroicon-o-check-circle')
                     ->falseIcon('heroicon-o-x-circle')
@@ -90,21 +102,21 @@ class StopResource extends Resource
                     ->falseColor('danger'),
 
                 Tables\Columns\TextColumn::make('created_at')
-                    ->label('تاريخ الإنشاء')
+                    ->label(__('Created At'))
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
             ])
             ->filters([
                 Tables\Filters\TernaryFilter::make('is_active')
-                    ->label('الحالة')
-                    ->placeholder('الكل')
-                    ->trueLabel('نشط')
-                    ->falseLabel('غير نشط'),
+                    ->label(__('Status'))
+                    ->placeholder(__('All'))
+                    ->trueLabel(__('Active'))
+                    ->falseLabel(__('Inactive')),
             ])
             ->actions([
                 Tables\Actions\Action::make('edit_on_map')
-                    ->label('تعديل')
+                    ->label(__('Edit'))
                     ->icon('heroicon-o-pencil')
                     ->color('primary')
                     ->url(fn () => StopResource::getUrl('map'))
@@ -113,9 +125,8 @@ class StopResource extends Resource
                 Tables\Actions\DeleteAction::make(),
             ])
             ->headerActions([
-                // زر عرض الخريطة الكاملة
                 Tables\Actions\Action::make('view_stops_map')
-                    ->label('عرض خريطة المحطات')
+                    ->label(__('View Stops Map'))
                     ->icon('heroicon-o-map')
                     ->color('success')
                     ->url(fn () => StopResource::getUrl('map'))
@@ -125,16 +136,14 @@ class StopResource extends Resource
 
     public static function getRelations(): array
     {
-        return [
-            //
-        ];
+        return [];
     }
 
     public static function getPages(): array
     {
         return [
             'index' => Pages\ListStops::route('/'),
-            'create' => Pages\CreateStop::route("/create"),
+            'create' => Pages\CreateStop::route('/create'),
             'map' => Pages\StopsMap::route('/map'),
         ];
     }

@@ -18,43 +18,56 @@ class RouteResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-arrow-long-right';
 
-    protected static ?string $navigationLabel = 'المسارات';
-
-    protected static ?string $modelLabel = 'مسار';
-
-    protected static ?string $pluralModelLabel = 'المسارات';
-
     protected static ?int $navigationSort = 12;
 
-    protected static ?string $navigationGroup = 'إدارة المواقع';
+
+    public static function getNavigationLabel(): string
+    {
+        return __('Routes');
+    }
+
+    public static function getModelLabel(): string
+    {
+        return __('Route');
+    }
+
+    public static function getPluralModelLabel(): string
+    {
+        return __('Routes');
+    }
+
+    public static function getNavigationGroup(): ?string
+    {
+        return __('Locations Management');
+    }
 
     public static function form(Form $form): Form
     {
         return $form
             ->schema([
-                Forms\Components\Section::make('معلومات المسار')
-                    ->description('أدخل المعلومات الأساسية للمسار')
+                Forms\Components\Section::make(__('Route Information'))
+                    ->description(__('Enter the basic information for the route'))
                     ->schema([
                         Forms\Components\Grid::make(2)
                             ->schema([
                                 Forms\Components\TextInput::make('name.ar')
-                                    ->label('اسم المسار (عربي)')
+                                    ->label(__('Route Name (Arabic)'))
                                     ->required()
                                     ->maxLength(255)
-                                    ->placeholder('مثال: مسار الرياض - جدة السريع'),
+                                    ->placeholder(__('Example: Riyadh - Jeddah Express Route (Arabic)')),
 
                                 Forms\Components\TextInput::make('name.en')
-                                    ->label('اسم المسار (English)')
+                                    ->label(__('Route Name (English)'))
                                     ->required()
                                     ->maxLength(255)
-                                    ->placeholder('Example: Riyadh - Jeddah Express Route'),
+                                    ->placeholder(__('Example: Riyadh - Jeddah Express Route')),
                             ]),
 
                         Forms\Components\Grid::make(2)
                             ->schema([
                                 Forms\Components\Select::make('start_city_id')
-                                    ->label('مدينة البداية')
-                                    ->options(fn () => City::active()->get()->mapWithKeys(fn ($city) => [
+                                    ->label(__('Start City'))
+                                    ->options(fn() => City::active()->get()->mapWithKeys(fn($city) => [
                                         $city->id => $city->getTranslation('name', 'ar')
                                     ]))
                                     ->searchable()
@@ -62,8 +75,8 @@ class RouteResource extends Resource
                                     ->live(),
 
                                 Forms\Components\Select::make('end_city_id')
-                                    ->label('مدينة النهاية')
-                                    ->options(fn () => City::active()->get()->mapWithKeys(fn ($city) => [
+                                    ->label(__('End City'))
+                                    ->options(fn() => City::active()->get()->mapWithKeys(fn($city) => [
                                         $city->id => $city->getTranslation('name', 'ar')
                                     ]))
                                     ->searchable()
@@ -74,29 +87,29 @@ class RouteResource extends Resource
                         Forms\Components\Grid::make(2)
                             ->schema([
                                 Forms\Components\TextInput::make('range_km')
-                                    ->label('المسافة (كم)')
+                                    ->label(__('Distance (Km)'))
                                     ->numeric()
-                                    ->suffix('كم')
+                                    ->suffix(__('Km'))
                                     ->minValue(0)
                                     ->maxValue(9999.99)
-                                    ->placeholder('مثال: 950'),
+                                    ->placeholder(__('Example: 950')),
 
                                 Forms\Components\Toggle::make('is_active')
-                                    ->label('مسار نشط')
+                                    ->label(__('Active Route'))
                                     ->default(true)
                                     ->required(),
                             ]),
                     ]),
 
-                Forms\Components\Section::make('محطات المسار')
-                    ->description('أضف المحطات بترتيب مرور الحافلة بها (الأوقات تُحدد في الرحلات)')
+                Forms\Components\Section::make(__('Route Stops'))
+                    ->description(__('Add the stops in the order the bus passes through them (times are defined in schedules)'))
                     ->schema([
                         Forms\Components\Repeater::make('routeStops')
                             ->relationship('routeStops')
                             ->schema([
                                 Forms\Components\Select::make('stop_id')
-                                    ->label('المحطة')
-                                    ->options(fn () => Stop::active()->get()->mapWithKeys(fn ($stop) => [
+                                    ->label(__('Stop'))
+                                    ->options(fn() => Stop::active()->get()->mapWithKeys(fn($stop) => [
                                         $stop->id => $stop->getTranslation('name', 'ar')
                                     ]))
                                     ->searchable()
@@ -107,13 +120,12 @@ class RouteResource extends Resource
                             ->orderColumn('order')
                             ->reorderable(true)
                             ->collapsible()
-                            ->itemLabel(fn (array $state): ?string =>
-                                Stop::find($state['stop_id'])?->getTranslation('name', 'ar') ?? 'محطة جديدة'
+                            ->itemLabel(fn(array $state): ?string =>
+                                Stop::find($state['stop_id'])?->getTranslation('name', 'ar') ?? __('New Stop')
                             )
-                            ->addActionLabel('➕ إضافة محطة')
+                            ->addActionLabel(__('Add Stop'))
                             ->deleteAction(
-                                fn (Forms\Components\Actions\Action $action) => $action
-                                    ->requiresConfirmation()
+                                fn(Forms\Components\Actions\Action $action) => $action->requiresConfirmation()
                             )
                             ->columnSpanFull()
                             ->minItems(2)
@@ -129,12 +141,12 @@ class RouteResource extends Resource
         return $table
             ->columns([
                 Tables\Columns\TextColumn::make('id')
-                    ->label('#')
+                    ->label(__('#'))
                     ->sortable(),
 
                 Tables\Columns\TextColumn::make('name')
-                    ->label('اسم المسار')
-                    ->getStateUsing(fn ($record) => $record->getTranslation('name', 'ar'))
+                    ->label(__('Route Name'))
+                    ->getStateUsing(fn($record) => $record->getTranslation('name', 'ar'))
                     ->searchable(query: function ($query, $search) {
                         $query->where('name->ar', 'like', "%{$search}%")
                             ->orWhere('name->en', 'like', "%{$search}%");
@@ -143,8 +155,8 @@ class RouteResource extends Resource
                     ->weight('bold'),
 
                 Tables\Columns\TextColumn::make('startCity.name')
-                    ->label('من')
-                    ->getStateUsing(fn ($record) => $record->startCity?->getTranslation('name', 'ar'))
+                    ->label(__('From'))
+                    ->getStateUsing(fn($record) => $record->startCity?->getTranslation('name', 'ar'))
                     ->badge()
                     ->color('success'),
 
@@ -155,32 +167,32 @@ class RouteResource extends Resource
                     ->color('gray'),
 
                 Tables\Columns\TextColumn::make('endCity.name')
-                    ->label('إلى')
-                    ->getStateUsing(fn ($record) => $record->endCity?->getTranslation('name', 'ar'))
+                    ->label(__('To'))
+                    ->getStateUsing(fn($record) => $record->endCity?->getTranslation('name', 'ar'))
                     ->badge()
                     ->color('info'),
 
                 Tables\Columns\TextColumn::make('stops_count')
-                    ->label('عدد المحطات')
-                    ->getStateUsing(fn ($record) => $record->stops()->count())
+                    ->label(__('Stops Count'))
+                    ->getStateUsing(fn($record) => $record->stops()->count())
                     ->badge()
                     ->color('warning'),
 
                 Tables\Columns\TextColumn::make('schedules_count')
-                    ->label('عدد الرحلات')
-                    ->getStateUsing(fn ($record) => $record->schedules()->count())
+                    ->label(__('Trips Count'))
+                    ->getStateUsing(fn($record) => $record->schedules()->count())
                     ->badge()
                     ->color('primary'),
 
                 Tables\Columns\TextColumn::make('range_km')
-                    ->label('المسافة')
-                    ->suffix(' كم')
+                    ->label(__('Distance'))
+                    ->suffix(__(' Km'))
                     ->numeric(1)
                     ->sortable()
                     ->toggleable(),
 
                 Tables\Columns\IconColumn::make('is_active')
-                    ->label('الحالة')
+                    ->label(__('Status'))
                     ->boolean()
                     ->trueIcon('heroicon-o-check-circle')
                     ->falseIcon('heroicon-o-x-circle')
@@ -189,40 +201,40 @@ class RouteResource extends Resource
                     ->sortable(),
 
                 Tables\Columns\TextColumn::make('created_at')
-                    ->label('تاريخ الإنشاء')
+                    ->label(__('Created At'))
                     ->dateTime('Y-m-d')
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
             ])
             ->filters([
                 Tables\Filters\TernaryFilter::make('is_active')
-                    ->label('الحالة')
-                    ->placeholder('الكل')
-                    ->trueLabel('نشط')
-                    ->falseLabel('غير نشط'),
+                    ->label(__('Status'))
+                    ->placeholder(__('All'))
+                    ->trueLabel(__('Active'))
+                    ->falseLabel(__('Inactive')),
 
                 Tables\Filters\SelectFilter::make('start_city_id')
-                    ->label('مدينة البداية')
-                    ->options(fn () => City::active()->get()->mapWithKeys(fn ($city) => [
+                    ->label(__('Start City'))
+                    ->options(fn() => City::active()->get()->mapWithKeys(fn($city) => [
                         $city->id => $city->getTranslation('name', 'ar')
                     ]))
                     ->searchable(),
 
                 Tables\Filters\SelectFilter::make('end_city_id')
-                    ->label('مدينة النهاية')
-                    ->options(fn () => City::active()->get()->mapWithKeys(fn ($city) => [
+                    ->label(__('End City'))
+                    ->options(fn() => City::active()->get()->mapWithKeys(fn($city) => [
                         $city->id => $city->getTranslation('name', 'ar')
                     ]))
                     ->searchable(),
             ])
             ->actions([
-                Tables\Actions\ViewAction::make(),
-                Tables\Actions\EditAction::make(),
-                Tables\Actions\DeleteAction::make(),
+                Tables\Actions\ViewAction::make()->label(__('View')),
+                Tables\Actions\EditAction::make()->label(__('Edit')),
+                Tables\Actions\DeleteAction::make()->label(__('Delete')),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make(),
+                    Tables\Actions\DeleteBulkAction::make()->label(__('Delete Selected')),
                 ]),
             ])
             ->defaultSort('created_at', 'desc');
@@ -230,9 +242,7 @@ class RouteResource extends Resource
 
     public static function getRelations(): array
     {
-        return [
-            //
-        ];
+        return [];
     }
 
     public static function getPages(): array

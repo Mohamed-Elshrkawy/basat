@@ -19,32 +19,45 @@ class BrandResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-bookmark';
 
-    protected static ?string $navigationLabel = 'الماركات';
-
-    protected static ?string $modelLabel = 'ماركة';
-
-    protected static ?string $pluralModelLabel = 'الماركات';
-
-    protected static ?string $navigationGroup = 'إدارة المركبات';
 
     protected static ?int $navigationSort = 1;
+
+    public static function getNavigationLabel(): string
+    {
+        return __('Brands');
+    }
+
+    public static function getModelLabel(): string
+    {
+        return __('Brand');
+    }
+
+    public static function getPluralModelLabel(): string
+    {
+        return __('Brands');
+    }
+
+    public static function getNavigationGroup(): ?string
+    {
+        return __('Vehicles Management');
+    }
 
     public static function form(Form $form): Form
     {
         return $form
             ->schema([
-                Forms\Components\Section::make('معلومات الماركة')
+                Forms\Components\Section::make(__('Brand Information'))
                     ->schema([
                         Forms\Components\TextInput::make('name')
-                            ->label('اسم الماركة')
+                            ->label(__('Brand Name'))
                             ->required()
                             ->unique(ignoreRecord: true)
                             ->maxLength(255)
-                            ->placeholder('مثال: تويوتا، مرسيدس، هيونداي')
+                            ->placeholder(__('Example Brands Placeholder'))
                             ->columnSpan(2),
 
                         Forms\Components\FileUpload::make('logo')
-                            ->label('الشعار')
+                            ->label(__('Logo'))
                             ->image()
                             ->imageEditor()
                             ->maxSize(2048)
@@ -53,10 +66,10 @@ class BrandResource extends Resource
                             ->columnSpan(2),
 
                         Forms\Components\Toggle::make('is_active')
-                            ->label('الماركة نشطة')
+                            ->label(__('Brand Is Active'))
                             ->default(true)
                             ->inline(false)
-                            ->helperText('الماركات غير النشطة لن تظهر في القوائم')
+                            ->helperText(__('Inactive Brands Note'))
                             ->columnSpan(2),
                     ])
                     ->columns(2),
@@ -68,33 +81,33 @@ class BrandResource extends Resource
         return $table
             ->columns([
                 Tables\Columns\ImageColumn::make('logo')
-                    ->label('الشعار')
+                    ->label(__('Logo'))
                     ->circular()
                     ->defaultImageUrl(url('/images/placeholder.png')),
 
                 Tables\Columns\TextColumn::make('name')
-                    ->label('اسم الماركة')
+                    ->label(__('Brand Name'))
                     ->searchable()
                     ->sortable()
                     ->weight('bold')
                     ->size('lg'),
 
                 Tables\Columns\TextColumn::make('vehicle_models_count')
-                    ->label('عدد الموديلات')
-                    ->counts('vehicleModels')
+                    ->label(__('Models Count'))
+                    ->counts('vehicle Models')
                     ->badge()
                     ->color('info')
                     ->sortable(),
 
                 Tables\Columns\TextColumn::make('vehicles_count')
-                    ->label('عدد المركبات')
+                    ->label(__('Vehicles Count'))
                     ->counts('vehicles')
                     ->badge()
                     ->color('success')
                     ->sortable(),
 
                 Tables\Columns\IconColumn::make('is_active')
-                    ->label('الحالة')
+                    ->label(__('Status'))
                     ->boolean()
                     ->trueIcon('heroicon-o-check-circle')
                     ->falseIcon('heroicon-o-x-circle')
@@ -103,17 +116,17 @@ class BrandResource extends Resource
                     ->sortable(),
 
                 Tables\Columns\TextColumn::make('created_at')
-                    ->label('تاريخ الإضافة')
+                    ->label(__('Created At'))
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
             ])
             ->filters([
                 Tables\Filters\TernaryFilter::make('is_active')
-                    ->label('الحالة')
-                    ->placeholder('الكل')
-                    ->trueLabel('النشطة فقط')
-                    ->falseLabel('غير النشطة فقط'),
+                    ->label(__('Status'))
+                    ->placeholder(__('All'))
+                    ->trueLabel(__('Active Only'))
+                    ->falseLabel(__('Inactive Only')),
             ])
             ->actions([
                 Tables\Actions\ActionGroup::make([
@@ -121,7 +134,7 @@ class BrandResource extends Resource
                     Tables\Actions\EditAction::make(),
 
                     Tables\Actions\Action::make('toggle_status')
-                        ->label(fn ($record) => $record->is_active ? 'تعطيل' : 'تفعيل')
+                        ->label(fn ($record) => $record->is_active ? __('Deactivate') : __('Activate'))
                         ->icon(fn ($record) => $record->is_active ? 'heroicon-o-x-circle' : 'heroicon-o-check-circle')
                         ->color(fn ($record) => $record->is_active ? 'danger' : 'success')
                         ->requiresConfirmation()
@@ -129,14 +142,14 @@ class BrandResource extends Resource
                             $record->update(['is_active' => !$record->is_active]);
 
                             Notification::make()
-                                ->title($record->is_active ? 'تم تفعيل الماركة' : 'تم تعطيل الماركة')
+                                ->title($record->is_active ? __('Brand Activated') : __('Brand Deactivated'))
                                 ->success()
                                 ->send();
                         }),
 
                     Tables\Actions\DeleteAction::make(),
                 ])
-                    ->label('إجراءات')
+                    ->label(__('Actions'))
                     ->icon('heroicon-m-ellipsis-vertical')
                     ->size('sm')
                     ->color('primary')
@@ -147,7 +160,7 @@ class BrandResource extends Resource
                     Tables\Actions\DeleteBulkAction::make(),
 
                     Tables\Actions\BulkAction::make('activate')
-                        ->label('تفعيل المحدد')
+                        ->label(__('Activate Selected'))
                         ->icon('heroicon-o-check-circle')
                         ->color('success')
                         ->requiresConfirmation()
@@ -155,14 +168,14 @@ class BrandResource extends Resource
                             $records->each->update(['is_active' => true]);
 
                             Notification::make()
-                                ->title('تم تفعيل الماركات المحددة')
+                                ->title(__('Selected Brands Activated'))
                                 ->success()
                                 ->send();
                         })
                         ->deselectRecordsAfterCompletion(),
 
                     Tables\Actions\BulkAction::make('deactivate')
-                        ->label('تعطيل المحدد')
+                        ->label(__('Deactivate Selected'))
                         ->icon('heroicon-o-x-circle')
                         ->color('danger')
                         ->requiresConfirmation()
@@ -170,7 +183,7 @@ class BrandResource extends Resource
                             $records->each->update(['is_active' => false]);
 
                             Notification::make()
-                                ->title('تم تعطيل الماركات المحددة')
+                                ->title(__('Selected Brands Deactivated'))
                                 ->warning()
                                 ->send();
                         })
@@ -193,7 +206,6 @@ class BrandResource extends Resource
             'index' => Pages\ListBrands::route('/'),
             'create' => Pages\CreateBrand::route('/create'),
             'edit' => Pages\EditBrand::route('/{record}/edit'),
-//            'view' => Pages\ViewBrand::route('/{record}'),
         ];
     }
 }

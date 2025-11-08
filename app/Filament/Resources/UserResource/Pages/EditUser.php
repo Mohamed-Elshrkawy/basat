@@ -29,7 +29,6 @@ class EditUser extends EditRecord
         return $data;
     }
 
-    // ✅ منع تعديل غير العملاء
     protected function beforeFill(): void
     {
         if ($this->record->user_type !== 'customer') {

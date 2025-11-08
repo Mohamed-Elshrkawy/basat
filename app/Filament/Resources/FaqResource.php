@@ -16,7 +16,6 @@ class FaqResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-question-mark-circle';
 
-
     protected static ?int $navigationSort = 5;
 
     public static function getNavigationGroup(): ?string
@@ -43,16 +42,16 @@ class FaqResource extends Resource
     {
         return $form
             ->schema([
-                Forms\Components\Section::make('محتوى السؤال')
+                Forms\Components\Section::make(__('Question Content'))
                     ->schema([
                         Forms\Components\Textarea::make('question')
-                            ->label('السؤال')
+                            ->label(__('Question'))
                             ->required()
                             ->rows(3)
                             ->columnSpanFull(),
 
                         Forms\Components\RichEditor::make('answer')
-                            ->label('الإجابة')
+                            ->label(__('Answer'))
                             ->required()
                             ->columnSpanFull()
                             ->toolbarButtons([
@@ -66,15 +65,15 @@ class FaqResource extends Resource
                     ])
                     ->columns(1),
 
-                Forms\Components\Section::make('الإعدادات')
+                Forms\Components\Section::make(__('Settings'))
                     ->schema([
                         Forms\Components\Toggle::make('is_active')
-                            ->label('نشط')
+                            ->label(__('Active'))
                             ->default(true)
                             ->inline(false),
 
                         Forms\Components\TextInput::make('order_column')
-                            ->label('الترتيب')
+                            ->label(__('Order'))
                             ->numeric()
                             ->default(0)
                             ->minValue(0),
@@ -88,64 +87,64 @@ class FaqResource extends Resource
         return $table
             ->columns([
                 Tables\Columns\TextColumn::make('id')
-                    ->label('ID')
+                    ->label(__('ID'))
                     ->sortable()
                     ->searchable(),
 
                 Tables\Columns\TextColumn::make('question')
-                    ->label('السؤال')
+                    ->label(__('Question'))
                     ->searchable()
                     ->limit(50)
                     ->wrap()
                     ->sortable(),
 
                 Tables\Columns\IconColumn::make('is_active')
-                    ->label('الحالة')
+                    ->label(__('Status'))
                     ->boolean()
                     ->sortable(),
 
                 Tables\Columns\TextColumn::make('order_column')
-                    ->label('الترتيب')
+                    ->label(__('Order'))
                     ->sortable()
                     ->alignCenter(),
 
                 Tables\Columns\TextColumn::make('created_at')
-                    ->label('تاريخ الإنشاء')
+                    ->label(__('Created At'))
                     ->dateTime('d/m/Y H:i')
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
 
                 Tables\Columns\TextColumn::make('updated_at')
-                    ->label('تاريخ التحديث')
+                    ->label(__('Updated At'))
                     ->dateTime('d/m/Y H:i')
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
             ])
             ->filters([
                 Tables\Filters\TernaryFilter::make('is_active')
-                    ->label('الحالة')
-                    ->placeholder('الكل')
-                    ->trueLabel('نشط')
-                    ->falseLabel('غير نشط'),
+                    ->label(__('Status'))
+                    ->placeholder(__('All'))
+                    ->trueLabel(__('Active'))
+                    ->falseLabel(__('Inactive')),
             ])
             ->actions([
-                Tables\Actions\EditAction::make(),
-                Tables\Actions\DeleteAction::make(),
+                Tables\Actions\EditAction::make()->label(__('Edit')),
+                Tables\Actions\DeleteAction::make()->label(__('Delete')),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make(),
+                    Tables\Actions\DeleteBulkAction::make()->label(__('Delete Selected')),
                     Tables\Actions\BulkAction::make('activate')
-                        ->label('تفعيل المحدد')
+                        ->label(__('Activate Selected'))
                         ->icon('heroicon-o-check-circle')
                         ->requiresConfirmation()
-                        ->action(fn ($records) => $records->each->update(['is_active' => true]))
+                        ->action(fn($records) => $records->each->update(['is_active' => true]))
                         ->color('success'),
                     Tables\Actions\BulkAction::make('deactivate')
-                        ->label('تعطيل المحدد')
+                        ->label(__('Deactivate Selected'))
                         ->icon('heroicon-o-x-circle')
                         ->requiresConfirmation()
-                        ->action(fn ($records) => $records->each->update(['is_active' => false]))
+                        ->action(fn($records) => $records->each->update(['is_active' => false]))
                         ->color('danger'),
                 ]),
             ])

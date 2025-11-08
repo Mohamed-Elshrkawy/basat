@@ -18,64 +18,76 @@ class VehicleModelResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
 
-    protected static ?string $navigationLabel = 'الموديلات';
-
-    protected static ?string $modelLabel = 'موديل';
-
-    protected static ?string $pluralModelLabel = 'الموديلات';
-
-    protected static ?string $navigationGroup = 'إدارة المركبات';
-
     protected static ?int $navigationSort = 2;
+
+    public static function getNavigationLabel(): string
+    {
+        return __('Vehicle Models');
+    }
+
+    public static function getModelLabel(): string
+    {
+        return __('Vehicle Model');
+    }
+
+    public static function getPluralModelLabel(): string
+    {
+        return __('Vehicle Models');
+    }
+
+    public static function getNavigationGroup(): ?string
+    {
+        return __('Vehicles Management');
+    }
 
     public static function form(Form $form): Form
     {
         return $form
             ->schema([
-                Forms\Components\Section::make('معلومات الموديل')
+                Forms\Components\Section::make(__('Model Information'))
                     ->schema([
                         Forms\Components\Select::make('brand_id')
-                            ->label('الماركة')
+                            ->label(__('Brand'))
                             ->relationship('brand', 'name', fn (Builder $query) => $query->where('is_active', true))
                             ->required()
                             ->searchable()
                             ->preload()
                             ->createOptionForm([
                                 Forms\Components\TextInput::make('name')
-                                    ->label('اسم الماركة')
+                                    ->label(__('Brand Name'))
                                     ->required()
                                     ->unique()
                                     ->maxLength(255),
 
                                 Forms\Components\Toggle::make('is_active')
-                                    ->label('نشط')
+                                    ->label(__('Active'))
                                     ->default(true),
                             ])
                             ->columnSpan(2),
 
                         Forms\Components\TextInput::make('name')
-                            ->label('اسم الموديل')
+                            ->label(__('Model Name'))
                             ->required()
                             ->maxLength(255)
-                            ->placeholder('مثال: كوستر، سبرنتر، كاونتي')
+                            ->placeholder(__('Example: Coaster, Sprinter, County'))
                             ->columnSpan(2),
 
                         Forms\Components\TextInput::make('default_seat_count')
-                            ->label('عدد المقاعد الافتراضي')
+                            ->label(__('Default Seat Count'))
                             ->numeric()
                             ->required()
                             ->minValue(1)
                             ->maxValue(100)
                             ->default(50)
-                            ->suffix('مقعد')
-                            ->helperText('يمكن تغييره لاحقاً عند إضافة المركبة')
+                            ->suffix(__('Seat'))
+                            ->helperText(__('Can be changed later when adding a vehicle'))
                             ->columnSpan(2),
 
                         Forms\Components\Toggle::make('is_active')
-                            ->label('الموديل نشط')
+                            ->label(__('Model Active'))
                             ->default(true)
                             ->inline(false)
-                            ->helperText('الموديلات غير النشطة لن تظهر في القوائم')
+                            ->helperText(__('Inactive models will not appear in the lists'))
                             ->columnSpan(2),
                     ])
                     ->columns(2),
@@ -87,35 +99,35 @@ class VehicleModelResource extends Resource
         return $table
             ->columns([
                 Tables\Columns\TextColumn::make('brand.name')
-                    ->label('الماركة')
+                    ->label(__('Brand'))
                     ->searchable()
                     ->sortable()
                     ->badge()
                     ->color('primary'),
 
                 Tables\Columns\TextColumn::make('name')
-                    ->label('اسم الموديل')
+                    ->label(__('Model Name'))
                     ->searchable()
                     ->sortable()
                     ->weight('bold')
                     ->size('lg'),
 
                 Tables\Columns\TextColumn::make('default_seat_count')
-                    ->label('المقاعد الافتراضية')
+                    ->label(__('Default Seats'))
                     ->sortable()
-                    ->suffix(' مقعد')
+                    ->suffix(__(' Seat'))
                     ->badge()
                     ->color('info'),
 
                 Tables\Columns\TextColumn::make('vehicles_count')
-                    ->label('عدد المركبات')
+                    ->label(__('Vehicles Count'))
                     ->counts('vehicles')
                     ->badge()
                     ->color('success')
                     ->sortable(),
 
                 Tables\Columns\IconColumn::make('is_active')
-                    ->label('الحالة')
+                    ->label(__('Status'))
                     ->boolean()
                     ->trueIcon('heroicon-o-check-circle')
                     ->falseIcon('heroicon-o-x-circle')
@@ -124,24 +136,24 @@ class VehicleModelResource extends Resource
                     ->sortable(),
 
                 Tables\Columns\TextColumn::make('created_at')
-                    ->label('تاريخ الإضافة')
+                    ->label(__('Created At'))
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
             ])
             ->filters([
                 Tables\Filters\SelectFilter::make('brand_id')
-                    ->label('الماركة')
+                    ->label(__('Brand'))
                     ->relationship('brand', 'name')
                     ->searchable()
                     ->preload()
                     ->multiple(),
 
                 Tables\Filters\TernaryFilter::make('is_active')
-                    ->label('الحالة')
-                    ->placeholder('الكل')
-                    ->trueLabel('النشطة فقط')
-                    ->falseLabel('غير النشطة فقط'),
+                    ->label(__('Status'))
+                    ->placeholder(__('All'))
+                    ->trueLabel(__('Active Only'))
+                    ->falseLabel(__('Inactive Only')),
             ])
             ->actions([
                 Tables\Actions\ActionGroup::make([
@@ -149,7 +161,7 @@ class VehicleModelResource extends Resource
                     Tables\Actions\EditAction::make(),
 
                     Tables\Actions\Action::make('toggle_status')
-                        ->label(fn ($record) => $record->is_active ? 'تعطيل' : 'تفعيل')
+                        ->label(fn ($record) => $record->is_active ? __('Deactivate') : __('Activate'))
                         ->icon(fn ($record) => $record->is_active ? 'heroicon-o-x-circle' : 'heroicon-o-check-circle')
                         ->color(fn ($record) => $record->is_active ? 'danger' : 'success')
                         ->requiresConfirmation()
@@ -157,14 +169,14 @@ class VehicleModelResource extends Resource
                             $record->update(['is_active' => !$record->is_active]);
 
                             Notification::make()
-                                ->title($record->is_active ? 'تم تفعيل الموديل' : 'تم تعطيل الموديل')
+                                ->title($record->is_active ? __('Model Activated') : __('Model Deactivated'))
                                 ->success()
                                 ->send();
                         }),
 
                     Tables\Actions\DeleteAction::make(),
                 ])
-                    ->label('إجراءات')
+                    ->label(__('Actions'))
                     ->icon('heroicon-m-ellipsis-vertical')
                     ->size('sm')
                     ->color('primary')
@@ -175,7 +187,7 @@ class VehicleModelResource extends Resource
                     Tables\Actions\DeleteBulkAction::make(),
 
                     Tables\Actions\BulkAction::make('activate')
-                        ->label('تفعيل المحدد')
+                        ->label(__('Activate Selected'))
                         ->icon('heroicon-o-check-circle')
                         ->color('success')
                         ->requiresConfirmation()
@@ -183,14 +195,14 @@ class VehicleModelResource extends Resource
                             $records->each->update(['is_active' => true]);
 
                             Notification::make()
-                                ->title('تم تفعيل الموديلات المحددة')
+                                ->title(__('Selected Models Activated'))
                                 ->success()
                                 ->send();
                         })
                         ->deselectRecordsAfterCompletion(),
 
                     Tables\Actions\BulkAction::make('deactivate')
-                        ->label('تعطيل المحدد')
+                        ->label(__('Deactivate Selected'))
                         ->icon('heroicon-o-x-circle')
                         ->color('danger')
                         ->requiresConfirmation()
@@ -198,7 +210,7 @@ class VehicleModelResource extends Resource
                             $records->each->update(['is_active' => false]);
 
                             Notification::make()
-                                ->title('تم تعطيل الموديلات المحددة')
+                                ->title(__('Selected Models Deactivated'))
                                 ->warning()
                                 ->send();
                         })
@@ -210,9 +222,7 @@ class VehicleModelResource extends Resource
 
     public static function getRelations(): array
     {
-        return [
-            //
-        ];
+        return [];
     }
 
     public static function getPages(): array

@@ -16,37 +16,49 @@ class AmenityResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-star';
 
-    protected static ?string $navigationLabel = 'الخدمات الإضافية';
-
-    protected static ?string $modelLabel = 'خدمة';
-
-    protected static ?string $pluralModelLabel = 'الخدمات الإضافية';
-
-    protected static ?string $navigationGroup = 'إدارة المركبات';
-
     protected static ?int $navigationSort = 8;
+
+    public static function getNavigationLabel(): string
+    {
+        return __('Additional Services');
+    }
+
+    public static function getModelLabel(): string
+    {
+        return __('Service');
+    }
+
+    public static function getPluralModelLabel(): string
+    {
+        return __('Additional Services');
+    }
+
+    public static function getNavigationGroup(): ?string
+    {
+        return __('Vehicles Management');
+    }
 
     public static function form(Form $form): Form
     {
         return $form
             ->schema([
-                Forms\Components\Section::make('معلومات الخدمة')
+                Forms\Components\Section::make(__('Service Information'))
                     ->schema([
                         Forms\Components\Grid::make(2)
                             ->schema([
                                 Forms\Components\TextInput::make('name.ar')
-                                    ->label('اسم الخدمة (عربي)')
+                                    ->label(__('Service Name Ar'))
                                     ->required()
                                     ->maxLength(255),
 
                                 Forms\Components\TextInput::make('name.en')
-                                    ->label('اسم الخدمة (English)')
+                                    ->label(__('Service Name En'))
                                     ->required()
                                     ->maxLength(255),
                             ]),
 
                         Forms\Components\FileUpload::make('icon')
-                            ->label('الأيقونة')
+                            ->label(__('Icon'))
                             ->image()
                             ->imageEditor()
                             ->maxSize(2048)
@@ -62,24 +74,23 @@ class AmenityResource extends Resource
         return $table
             ->columns([
                 Tables\Columns\TextColumn::make('name')
-                    ->label('اسم الخدمة')
+                    ->label(__('Service Name'))
                     ->searchable()
                     ->sortable(),
 
-
                 Tables\Columns\ImageColumn::make('icon')
-                    ->label('الأيقونة')
+                    ->label(__('Icon'))
                     ->circular()
                     ->defaultImageUrl(url('/images/placeholder.png')),
 
                 Tables\Columns\TextColumn::make('vehicles_count')
-                    ->label('عدد المركبات')
+                    ->label(__('Vehicles Count'))
                     ->counts('vehicles')
                     ->badge()
                     ->color('success'),
 
                 Tables\Columns\TextColumn::make('created_at')
-                    ->label('تاريخ الإضافة')
+                    ->label(__('Created At'))
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),

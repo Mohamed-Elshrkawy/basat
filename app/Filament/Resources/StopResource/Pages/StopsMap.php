@@ -41,7 +41,6 @@ class StopsMap extends Page
         });
     }
 
-    // إنشاء محطة جديدة
     public function createStop(array $data)
     {
         try {
@@ -80,7 +79,6 @@ class StopsMap extends Page
         }
     }
 
-    // تحديث محطة موجودة
     public function updateStop($stopId, array $data)
     {
         try {
@@ -121,7 +119,6 @@ class StopsMap extends Page
         }
     }
 
-    // تحديث موقع المحطة (عند السحب)
     public function updateStopLocation($stopId, $lat, $lng)
     {
         try {

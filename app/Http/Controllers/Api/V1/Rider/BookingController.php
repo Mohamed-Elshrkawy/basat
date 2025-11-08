@@ -6,7 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Api\V1\Rider\StoreBookingRequest;
 use App\Http\Requests\Api\V1\Rider\StorePrivateHireRequest;
 use App\Models\Booking;
-use App\Models\PublicBusSchedule;
+use App\Models\Schedule;
 use App\Models\Trip;
 use App\Models\User;
 use App\Models\Setting;
@@ -22,7 +22,7 @@ class BookingController extends Controller
     {
         $data = $request->validated();
         $rider = $request->user();
-        $schedule = PublicBusSchedule::with('vehicle', 'route.stops')->findOrFail($data['schedule_id']);
+        $schedule = Schedule::with('vehicle', 'route.stops')->findOrFail($data['schedule_id']);
         $settings = Setting::first();
 
         $seatCount = count($data['seat_numbers']);
@@ -84,7 +84,7 @@ class BookingController extends Controller
                 'payment_method' => $data['payment_method'],
                 'payment_status' => ($data['payment_method'] === 'wallet') ? 'paid' : 'pending',
                 'tripable_id' => $schedule->id,
-                'tripable_type' => PublicBusSchedule::class,
+                'tripable_type' => Schedule::class,
             ]);
 
             if ($data['payment_method'] === 'wallet') {
@@ -116,16 +116,6 @@ class BookingController extends Controller
                     'seat_number' => $booking->seat_number,
                 ];
             }
-
-            // Send notifications
-            $trip->driver->notify(new GeneralNotification(
-                title: ['en' => 'New Booking', 'ar' => 'حجز جديد'],
-                body: ['en' => "You have a new booking #{$trip->id} from {$rider->name}.", 'ar' => "لديك حجز جديد رقم #{$trip->id} من {$rider->name}."],
-                data: [
-                    'type' => 'new_booking',
-                    'trip_id' => $trip->id,
-                ]
-            ));
 
             return response()->json([
                 'status' => true,
@@ -236,16 +226,6 @@ class BookingController extends Controller
             if ($request->hasFile('responsible_person_id_photo')) {
                 $trip->addMediaFromRequest('responsible_person_id_photo')->toMediaCollection('responsible_person_id');
             }
-
-            // Send Notifications
-            $driver->notify(new GeneralNotification(
-                title: ['en' => 'New Private Hire', 'ar' => 'حجز باص خاص جديد'],
-                body: ['en' => "You have a new private hire booking #{$trip->id} from {$rider->name}.", 'ar' => "لديك حجز باص خاص جديد رقم #{$trip->id} من {$rider->name}."],
-                data: [
-                    'type' => 'new_private_hire',
-                    'trip_id' => $trip->id,
-                ]
-            ));
 
             return response()->json([
                 'status' => true,

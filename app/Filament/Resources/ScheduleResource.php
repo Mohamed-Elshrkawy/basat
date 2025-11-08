@@ -19,26 +19,39 @@ class ScheduleResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-calendar-days';
 
-    protected static ?string $navigationLabel = 'جدولة الرحلات';
-
-    protected static ?string $modelLabel = 'جدول رحلة';
-
-    protected static ?string $pluralModelLabel = 'جدولة الرحلات';
 
     protected static ?int $navigationSort = 13;
 
-    protected static ?string $navigationGroup = 'إدارة المواقع';
+
+    public static function getNavigationLabel(): string
+    {
+        return __('Schedule Trips');
+    }
+
+    public static function getModelLabel(): string
+    {
+        return __('Trip Schedule');
+    }
+
+    public static function getPluralModelLabel(): string
+    {
+        return __('Schedule Trips');
+    }
+
+    public static function getNavigationGroup(): ?string
+    {
+        return __('Locations Management');
+    }
 
     public static function form(Form $form): Form
     {
         return $form
             ->schema([
                 Forms\Components\Wizard::make([
-                    // خطوة 1: معلومات أساسية
-                    Forms\Components\Wizard\Step::make('معلومات الرحلة')
+                    Forms\Components\Wizard\Step::make(__('Trip Information'))
                         ->schema([
                             Forms\Components\Select::make('route_id')
-                                ->label('المسار')
+                                ->label(__('Route'))
                                 ->options(fn () => Route::active()->get()->mapWithKeys(fn ($route) => [
                                     $route->id => $route->getFullRouteName()
                                 ]))
@@ -48,18 +61,18 @@ class ScheduleResource extends Resource
                                 ->columnSpanFull(),
 
                             Forms\Components\Select::make('driver_id')
-                                ->label('السائق')
+                                ->label(__('Driver'))
                                 ->options(User::where('user_type', 'driver')->pluck('name', 'id'))
                                 ->searchable()
                                 ->nullable()
-                                ->helperText('يمكن تعيين السائق لاحقاً')
+                                ->helperText(__('Driver Can Be Assigned Later'))
                                 ->columnSpanFull(),
 
                             Forms\Components\Radio::make('trip_type')
-                                ->label('نوع الرحلة')
+                                ->label(__('TripType'))
                                 ->options([
-                                    'one_way' => 'ذهاب فقط',
-                                    'round_trip' => 'ذهاب وعودة',
+                                    'one_way' => __('OneWay'),
+                                    'round_trip' => __('RoundTrip'),
                                 ])
                                 ->required()
                                 ->default('one_way')
@@ -67,44 +80,42 @@ class ScheduleResource extends Resource
                                 ->columnSpanFull(),
                         ]),
 
-                    // خطوة 2: أوقات وأسعار الذهاب
-                    Forms\Components\Wizard\Step::make('معلومات الذهاب')
+                    Forms\Components\Wizard\Step::make(__('Outbound Information'))
                         ->schema([
                             Forms\Components\Grid::make(2)
                                 ->schema([
                                     Forms\Components\TimePicker::make('departure_time')
-                                        ->label('⏰ وقت الانطلاق (أول محطة)')
+                                        ->label(__('Departure Time First Stop'))
                                         ->seconds(false)
                                         ->required(),
 
                                     Forms\Components\TimePicker::make('arrival_time')
-                                        ->label('🏁 وقت الوصول (آخر محطة)')
+                                        ->label(__('Arrival Time Last Stop'))
                                         ->seconds(false)
                                         ->required()
                                         ->after('departure_time'),
                                 ]),
 
                             Forms\Components\TextInput::make('fare')
-                                ->label('💰 سعر تذكرة الذهاب')
+                                ->label(__('Fare Price'))
                                 ->numeric()
-                                ->prefix('ر.س')
+                                ->prefix(__('SAR'))
                                 ->required()
                                 ->minValue(0)
                                 ->maxValue(9999.99),
                         ]),
 
-                    // خطوة 3: أوقات وأسعار العودة
-                    Forms\Components\Wizard\Step::make('معلومات العودة')
+                    Forms\Components\Wizard\Step::make(__('Return Information'))
                         ->schema([
                             Forms\Components\Grid::make(2)
                                 ->schema([
                                     Forms\Components\TimePicker::make('return_departure_time')
-                                        ->label('⏰ وقت انطلاق العودة (من آخر محطة)')
+                                        ->label(__('Return Departure Time'))
                                         ->seconds(false)
                                         ->required(fn (Forms\Get $get) => $get('trip_type') === 'round_trip'),
 
                                     Forms\Components\TimePicker::make('return_arrival_time')
-                                        ->label('🏁 وقت وصول العودة (لأول محطة)')
+                                        ->label(__('Return Arrival Time'))
                                         ->seconds(false)
                                         ->required(fn (Forms\Get $get) => $get('trip_type') === 'round_trip')
                                         ->after('return_departure_time'),
@@ -113,36 +124,33 @@ class ScheduleResource extends Resource
                             Forms\Components\Grid::make(2)
                                 ->schema([
                                     Forms\Components\TextInput::make('return_fare')
-                                        ->label('💰 سعر تذكرة العودة')
+                                        ->label(__('Return Fare'))
                                         ->numeric()
-                                        ->prefix('ر.س')
+                                        ->prefix(__('SAR'))
                                         ->required(fn (Forms\Get $get) => $get('trip_type') === 'round_trip')
                                         ->minValue(0)
                                         ->maxValue(9999.99),
 
                                     Forms\Components\TextInput::make('round_trip_discount')
-                                        ->label('🎁 قيمة الخصم (ذهاب وعودة)')
+                                        ->label(__('Round Trip Discount'))
                                         ->numeric()
-                                        ->prefix('ر.س')
-                                        ->helperText('الخصم عند شراء ذهاب وعودة معاً')
+                                        ->prefix(__('SAR'))
+                                        ->helperText(__('Discount When Buying Round Trip'))
                                         ->minValue(0)
                                         ->maxValue(9999.99),
                                 ]),
                         ])
                         ->visible(fn (Forms\Get $get) => $get('trip_type') === 'round_trip'),
 
-                    // خطوة 4: محطات الذهاب
-                    Forms\Components\Wizard\Step::make('محطات الذهاب')
+                    Forms\Components\Wizard\Step::make(__('Outbound Stops'))
                         ->schema([
-                            Forms\Components\Repeater::make('outboundStops')
-                                ->relationship('scheduleStops', function ($query) {
-                                    return $query->where('direction', 'outbound');
-                                })
+                            Forms\Components\Repeater::make('outbound Stops')
+                                ->relationship('scheduleStops', fn ($query) => $query->where('direction', 'outbound'))
                                 ->schema([
                                     Forms\Components\Grid::make(4)
                                         ->schema([
                                             Forms\Components\Select::make('stop_id')
-                                                ->label('المحطة')
+                                                ->label(__('Stop'))
                                                 ->options(fn () => Stop::active()->get()->mapWithKeys(fn ($stop) => [
                                                     $stop->id => $stop->getTranslation('name', 'ar')
                                                 ]))
@@ -152,48 +160,41 @@ class ScheduleResource extends Resource
                                                 ->columnSpan(2),
 
                                             Forms\Components\TimePicker::make('arrival_time')
-                                                ->label('⏰ وقت الوصول')
+                                                ->label(__('Arrival Time'))
                                                 ->seconds(false)
                                                 ->required(),
 
                                             Forms\Components\TimePicker::make('departure_time')
-                                                ->label('🚀 وقت المغادرة')
+                                                ->label(__('Departure Time'))
                                                 ->seconds(false)
                                                 ->required()
                                                 ->after('arrival_time'),
 
-                                            Forms\Components\Hidden::make('direction')
-                                                ->default('outbound'),
+                                            Forms\Components\Hidden::make('direction')->default('outbound'),
                                         ]),
                                 ])
                                 ->orderColumn('order')
                                 ->reorderable(true)
                                 ->collapsible()
                                 ->itemLabel(fn (array $state): ?string =>
-                                    Stop::find($state['stop_id'])?->getTranslation('name', 'ar') ?? 'محطة جديدة'
+                                    Stop::find($state['stop_id'])?->getTranslation('name', 'ar') ?? __('NewStop')
                                 )
-                                ->addActionLabel('➕ إضافة محطة')
-                                ->deleteAction(
-                                    fn (Forms\Components\Actions\Action $action) => $action
-                                        ->requiresConfirmation()
-                                )
+                                ->addActionLabel(__('AddStop'))
+                                ->deleteAction(fn (Forms\Components\Actions\Action $action) => $action->requiresConfirmation())
                                 ->columnSpanFull()
                                 ->minItems(1)
                                 ->defaultItems(1),
                         ]),
 
-                    // خطوة 5: محطات العودة
-                    Forms\Components\Wizard\Step::make('محطات العودة')
+                    Forms\Components\Wizard\Step::make(__('Return Stops'))
                         ->schema([
                             Forms\Components\Repeater::make('returnStops')
-                                ->relationship('scheduleStops', function ($query) {
-                                    return $query->where('direction', 'return');
-                                })
+                                ->relationship('scheduleStops', fn ($query) => $query->where('direction', 'return'))
                                 ->schema([
                                     Forms\Components\Grid::make(4)
                                         ->schema([
                                             Forms\Components\Select::make('stop_id')
-                                                ->label('المحطة')
+                                                ->label(__('Stop'))
                                                 ->options(fn () => Stop::active()->get()->mapWithKeys(fn ($stop) => [
                                                     $stop->id => $stop->getTranslation('name', 'ar')
                                                 ]))
@@ -203,50 +204,45 @@ class ScheduleResource extends Resource
                                                 ->columnSpan(2),
 
                                             Forms\Components\TimePicker::make('arrival_time')
-                                                ->label('⏰ وقت الوصول')
+                                                ->label(__('Arrival Time'))
                                                 ->seconds(false)
                                                 ->required(),
 
                                             Forms\Components\TimePicker::make('departure_time')
-                                                ->label('🚀 وقت المغادرة')
+                                                ->label(__('Departure Time'))
                                                 ->seconds(false)
                                                 ->required()
                                                 ->after('arrival_time'),
 
-                                            Forms\Components\Hidden::make('direction')
-                                                ->default('return'),
+                                            Forms\Components\Hidden::make('direction')->default('return'),
                                         ]),
                                 ])
                                 ->orderColumn('order')
                                 ->reorderable(true)
                                 ->collapsible()
                                 ->itemLabel(fn (array $state): ?string =>
-                                    Stop::find($state['stop_id'])?->getTranslation('name', 'ar') ?? 'محطة جديدة'
+                                    Stop::find($state['stop_id'])?->getTranslation('name', 'ar') ?? __('New Stop')
                                 )
-                                ->addActionLabel('➕ إضافة محطة')
-                                ->deleteAction(
-                                    fn (Forms\Components\Actions\Action $action) => $action
-                                        ->requiresConfirmation()
-                                )
+                                ->addActionLabel(__('Add Stop'))
+                                ->deleteAction(fn (Forms\Components\Actions\Action $action) => $action->requiresConfirmation())
                                 ->columnSpanFull()
                                 ->minItems(1)
                                 ->defaultItems(1),
                         ])
                         ->visible(fn (Forms\Get $get) => $get('trip_type') === 'round_trip'),
 
-                    // خطوة 6: الجدولة
-                    Forms\Components\Wizard\Step::make('الجدولة')
+                    Forms\Components\Wizard\Step::make(__('Scheduling'))
                         ->schema([
                             Forms\Components\CheckboxList::make('days_of_week')
-                                ->label('أيام تشغيل الرحلة')
+                                ->label(__('Trip Days'))
                                 ->options([
-                                    'Monday' => 'الاثنين',
-                                    'Tuesday' => 'الثلاثاء',
-                                    'Wednesday' => 'الأربعاء',
-                                    'Thursday' => 'الخميس',
-                                    'Friday' => 'الجمعة',
-                                    'Saturday' => 'السبت',
-                                    'Sunday' => 'الأحد',
+                                    'Monday' => __('Monday'),
+                                    'Tuesday' => __('Tuesday'),
+                                    'Wednesday' => __('Wednesday'),
+                                    'Thursday' => __('Thursday'),
+                                    'Friday' => __('Friday'),
+                                    'Saturday' => __('Saturday'),
+                                    'Sunday' => __('Sunday'),
                                 ])
                                 ->columns(4)
                                 ->required()
@@ -256,7 +252,7 @@ class ScheduleResource extends Resource
                             Forms\Components\Grid::make(2)
                                 ->schema([
                                     Forms\Components\TextInput::make('available_seats')
-                                        ->label('عدد المقاعد المتاحة')
+                                        ->label(__('Available Seats'))
                                         ->numeric()
                                         ->default(50)
                                         ->required()
@@ -264,7 +260,7 @@ class ScheduleResource extends Resource
                                         ->maxValue(100),
 
                                     Forms\Components\Toggle::make('is_active')
-                                        ->label('رحلة نشطة')
+                                        ->label(__('Active Trip'))
                                         ->default(true)
                                         ->required(),
                                 ]),
@@ -273,162 +269,5 @@ class ScheduleResource extends Resource
                     ->columnSpanFull()
                     ->skippable(),
             ]);
-    }
-
-    public static function table(Table $table): Table
-    {
-        return $table
-            ->columns([
-                Tables\Columns\TextColumn::make('id')
-                    ->label('#')
-                    ->sortable(),
-
-                Tables\Columns\TextColumn::make('route.name')
-                    ->label('المسار')
-                    ->getStateUsing(fn ($record) => $record->route?->getTranslation('name', 'ar'))
-                    ->searchable()
-                    ->sortable()
-                    ->weight('bold'),
-
-                Tables\Columns\BadgeColumn::make('trip_type')
-                    ->label('النوع')
-                    ->formatStateUsing(fn (string $state): string =>
-                    $state === 'one_way' ? 'ذهاب' : 'ذهاب وعودة'
-                    )
-                    ->colors([
-                        'info' => 'one_way',
-                        'success' => 'round_trip',
-                    ]),
-
-                Tables\Columns\TextColumn::make('departure_time')
-                    ->label('⏰ الانطلاق')
-                    ->time('H:i')
-                    ->sortable(),
-
-                Tables\Columns\TextColumn::make('fare')
-                    ->label('💰 السعر')
-                    ->money('SAR')
-                    ->sortable(),
-
-                Tables\Columns\TextColumn::make('driver.name')
-                    ->label('السائق')
-                    ->searchable()
-                    ->default('لم يعين')
-                    ->toggleable(),
-
-                Tables\Columns\TextColumn::make('available_seats')
-                    ->label('المقاعد')
-                    ->badge()
-                    ->color(fn ($state) => $state > 20 ? 'success' : ($state > 10 ? 'warning' : 'danger'))
-                    ->sortable(),
-
-                Tables\Columns\TextColumn::make('days_of_week')
-                    ->label('الأيام')
-                    ->formatStateUsing(function ($state) {
-                        if (!$state) return '-';
-                        $days = [
-                            'Monday' => 'إثنين',
-                            'Tuesday' => 'ثلاثاء',
-                            'Wednesday' => 'أربعاء',
-                            'Thursday' => 'خميس',
-                            'Friday' => 'جمعة',
-                            'Saturday' => 'سبت',
-                            'Sunday' => 'أحد',
-                        ];
-                        return collect($state)->map(fn($d) => $days[$d] ?? $d)->implode('، ');
-                    })
-                    ->wrap()
-                    ->limit(30)
-                    ->toggleable(),
-
-                Tables\Columns\IconColumn::make('is_active')
-                    ->label('الحالة')
-                    ->boolean()
-                    ->trueIcon('heroicon-o-check-circle')
-                    ->falseIcon('heroicon-o-x-circle')
-                    ->trueColor('success')
-                    ->falseColor('danger')
-                    ->sortable(),
-
-                Tables\Columns\TextColumn::make('created_at')
-                    ->label('تاريخ الإنشاء')
-                    ->dateTime('Y-m-d')
-                    ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
-            ])
-            ->filters([
-                Tables\Filters\SelectFilter::make('trip_type')
-                    ->label('نوع الرحلة')
-                    ->options([
-                        'one_way' => 'ذهاب فقط',
-                        'round_trip' => 'ذهاب وعودة',
-                    ]),
-
-                Tables\Filters\SelectFilter::make('route_id')
-                    ->label('المسار')
-                    ->options(fn () => Route::active()->get()->mapWithKeys(fn ($route) => [
-                        $route->id => $route->getTranslation('name', 'ar')
-                    ]))
-                    ->searchable(),
-
-                Tables\Filters\TernaryFilter::make('is_active')
-                    ->label('الحالة')
-                    ->placeholder('الكل')
-                    ->trueLabel('نشط')
-                    ->falseLabel('غير نشط'),
-
-                Tables\Filters\Filter::make('has_seats')
-                    ->label('توفر المقاعد')
-                    ->query(fn ($query) => $query->where('available_seats', '>', 0)),
-
-                Tables\Filters\TernaryFilter::make('has_driver')
-                    ->label('السائق')
-                    ->placeholder('الكل')
-                    ->trueLabel('معين')
-                    ->falseLabel('غير معين')
-                    ->queries(
-                        true: fn ($query) => $query->whereNotNull('driver_id'),
-                        false: fn ($query) => $query->whereNull('driver_id'),
-                    ),
-            ])
-            ->actions([
-                Tables\Actions\ViewAction::make(),
-                Tables\Actions\EditAction::make(),
-                Tables\Actions\DeleteAction::make(),
-            ])
-            ->bulkActions([
-                Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make(),
-                ]),
-            ])
-            ->defaultSort('departure_time', 'asc');
-    }
-
-    public static function getRelations(): array
-    {
-        return [
-            //
-        ];
-    }
-
-    public static function getPages(): array
-    {
-        return [
-            'index' => Pages\ListSchedules::route('/'),
-            'create' => Pages\CreateSchedule::route('/create'),
-            'view' => Pages\ViewSchedule::route('/{record}'),
-            'edit' => Pages\EditSchedule::route('/{record}/edit'),
-        ];
-    }
-
-    public static function getNavigationBadge(): ?string
-    {
-        return static::getModel()::active()->count();
-    }
-
-    public static function getNavigationBadgeColor(): ?string
-    {
-        $count = static::getModel()::active()->count();
-        return $count > 0 ? 'success' : 'gray';
     }
 }

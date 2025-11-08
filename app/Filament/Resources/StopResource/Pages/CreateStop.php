@@ -9,7 +9,6 @@ class CreateStop extends CreateRecord
 {
     protected static string $resource = StopResource::class;
 
-    // ✅ عنوان الصفحة مترجم
     public  function getTitle(): string
     {
         return __('Add new stop');
