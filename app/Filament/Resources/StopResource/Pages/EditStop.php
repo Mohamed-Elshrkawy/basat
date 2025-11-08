@@ -10,10 +10,16 @@ class EditStop extends EditRecord
 {
     protected static string $resource = StopResource::class;
 
+    public  function getTitle(): string
+    {
+        return __('Edit stop');
+    }
+
     protected function getHeaderActions(): array
     {
         return [
-            Actions\DeleteAction::make(),
+            Actions\DeleteAction::make()
+                ->label(__('Delete')),
         ];
     }
 
@@ -24,6 +30,6 @@ class EditStop extends EditRecord
 
     protected function getSavedNotificationTitle(): ?string
     {
-        return 'تم تحديث المحطة بنجاح';
+        return __('Stop updated successfully');
     }
 }

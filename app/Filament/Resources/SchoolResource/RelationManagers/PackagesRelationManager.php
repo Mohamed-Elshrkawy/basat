@@ -12,11 +12,20 @@ class PackagesRelationManager extends RelationManager
 {
     protected static string $relationship = 'packages';
 
-    protected static ?string $title = 'الباقات المتاحة';
+    public static function getTitle(\Illuminate\Database\Eloquent\Model $ownerRecord, string $pageClass): string
+    {
+        return __('Available packages');
+    }
 
-    protected static ?string $modelLabel = 'باقة';
+    public static function getModelLabel(): string
+    {
+        return __('Package');
+    }
 
-    protected static ?string $pluralModelLabel = 'الباقات';
+    public static function getPluralModelLabel(): string
+    {
+        return __('Packages');
+    }
 
     public function form(Form $form): Form
     {
@@ -25,12 +34,12 @@ class PackagesRelationManager extends RelationManager
                 Forms\Components\Grid::make(2)
                     ->schema([
                         Forms\Components\TextInput::make('name.ar')
-                            ->label('اسم الباقة (عربي)')
+                            ->label(__('Package name (Arabic)'))
                             ->required()
                             ->maxLength(255),
 
                         Forms\Components\TextInput::make('name.en')
-                            ->label('اسم الباقة (English)')
+                            ->label(__('Package name (English)'))
                             ->required()
                             ->maxLength(255),
                     ]),
@@ -38,12 +47,12 @@ class PackagesRelationManager extends RelationManager
                 Forms\Components\Grid::make(2)
                     ->schema([
                         Forms\Components\Textarea::make('description.ar')
-                            ->label('الوصف (عربي)')
+                            ->label(__('Description (Arabic)'))
                             ->rows(3)
                             ->maxLength(500),
 
                         Forms\Components\Textarea::make('description.en')
-                            ->label('الوصف (English)')
+                            ->label(__('Description (English)'))
                             ->rows(3)
                             ->maxLength(500),
                     ]),
@@ -51,22 +60,22 @@ class PackagesRelationManager extends RelationManager
                 Forms\Components\Grid::make(3)
                     ->schema([
                         Forms\Components\TextInput::make('price')
-                            ->label('السعر')
+                            ->label(__('Price'))
                             ->required()
                             ->numeric()
-                            ->prefix('SAR')
+                            ->prefix(__('SAR'))
                             ->minValue(0)
                             ->step(0.01),
 
                         Forms\Components\TextInput::make('duration_days')
-                            ->label('المدة')
+                            ->label(__('Duration'))
                             ->required()
                             ->numeric()
-                            ->suffix('يوم')
+                            ->suffix(__(' day'))
                             ->minValue(1),
 
                         Forms\Components\Toggle::make('is_active')
-                            ->label('نشط')
+                            ->label(__('Active'))
                             ->default(true)
                             ->required(),
                     ]),
@@ -79,30 +88,30 @@ class PackagesRelationManager extends RelationManager
             ->recordTitleAttribute('name')
             ->columns([
                 Tables\Columns\TextColumn::make('name.ar')
-                    ->label('اسم الباقة')
+                    ->label(__('Package name'))
                     ->searchable()
                     ->sortable(),
 
                 Tables\Columns\TextColumn::make('description.ar')
-                    ->label('الوصف')
+                    ->label(__('Description'))
                     ->limit(40)
                     ->toggleable(),
 
                 Tables\Columns\TextColumn::make('price')
-                    ->label('السعر')
+                    ->label(__('Price'))
                     ->money('SAR')
                     ->sortable(),
 
                 Tables\Columns\TextColumn::make('duration_days')
-                    ->label('المدة')
+                    ->label(__('Duration'))
                     ->numeric()
-                    ->suffix(' يوم')
+                    ->suffix(' ' . __('day'))
                     ->sortable()
                     ->badge()
                     ->color('info'),
 
                 Tables\Columns\IconColumn::make('is_active')
-                    ->label('الحالة')
+                    ->label(__('Status'))
                     ->boolean()
                     ->trueIcon('heroicon-o-check-circle')
                     ->falseIcon('heroicon-o-x-circle')
@@ -111,29 +120,33 @@ class PackagesRelationManager extends RelationManager
             ])
             ->filters([
                 Tables\Filters\TernaryFilter::make('is_active')
-                    ->label('الحالة')
-                    ->placeholder('الكل')
-                    ->trueLabel('نشط')
-                    ->falseLabel('غير نشط'),
+                    ->label(__('Status'))
+                    ->placeholder(__('All'))
+                    ->trueLabel(__('Active'))
+                    ->falseLabel(__('Inactive')),
             ])
             ->headerActions([
                 Tables\Actions\AttachAction::make()
-                    ->label('ربط باقة موجودة')
+                    ->label(__('Attach existing package'))
                     ->preloadRecordSelect(),
+
                 Tables\Actions\CreateAction::make()
-                    ->label('إنشاء باقة جديدة'),
+                    ->label(__('Create new package')),
             ])
             ->actions([
-                Tables\Actions\EditAction::make(),
+                Tables\Actions\EditAction::make()
+                    ->label(__('Edit')),
                 Tables\Actions\DetachAction::make()
-                    ->label('فك الربط'),
-                Tables\Actions\DeleteAction::make(),
+                    ->label(__('Detach')),
+                Tables\Actions\DeleteAction::make()
+                    ->label(__('Delete')),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
                     Tables\Actions\DetachBulkAction::make()
-                        ->label('فك ربط المحدد'),
-                    Tables\Actions\DeleteBulkAction::make(),
+                        ->label(__('Detach selected')),
+                    Tables\Actions\DeleteBulkAction::make()
+                        ->label(__('Delete selected')),
                 ]),
             ]);
     }

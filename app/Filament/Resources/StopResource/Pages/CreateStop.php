@@ -9,6 +9,12 @@ class CreateStop extends CreateRecord
 {
     protected static string $resource = StopResource::class;
 
+    // ✅ عنوان الصفحة مترجم
+    public  function getTitle(): string
+    {
+        return __('Add new stop');
+    }
+
     protected function getRedirectUrl(): string
     {
         return $this->getResource()::getUrl('index');
@@ -16,6 +22,6 @@ class CreateStop extends CreateRecord
 
     protected function getCreatedNotificationTitle(): ?string
     {
-        return 'تم إضافة المحطة بنجاح';
+        return __('Stop created successfully');
     }
 }

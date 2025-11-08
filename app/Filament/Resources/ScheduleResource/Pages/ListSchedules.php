@@ -10,13 +10,16 @@ class ListSchedules extends ListRecords
 {
     protected static string $resource = ScheduleResource::class;
 
-    protected static ?string $title = 'جدولة الرحلات';
+    public function getTitle(): string
+    {
+        return __('Trip schedules');
+    }
 
     protected function getHeaderActions(): array
     {
         return [
             Actions\CreateAction::make()
-                ->label('➕ إضافة جدول رحلة جديد'),
+                ->label(__('➕ Add new trip schedule')),
         ];
     }
 }

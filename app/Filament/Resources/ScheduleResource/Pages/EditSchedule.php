@@ -10,15 +10,18 @@ class EditSchedule extends EditRecord
 {
     protected static string $resource = ScheduleResource::class;
 
-    protected static ?string $title = 'تعديل جدول الرحلة';
+    public function getTitle(): string
+    {
+        return __('Edit trip schedule');
+    }
 
     protected function getHeaderActions(): array
     {
         return [
             Actions\ViewAction::make()
-                ->label('عرض'),
+                ->label(__('View')),
             Actions\DeleteAction::make()
-                ->label('حذف'),
+                ->label(__('Delete')),
         ];
     }
 
@@ -29,6 +32,6 @@ class EditSchedule extends EditRecord
 
     protected function getSavedNotificationTitle(): ?string
     {
-        return 'تم تحديث الجدول بنجاح';
+        return __('Schedule updated successfully');
     }
 }

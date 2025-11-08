@@ -13,7 +13,10 @@ class SchoolsMap extends Page
 
     protected static string $view = 'filament.resources.school-resource.pages.schools-map';
 
-    protected static ?string $title = 'خريطة المدارس';
+    public function getTitle(): string
+    {
+        return __('Schools map');
+    }
 
     protected static ?string $navigationIcon = 'heroicon-o-map';
 
@@ -23,8 +26,8 @@ class SchoolsMap extends Page
             return [
                 'id' => $school->id,
                 'name' => [
-                    'ar' => $school->name['ar'] ?? $school->getTranslation('name', 'ar') ?? 'غير محدد',
-                    'en' => $school->name['en'] ?? $school->getTranslation('name', 'en') ?? 'Not Set',
+                    'ar' => $school->name['ar'] ?? $school->getTranslation('name', 'ar') ?? __('Not set'),
+                    'en' => $school->name['en'] ?? $school->getTranslation('name', 'en') ?? __('Not set'),
                 ],
                 'lat' => (float) $school->lat,
                 'lng' => (float) $school->lng,
@@ -46,11 +49,10 @@ class SchoolsMap extends Page
             ]);
 
             Notification::make()
-                ->title('تم إنشاء المدرسة بنجاح')
+                ->title(__('School created successfully'))
                 ->success()
                 ->send();
 
-            // إرجاع البيانات بنفس الصيغة
             return [
                 'id' => $school->id,
                 'name' => [
@@ -63,7 +65,7 @@ class SchoolsMap extends Page
             ];
         } catch (\Exception $e) {
             Notification::make()
-                ->title('حدث خطأ أثناء الإنشاء')
+                ->title(__('Error while creating'))
                 ->danger()
                 ->send();
 
@@ -86,11 +88,10 @@ class SchoolsMap extends Page
             ]);
 
             Notification::make()
-                ->title('تم تحديث المدرسة بنجاح')
+                ->title(__('School updated successfully'))
                 ->success()
                 ->send();
 
-            // إرجاع البيانات بنفس الصيغة
             return [
                 'id' => $school->id,
                 'name' => [
@@ -103,7 +104,7 @@ class SchoolsMap extends Page
             ];
         } catch (\Exception $e) {
             Notification::make()
-                ->title('حدث خطأ أثناء التحديث')
+                ->title(__('Error while updating'))
                 ->danger()
                 ->send();
 
@@ -121,14 +122,14 @@ class SchoolsMap extends Page
             ]);
 
             Notification::make()
-                ->title('تم تحديث الموقع بنجاح')
+                ->title(__('Location updated successfully'))
                 ->success()
                 ->send();
 
             return true;
         } catch (\Exception $e) {
             Notification::make()
-                ->title('حدث خطأ أثناء تحديث الموقع')
+                ->title(__('Error while updating location'))
                 ->danger()
                 ->send();
 
@@ -143,14 +144,14 @@ class SchoolsMap extends Page
             $school->delete();
 
             Notification::make()
-                ->title('تم حذف المدرسة بنجاح')
+                ->title(__('School deleted successfully'))
                 ->success()
                 ->send();
 
             return true;
         } catch (\Exception $e) {
             Notification::make()
-                ->title('حدث خطأ أثناء الحذف')
+                ->title(__('Error while deleting'))
                 ->danger()
                 ->send();
 

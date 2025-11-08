@@ -9,7 +9,10 @@ class CreateSchedule extends CreateRecord
 {
     protected static string $resource = ScheduleResource::class;
 
-    protected static ?string $title = 'إضافة جدول رحلة جديد';
+    public function getTitle(): string
+    {
+        return __('Add new trip schedule');
+    }
 
     protected function getRedirectUrl(): string
     {
@@ -18,6 +21,6 @@ class CreateSchedule extends CreateRecord
 
     protected function getCreatedNotificationTitle(): ?string
     {
-        return 'تم إنشاء الجدول بنجاح';
+        return __('Schedule created successfully');
     }
 }

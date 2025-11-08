@@ -13,14 +13,32 @@ class StopsMap extends Page
 
     protected static string $view = 'filament.resources.stop-resource.pages.stops-map';
 
-    protected static ?string $title = 'خريطة المحطات';
+    public function getTitle(): string
+    {
+        return __('Stops map');
+    }
 
-    protected static ?string $navigationLabel = 'خريطة المحطات';
+    protected static ?string $navigationIcon = 'heroicon-o-map';
 
-    // جلب جميع المحطات
+    public static function getNavigationLabel(): string
+    {
+        return __('Stops map');
+    }
+
     public function getStops()
     {
-        return Stop::all();
+        return Stop::all()->map(function ($stop) {
+            return [
+                'id'        => $stop->id,
+                'name'      => [
+                    'ar' => $stop->name['ar'] ?? $stop->getTranslation('name', 'ar') ?? __('Not set'),
+                    'en' => $stop->name['en'] ?? $stop->getTranslation('name', 'en') ?? __('Not set'),
+                ],
+                'lat'       => (float) $stop->lat,
+                'lng'       => (float) $stop->lng,
+                'is_active' => (bool) $stop->is_active,
+            ];
+        });
     }
 
     // إنشاء محطة جديدة
@@ -30,28 +48,31 @@ class StopsMap extends Page
             $stop = Stop::create([
                 'name' => [
                     'ar' => $data['name_ar'],
-                    'en' => $data['name_en']
+                    'en' => $data['name_en'],
                 ],
-                'lat' => $data['lat'],
-                'lng' => $data['lng'],
-                'is_active' => $data['is_active'] ?? true
+                'lat'       => $data['lat'],
+                'lng'       => $data['lng'],
+                'is_active' => $data['is_active'] ?? true,
             ]);
 
             Notification::make()
-                ->title('تم إضافة المحطة بنجاح')
+                ->title(__('Stop created successfully'))
                 ->success()
                 ->send();
 
             return [
-                'id' => $stop->id,
-                'name' => $stop->name,
-                'lat' => (float) $stop->lat,
-                'lng' => (float) $stop->lng,
-                'is_active' => (bool) $stop->is_active
+                'id'        => $stop->id,
+                'name'      => [
+                    'ar' => $stop->name['ar'] ?? $stop->getTranslation('name', 'ar'),
+                    'en' => $stop->name['en'] ?? $stop->getTranslation('name', 'en'),
+                ],
+                'lat'       => (float) $stop->lat,
+                'lng'       => (float) $stop->lng,
+                'is_active' => (bool) $stop->is_active,
             ];
         } catch (\Exception $e) {
             Notification::make()
-                ->title('حدث خطأ أثناء إضافة المحطة')
+                ->title(__('Error while creating'))
                 ->danger()
                 ->send();
 
@@ -68,28 +89,31 @@ class StopsMap extends Page
             $stop->update([
                 'name' => [
                     'ar' => $data['name_ar'],
-                    'en' => $data['name_en']
+                    'en' => $data['name_en'],
                 ],
-                'lat' => $data['lat'],
-                'lng' => $data['lng'],
-                'is_active' => $data['is_active'] ?? true
+                'lat'       => $data['lat'],
+                'lng'       => $data['lng'],
+                'is_active' => $data['is_active'] ?? true,
             ]);
 
             Notification::make()
-                ->title('تم تحديث المحطة بنجاح')
+                ->title(__('Stop updated successfully'))
                 ->success()
                 ->send();
 
             return [
-                'id' => $stop->id,
-                'name' => $stop->name,
-                'lat' => (float) $stop->lat,
-                'lng' => (float) $stop->lng,
-                'is_active' => (bool) $stop->is_active
+                'id'        => $stop->id,
+                'name'      => [
+                    'ar' => $stop->name['ar'] ?? $stop->getTranslation('name', 'ar'),
+                    'en' => $stop->name['en'] ?? $stop->getTranslation('name', 'en'),
+                ],
+                'lat'       => (float) $stop->lat,
+                'lng'       => (float) $stop->lng,
+                'is_active' => (bool) $stop->is_active,
             ];
         } catch (\Exception $e) {
             Notification::make()
-                ->title('حدث خطأ أثناء تحديث المحطة')
+                ->title(__('Error while updating'))
                 ->danger()
                 ->send();
 
@@ -105,18 +129,18 @@ class StopsMap extends Page
 
             $stop->update([
                 'lat' => $lat,
-                'lng' => $lng
+                'lng' => $lng,
             ]);
 
             Notification::make()
-                ->title('تم تحديث موقع المحطة')
+                ->title(__('Location updated successfully'))
                 ->success()
                 ->send();
 
             return true;
         } catch (\Exception $e) {
             Notification::make()
-                ->title('حدث خطأ أثناء تحديث الموقع')
+                ->title(__('Error while updating location'))
                 ->danger()
                 ->send();
 
@@ -132,14 +156,14 @@ class StopsMap extends Page
             $stop->delete();
 
             Notification::make()
-                ->title('تم حذف المحطة بنجاح')
+                ->title(__('Stop deleted successfully'))
                 ->success()
                 ->send();
 
             return true;
         } catch (\Exception $e) {
             Notification::make()
-                ->title('حدث خطأ أثناء حذف المحطة')
+                ->title(__('Error while deleting'))
                 ->danger()
                 ->send();
 

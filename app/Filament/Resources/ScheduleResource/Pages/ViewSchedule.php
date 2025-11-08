@@ -12,15 +12,19 @@ class ViewSchedule extends ViewRecord
 {
     protected static string $resource = ScheduleResource::class;
 
-    protected static ?string $title = 'عرض جدول الرحلة';
+    // ✅ عنوان مترجم ديناميكيًا
+    public function getTitle(): string
+    {
+        return __('View trip schedule');
+    }
 
     protected function getHeaderActions(): array
     {
         return [
             Actions\EditAction::make()
-                ->label('تعديل'),
+                ->label(__('Edit')),
             Actions\DeleteAction::make()
-                ->label('حذف'),
+                ->label(__('Delete')),
         ];
     }
 
@@ -28,13 +32,13 @@ class ViewSchedule extends ViewRecord
     {
         return $infolist
             ->schema([
-                // معلومات المسار والرحلة
-                Infolists\Components\Section::make('معلومات الرحلة')
+                // Route & trip info
+                Infolists\Components\Section::make(__('Trip information'))
                     ->schema([
                         Infolists\Components\Grid::make(3)
                             ->schema([
                                 Infolists\Components\TextEntry::make('route.name')
-                                    ->label('🛣️ المسار')
+                                    ->label(__('🛣️ Route'))
                                     ->getStateUsing(fn ($record) => $record->route?->getFullRouteName())
                                     ->badge()
                                     ->color('primary')
@@ -42,9 +46,9 @@ class ViewSchedule extends ViewRecord
                                     ->columnSpan(2),
 
                                 Infolists\Components\TextEntry::make('trip_type')
-                                    ->label('🎫 نوع الرحلة')
+                                    ->label(__('🎫 Trip type'))
                                     ->formatStateUsing(fn (string $state): string =>
-                                    $state === 'one_way' ? 'ذهاب فقط' : 'ذهاب وعودة'
+                                    $state === 'one_way' ? __('One way') : __('Round trip')
                                     )
                                     ->badge()
                                     ->color(fn ($state) => $state === 'round_trip' ? 'success' : 'info')
@@ -54,13 +58,13 @@ class ViewSchedule extends ViewRecord
                         Infolists\Components\Grid::make(2)
                             ->schema([
                                 Infolists\Components\TextEntry::make('driver.name')
-                                    ->label('👤 السائق')
-                                    ->default('لم يتم التعيين')
+                                    ->label(__('👤 Driver'))
+                                    ->default(__('Not assigned'))
                                     ->badge()
-                                    ->color(fn ($state) => $state === 'لم يتم التعيين' ? 'gray' : 'success'),
+                                    ->color(fn ($state) => $state === __('Not assigned') ? 'gray' : 'success'),
 
                                 Infolists\Components\IconEntry::make('is_active')
-                                    ->label('📊 حالة الرحلة')
+                                    ->label(__('📊 Trip status'))
                                     ->boolean()
                                     ->trueIcon('heroicon-o-check-circle')
                                     ->falseIcon('heroicon-o-x-circle')
@@ -71,34 +75,34 @@ class ViewSchedule extends ViewRecord
                     ])
                     ->columns(1),
 
-                // معلومات الذهاب
-                Infolists\Components\Section::make('🚀 معلومات الذهاب')
+                // Outbound
+                Infolists\Components\Section::make(__('🚀 Outbound information'))
                     ->schema([
                         Infolists\Components\Grid::make(4)
                             ->schema([
                                 Infolists\Components\TextEntry::make('departure_time')
-                                    ->label('⏰ وقت الانطلاق')
+                                    ->label(__('⏰ Departure time'))
                                     ->time('H:i')
                                     ->badge()
                                     ->color('success')
                                     ->size('lg'),
 
                                 Infolists\Components\TextEntry::make('arrival_time')
-                                    ->label('🏁 وقت الوصول')
+                                    ->label(__('🏁 Arrival time'))
                                     ->time('H:i')
                                     ->badge()
                                     ->color('info')
                                     ->size('lg'),
 
                                 Infolists\Components\TextEntry::make('duration')
-                                    ->label('⏱️ المدة')
+                                    ->label(__('⏱️ Duration'))
                                     ->getStateUsing(fn ($record) => $record->getOutboundDuration() ?? '-')
                                     ->badge()
                                     ->color('warning')
                                     ->icon('heroicon-o-clock'),
 
                                 Infolists\Components\TextEntry::make('fare')
-                                    ->label('💰 السعر')
+                                    ->label(__('💰 Fare'))
                                     ->money('SAR')
                                     ->badge()
                                     ->color('success')
@@ -108,34 +112,34 @@ class ViewSchedule extends ViewRecord
                     ->collapsible()
                     ->collapsed(false),
 
-                // معلومات العودة (إذا كانت رحلة ذهاب وعودة)
-                Infolists\Components\Section::make('🔙 معلومات العودة')
+                // Return (if round trip)
+                Infolists\Components\Section::make(__('🔙 Return information'))
                     ->schema([
                         Infolists\Components\Grid::make(4)
                             ->schema([
                                 Infolists\Components\TextEntry::make('return_departure_time')
-                                    ->label('⏰ وقت الانطلاق')
+                                    ->label(__('⏰ Departure time'))
                                     ->time('H:i')
                                     ->badge()
                                     ->color('success')
                                     ->size('lg'),
 
                                 Infolists\Components\TextEntry::make('return_arrival_time')
-                                    ->label('🏁 وقت الوصول')
+                                    ->label(__('🏁 Arrival time'))
                                     ->time('H:i')
                                     ->badge()
                                     ->color('info')
                                     ->size('lg'),
 
                                 Infolists\Components\TextEntry::make('return_duration')
-                                    ->label('⏱️ المدة')
+                                    ->label(__('⏱️ Duration'))
                                     ->getStateUsing(fn ($record) => $record->getReturnDuration() ?? '-')
                                     ->badge()
                                     ->color('warning')
                                     ->icon('heroicon-o-clock'),
 
                                 Infolists\Components\TextEntry::make('return_fare')
-                                    ->label('💰 السعر')
+                                    ->label(__('💰 Fare'))
                                     ->money('SAR')
                                     ->badge()
                                     ->color('success')
@@ -146,21 +150,21 @@ class ViewSchedule extends ViewRecord
                             Infolists\Components\Grid::make(3)
                                 ->schema([
                                     Infolists\Components\TextEntry::make('total_price')
-                                        ->label('💵 السعر الإجمالي (منفصل)')
+                                        ->label(__('💵 Original total (separate)'))
                                         ->getStateUsing(fn ($record) => $record->getRoundTripOriginalPrice())
                                         ->money('SAR')
                                         ->badge()
                                         ->color('gray'),
 
                                     Infolists\Components\TextEntry::make('round_trip_discount')
-                                        ->label('🎁 قيمة الخصم')
+                                        ->label(__('🎁 Discount value'))
                                         ->money('SAR')
                                         ->badge()
                                         ->color('danger')
                                         ->icon('heroicon-o-gift'),
 
                                     Infolists\Components\TextEntry::make('final_price')
-                                        ->label('✅ السعر النهائي (ذهاب وعودة)')
+                                        ->label(__('✅ Final price (round trip)'))
                                         ->getStateUsing(fn ($record) => $record->getRoundTripPrice())
                                         ->money('SAR')
                                         ->badge()
@@ -171,7 +175,7 @@ class ViewSchedule extends ViewRecord
                         ]),
 
                         Infolists\Components\TextEntry::make('discount_percentage')
-                            ->label('📊 نسبة الخصم')
+                            ->label(__('📊 Discount percentage'))
                             ->getStateUsing(fn ($record) => $record->getDiscountPercentage() . '%')
                             ->badge()
                             ->color('warning')
@@ -181,8 +185,8 @@ class ViewSchedule extends ViewRecord
                     ->collapsible()
                     ->collapsed(false),
 
-                // محطات الذهاب
-                Infolists\Components\Section::make('🚩 محطات الذهاب')
+                // Outbound stops
+                Infolists\Components\Section::make(__('🚩 Outbound stops'))
                     ->schema([
                         Infolists\Components\RepeatableEntry::make('outboundStops')
                             ->label('')
@@ -197,7 +201,7 @@ class ViewSchedule extends ViewRecord
                                                 ->size('sm'),
 
                                             Infolists\Components\TextEntry::make('stop.name')
-                                                ->label('المحطة')
+                                                ->label(__('Stop'))
                                                 ->getStateUsing(fn ($record) => $record->stop?->getTranslation('name', 'ar'))
                                                 ->badge()
                                                 ->color('info')
@@ -206,13 +210,13 @@ class ViewSchedule extends ViewRecord
                                                 ->columnSpan(2),
 
                                             Infolists\Components\TextEntry::make('arrival_time')
-                                                ->label('⏰ وقت الوصول')
+                                                ->label(__('⏰ Arrival time'))
                                                 ->time('H:i')
                                                 ->badge()
                                                 ->color('success'),
 
                                             Infolists\Components\TextEntry::make('departure_time')
-                                                ->label('🚀 وقت المغادرة')
+                                                ->label(__('🚀 Departure time'))
                                                 ->time('H:i')
                                                 ->badge()
                                                 ->color('warning'),
@@ -226,8 +230,8 @@ class ViewSchedule extends ViewRecord
                     ->collapsed(false)
                     ->icon('heroicon-o-arrow-right-circle'),
 
-                // محطات العودة
-                Infolists\Components\Section::make('🔄 محطات العودة')
+                // Return stops
+                Infolists\Components\Section::make(__('🔄 Return stops'))
                     ->schema([
                         Infolists\Components\RepeatableEntry::make('returnStops')
                             ->label('')
@@ -242,7 +246,7 @@ class ViewSchedule extends ViewRecord
                                                 ->size('sm'),
 
                                             Infolists\Components\TextEntry::make('stop.name')
-                                                ->label('المحطة')
+                                                ->label(__('Stop'))
                                                 ->getStateUsing(fn ($record) => $record->stop?->getTranslation('name', 'ar'))
                                                 ->badge()
                                                 ->color('info')
@@ -251,13 +255,13 @@ class ViewSchedule extends ViewRecord
                                                 ->columnSpan(2),
 
                                             Infolists\Components\TextEntry::make('arrival_time')
-                                                ->label('⏰ وقت الوصول')
+                                                ->label(__('⏰ Arrival time'))
                                                 ->time('H:i')
                                                 ->badge()
                                                 ->color('success'),
 
                                             Infolists\Components\TextEntry::make('departure_time')
-                                                ->label('🚀 وقت المغادرة')
+                                                ->label(__('🚀 Departure time'))
                                                 ->time('H:i')
                                                 ->badge()
                                                 ->color('warning'),
@@ -272,22 +276,22 @@ class ViewSchedule extends ViewRecord
                     ->collapsed(false)
                     ->icon('heroicon-o-arrow-left-circle'),
 
-                // معلومات الجدولة
-                Infolists\Components\Section::make('📅 معلومات الجدولة')
+                // Scheduling info
+                Infolists\Components\Section::make(__('📅 Scheduling information'))
                     ->schema([
                         Infolists\Components\Grid::make(2)
                             ->schema([
                                 Infolists\Components\TextEntry::make('days_of_week')
-                                    ->label('📆 أيام التشغيل')
+                                    ->label(__('📆 Operating days'))
                                     ->formatStateUsing(function ($state) {
                                         $days = [
-                                            'Monday' => 'الاثنين',
-                                            'Tuesday' => 'الثلاثاء',
-                                            'Wednesday' => 'الأربعاء',
-                                            'Thursday' => 'الخميس',
-                                            'Friday' => 'الجمعة',
-                                            'Saturday' => 'السبت',
-                                            'Sunday' => 'الأحد',
+                                            'Monday'    => __('Monday'),
+                                            'Tuesday'   => __('Tuesday'),
+                                            'Wednesday' => __('Wednesday'),
+                                            'Thursday'  => __('Thursday'),
+                                            'Friday'    => __('Friday'),
+                                            'Saturday'  => __('Saturday'),
+                                            'Sunday'    => __('Sunday'),
                                         ];
                                         return collect($state)->map(fn($d) => $days[$d] ?? $d)->implode('، ');
                                     })
@@ -296,20 +300,20 @@ class ViewSchedule extends ViewRecord
                                     ->columnSpanFull(),
 
                                 Infolists\Components\TextEntry::make('available_seats')
-                                    ->label('💺 المقاعد المتاحة')
-                                    ->suffix(' مقعد')
+                                    ->label(__('💺 Available seats'))
+                                    ->suffix(__(' seat'))
                                     ->badge()
                                     ->color(fn ($state) => $state > 20 ? 'success' : ($state > 10 ? 'warning' : 'danger'))
                                     ->size('lg')
                                     ->icon('heroicon-o-user-group'),
 
                                 Infolists\Components\TextEntry::make('status')
-                                    ->label('📊 حالة التوفر')
+                                    ->label(__('📊 Availability status'))
                                     ->getStateUsing(function ($record) {
-                                        if (!$record->is_active) return 'غير نشط';
-                                        if (!$record->hasSeatsAvailable()) return 'مكتمل';
-                                        if ($record->driver_id) return 'جاهز للحجز';
-                                        return 'بانتظار السائق';
+                                        if (!$record->is_active) return __('Inactive');
+                                        if (!$record->hasSeatsAvailable()) return __('Full');
+                                        if ($record->driver_id) return __('Ready for booking');
+                                        return __('Waiting for driver');
                                     })
                                     ->badge()
                                     ->color(function ($record) {
@@ -330,20 +334,20 @@ class ViewSchedule extends ViewRecord
                     ->collapsible()
                     ->icon('heroicon-o-calendar'),
 
-                // ملخص الرحلة
-                Infolists\Components\Section::make('📊 ملخص الرحلة')
+                // Summary
+                Infolists\Components\Section::make(__('📊 Trip summary'))
                     ->schema([
                         Infolists\Components\Grid::make(3)
                             ->schema([
                                 Infolists\Components\TextEntry::make('outbound_stops_count')
-                                    ->label('🚩 عدد محطات الذهاب')
+                                    ->label(__('🚩 Outbound stops count'))
                                     ->getStateUsing(fn ($record) => $record->outboundStops()->count())
                                     ->badge()
                                     ->color('info')
                                     ->icon('heroicon-o-map-pin'),
 
                                 Infolists\Components\TextEntry::make('return_stops_count')
-                                    ->label('🔄 عدد محطات العودة')
+                                    ->label(__('🔄 Return stops count'))
                                     ->getStateUsing(fn ($record) => $record->returnStops()->count())
                                     ->badge()
                                     ->color('warning')
@@ -351,7 +355,7 @@ class ViewSchedule extends ViewRecord
                                     ->visible(fn ($record) => $record->isRoundTrip()),
 
                                 Infolists\Components\TextEntry::make('total_duration')
-                                    ->label('⏱️ إجمالي المدة')
+                                    ->label(__('⏱️ Total duration'))
                                     ->getStateUsing(fn ($record) => $record->getTotalDuration() ?? '-')
                                     ->badge()
                                     ->color('success')
@@ -359,7 +363,7 @@ class ViewSchedule extends ViewRecord
                             ]),
 
                         Infolists\Components\TextEntry::make('full_schedule_info')
-                            ->label('ℹ️ معلومات كاملة')
+                            ->label(__('ℹ️ Full information'))
                             ->getStateUsing(fn ($record) => $record->getFullScheduleInfo())
                             ->columnSpanFull()
                             ->size('lg'),
@@ -367,23 +371,23 @@ class ViewSchedule extends ViewRecord
                     ->collapsible()
                     ->collapsed(true),
 
-                // معلومات إضافية
-                Infolists\Components\Section::make('📝 معلومات إضافية')
+                // Additional info
+                Infolists\Components\Section::make(__('📝 Additional information'))
                     ->schema([
                         Infolists\Components\Grid::make(3)
                             ->schema([
                                 Infolists\Components\TextEntry::make('id')
-                                    ->label('رقم الجدول')
+                                    ->label(__('Schedule number'))
                                     ->badge()
                                     ->color('gray'),
 
                                 Infolists\Components\TextEntry::make('created_at')
-                                    ->label('تاريخ الإنشاء')
+                                    ->label(__('Created at'))
                                     ->dateTime('Y-m-d H:i')
                                     ->icon('heroicon-o-calendar'),
 
                                 Infolists\Components\TextEntry::make('updated_at')
-                                    ->label('آخر تحديث')
+                                    ->label(__('Last updated'))
                                     ->dateTime('Y-m-d H:i')
                                     ->since()
                                     ->icon('heroicon-o-clock'),
