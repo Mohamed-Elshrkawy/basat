@@ -2,7 +2,6 @@
 
 namespace App\Filament\Resources;
 
-use App\Filament\Resources\ScheduleResource\Pages;
 use App\Models\Schedule;
 use App\Models\Route;
 use App\Models\Stop;
@@ -10,8 +9,7 @@ use App\Models\User;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
-use Filament\Tables;
-use Filament\Tables\Table;
+
 
 class ScheduleResource extends Resource
 {
