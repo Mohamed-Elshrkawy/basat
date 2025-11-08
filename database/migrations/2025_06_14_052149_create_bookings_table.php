@@ -10,45 +10,48 @@ return new class extends Migration
     {
         Schema::create('bookings', function (Blueprint $table) {
             $table->id();
-            $table->string('booking_number')->unique()->comment('رقم الحجز الفريد');
-            $table->foreignId('passenger_id')->constrained('users')->comment('الراكب');
-            $table->foreignId('schedule_id')->constrained('schedules')->comment('الرحلة');
-            $table->enum('trip_direction', ['outbound', 'return'])->default('outbound')->comment('اتجاه الرحلة');
-            $table->json('seat_numbers')->comment('أرقام المقاعد المحجوزة');
-            $table->integer('total_seats')->comment('عدد المقاعد');
+            $table->string('booking_number')->unique(); // رقم الحجز
+            $table->foreignId('user_id')->constrained()->cascadeOnDelete(); // الراكب
+            $table->foreignId('schedule_id')->constrained()->cascadeOnDelete(); // الرحلة
+            $table->date('travel_date'); // تاريخ السفر
 
-            // الأسعار
-            $table->decimal('fare_amount', 10, 2)->comment('سعر التذكرة الأساسي');
-            $table->decimal('amenities_amount', 10, 2)->default(0)->comment('سعر الوسائل الإضافية');
-            $table->decimal('discount_amount', 10, 2)->default(0)->comment('قيمة الخصم');
-            $table->decimal('total_amount', 10, 2)->comment('المبلغ الإجمالي');
+            // معلومات الحجز
+            $table->enum('trip_type', ['one_way', 'round_trip'])->default('one_way');
+            $table->integer('number_of_seats'); // عدد المقاعد
+            $table->json('seat_numbers'); // أرقام المقاعد المحجوزة
+
+            // معلومات الأسعار
+            $table->decimal('outbound_fare', 10, 2); // سعر الذهاب
+            $table->decimal('return_fare', 10, 2)->nullable(); // سعر العودة
+            $table->decimal('discount', 10, 2)->default(0); // الخصم
+            $table->decimal('total_amount', 10, 2); // المبلغ الإجمالي
 
             // معلومات الدفع
-            $table->enum('payment_method', ['cash', 'credit_card', 'apple_pay', 'stc_pay', 'mada'])->comment('طريقة الدفع');
-            $table->enum('payment_status', ['pending', 'paid', 'failed', 'refunded'])->default('pending')->comment('حالة الدفع');
-            $table->string('payment_transaction_id')->nullable()->comment('رقم عملية الدفع');
-            $table->timestamp('paid_at')->nullable()->comment('وقت الدفع');
+            $table->enum('payment_method', ['cash', 'card', 'wallet', 'bank_transfer']); // طريقة الدفع
+            $table->enum('payment_status', ['pending', 'paid', 'failed', 'refunded'])->default('pending');
+            $table->string('transaction_id')->nullable(); // رقم المعاملة
+            $table->timestamp('paid_at')->nullable();
 
             // حالة الحجز
-            $table->enum('status', ['confirmed', 'cancelled', 'completed', 'no_show'])->default('confirmed')->comment('حالة الحجز');
-            $table->text('cancellation_reason')->nullable()->comment('سبب الإلغاء');
-            $table->timestamp('cancelled_at')->nullable()->comment('وقت الإلغاء');
+            $table->enum('status', [
+                'pending',      // في انتظار الدفع
+                'confirmed',    // مؤكد
+                'cancelled',    // ملغي
+                'completed',    // مكتمل
+                'refunded'      // تم الاسترداد
+            ])->default('pending');
 
-            // معلومات إضافية
-            $table->json('selected_amenities')->nullable()->comment('الوسائل المختارة');
-            $table->text('notes')->nullable()->comment('ملاحظات');
+            // ملاحظات
+            $table->text('notes')->nullable();
+            $table->text('cancellation_reason')->nullable();
+            $table->timestamp('cancelled_at')->nullable();
 
             $table->timestamps();
-            $table->softDeletes();
 
             // Indexes
+            $table->index(['user_id', 'status']);
+            $table->index(['schedule_id', 'travel_date']);
             $table->index('booking_number');
-            $table->index('passenger_id');
-            $table->index('schedule_id');
-            $table->index('status');
-            $table->index('payment_status');
-            $table->index('trip_direction');
-            $table->index('created_at');
         });
     }
 

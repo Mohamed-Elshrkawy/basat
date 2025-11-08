@@ -10,7 +10,7 @@ enum UserTypeEnum:string
 
     case Admin      = 'admin';
 
-    case Client     = 'client';
+    case Customer     = 'customer';
 
     case Driver     = 'driver';
 }

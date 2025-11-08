@@ -161,30 +161,33 @@ class AuthService
     public function logout($request): \Illuminate\Http\JsonResponse
     {
         try {
-            $user = auth('api')->user();
-
+            $user = $request->user();
             $agent_token = $request->header('agent_token');
 
-            $user->devices()->where('agent_token', $agent_token)->update(
-                [
-                    'status' => false
-                ]);
+            $user->devices()
+                ->where(function ($query) use ($agent_token, $request) {
+                    $query->where('agent_token', $agent_token)
+                        ->orWhere('device_token', $request->device_token);
+                })
+                ->update(['status' => false]);
+
+            if ($user->currentAccessToken()) {
+                $user->currentAccessToken()->delete();
+            }
 
         } catch (\Exception $exception) {
             Log::error($exception);
         }
 
-        auth("api")->logout(true);
-
-        return json(
-            __('User Logged out successfully')
-        );
+        return json( __('User Logged out successfully') );
     }
+
 
     public function refreshToken($request): \Illuminate\Http\JsonResponse
     {
         try {
-            auth('api')->user()?->devices()
+            $user = $request->user();
+            $user->devices()
                 ?->updateOrCreate(
                     $request->only('type') + ['device_token' => $request->old_device_token],
                     $request->only('type', 'device_token')

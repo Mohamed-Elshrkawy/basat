@@ -2,7 +2,9 @@
 
 use App\Http\Controllers\Api\Client\Auth\AuthController;
 use App\Http\Controllers\Api\Client\Auth\PasswordController;
+use App\Http\Controllers\Api\Client\BookingSeat\BookingController;
 use App\Http\Controllers\Api\Client\Profile\ProfileController;
+use App\Http\Controllers\Api\Client\BookingSeat\ScheduleController;
 use Illuminate\Support\Facades\Route;
 
 /** auth Routes **/
@@ -37,6 +39,22 @@ Route::middleware(['auth:api', 'client'])->group(callback: function () {
         Route::post('/language/switch/{locale}', 'updateLocale')->whereIn('locale', config('app.available_locales'))->name('profile.update.locale');
         Route::put('notification/switch', 'switchNotification')->name('profile.notification.switch');
         Route::post('delete/account', 'deleteAccount')->name('profile.delete.account');
+    });
+
+    /** Schedules  Routes **/
+    Route::controller(ScheduleController::class)->prefix('schedules')->group(function () {
+        Route::get('/search',  'search');
+        Route::get('/{id}', 'show');
+    });
+
+    /** Booking Routes **/
+    Route::controller(BookingController::class)->prefix('bookings')->group(function () {
+        Route::get('', 'index');
+        Route::post('', 'store');
+        Route::get('/{id}', 'show');
+        Route::post('/{id}/cancel', 'cancel');
+        Route::post('schedules/available-seats', 'availableSeats');
+        Route::post('/{id}/confirm-payment', 'confirmPayment');
     });
 
 });

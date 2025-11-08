@@ -9,7 +9,7 @@ enum StaticPageType: string
 {
     use EnumTo;
 
-    case TERMS = 'terms';
+    case TERMS = 'terms-and-conditions';
     case PRIVACY = 'privacy-policy';
     case ABOUT = 'about-us';
     case CANCELLATION = 'cancellation-policy';

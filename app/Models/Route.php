@@ -31,7 +31,11 @@ class Route extends Model
 
     protected $casts = [
         'range_km' => 'decimal:2',
-        'is_active' => 'boolean'
+        'is_active' => 'boolean',
+        'arrival_time' => 'datetime',
+        'departure_time' => 'datetime',
+        'return_arrival_time' => 'datetime',
+        'return_departure_time' => 'datetime',
     ];
 
     // العلاقات

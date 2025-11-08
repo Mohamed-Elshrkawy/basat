@@ -15,7 +15,7 @@ trait HasWallet
         return $this->morphOne(Wallet::class, 'payable');
     }
 
-    public function getOrCreateWallet(): Wallet
+    public function getOrCreateWallet()
     {
         if (!$this->wallet) {
             return $this->wallet()->create();

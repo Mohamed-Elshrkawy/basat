@@ -19,4 +19,9 @@ class Faq extends Model
         'answer' => 'array',
         'is_active' => 'boolean',
     ];
+
+    public function scopeActive($query)
+    {
+        return $query->where('is_active', true);
+    }
 }

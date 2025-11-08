@@ -10,55 +10,50 @@ use Illuminate\Notifications\DatabaseNotification;
 
 class NotificationsService
 {
+    public $user;
+    public function __construct()
+    {
+        $this->user = request()->user();
+    }
+
     public function list(Request|FormRequest $request): \Illuminate\Http\Resources\Json\AnonymousResourceCollection|\Illuminate\Http\JsonResponse
     {
-        $user = $this->getUser();
-        $count = $user->unreadNotifications()->count();
-        if ($request->count) {
-            return json($count);
-        }
-        $notifications = $user
-            ->notifications()
-            ->when($request->type == 'unread', fn($q) => $q->unread())
-            ->when($request->type == 'read', fn($q) => $q->read())
+        $notifications = $this->user->notifications()
+            ->when($request->filled('notification_type'),function ($query) use ($request) {
+                $query->where('data->notification_type', $request->notification_type);
+            })
+            ->latest()
             ->paginate();
 
-        return NotificationResource::collection($notifications)->additional([
+        return  NotificationResource::collection($notifications)->additional([
             'message' => '',
             'status' => 'success',
-            'count' => $count
+            'unread_count' => $this->user->unreadNotifications()->count()
         ]);
     }
 
     public function updateAsRead(DatabaseNotification $notification, string $type= null): \Illuminate\Http\JsonResponse
     {
-        $user = $this->getUser();
-        if($type == 'all'){
-            $user->unreadNotifications()->update(['read_at' => now()]);
-            return json(__('All notifications marked as read'));
+        if ($notification) {
+            abort_if($notification->notifiable_id !== $this->user->id, 403, __('You can not mark this notification as read'));
+            $notification->markAsRead();
+            return json( __('Notification marked as read'));
         }
-        $notification->markAsRead();
-        return json(__('Notification marked as read'));
+
+        $this->user->unreadNotifications()->update(['read_at' => now()]);
+        return json( __('All notifications marked as read'));
     }
 
     public function destroy(DatabaseNotification $notification, string $type= null): \Illuminate\Http\JsonResponse
     {
-        $user = $this->getUser();
-        if($type == 'all'){
-            $user->unreadNotifications()->delete();
-            return json(__('All notifications deleted successfully'));
+        if ($notification) {
+            abort_if($notification->notifiable_id !== $this->user->id, 403, __('You can not delete this notification'));
+            $notification->delete();
+            return json(__('Notification was deleted successfully'));
         }
-        $notification->delete();
-        return json(__('Notification was deleted successfully'));
+
+        $this->user->notifications()->delete();
+        return json(__('All notifications were deleted successfully'));
     }
 
-    private function getUser()
-    {
-        $user= request()->user();
-        if ($user->user_type == UserTypeEnum::Organizer->value) {
-            return $user->organizer;
-        } else {
-            return $user;
-        }
-    }
 }

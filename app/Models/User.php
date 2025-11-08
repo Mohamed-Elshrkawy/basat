@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Traits\HasWallet;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
@@ -13,7 +14,7 @@ use Spatie\MediaLibrary\InteractsWithMedia;
 
 class User extends Authenticatable implements HasMedia
 {
-    use HasApiTokens, HasFactory, Notifiable, HasRoles, InteractsWithMedia;
+    use HasApiTokens, HasFactory, Notifiable, HasRoles, InteractsWithMedia, HasWallet;
 
 
     protected $guarded = ['id'];
@@ -34,9 +35,9 @@ class User extends Authenticatable implements HasMedia
         ];
     }
 
-    public function device(): \Illuminate\Database\Eloquent\Relations\HasOne
+    public function devices(): HasMany
     {
-        return $this->hasOne(Device::class, 'user_id');
+        return $this->hasMany(Device::class, 'user_id');
     }
 
 
@@ -54,11 +55,6 @@ class User extends Authenticatable implements HasMedia
     public function trips(): HasMany
     {
         return $this->hasMany(Trip::class, 'driver_id');
-    }
-
-    public function wallet(): \Illuminate\Database\Eloquent\Relations\HasOne
-    {
-        return $this->hasOne(Wallet::class, 'user_id');
     }
 
 
@@ -101,6 +97,34 @@ class User extends Authenticatable implements HasMedia
 
     public function getAvatarUrlAttribute(): ?string
     {
-        return $this->hasMedia('avatar') ? $this->getFirstMediaUrl('avatar') : null;
+        return $this->hasMedia('avatar') ?
+            $this->getFirstMediaUrl('avatar')
+            : $this->getDefaultAvatarUrl();
+    }
+
+    public function getDefaultAvatarUrl(): string
+    {
+        $name = $this->name ?? 'User';
+        $words = explode(' ', trim($name));
+
+        if ($this->isArabic($name)) {
+            $displayName = implode('+', array_slice($words, 0, 2));
+        } else {
+            if (count($words) >= 2) {
+                $displayName = mb_substr($words[0], 0, 1) . '+' . mb_substr($words[1], 0, 1);
+            } else {
+                $displayName = mb_substr($words[0], 0, 2);
+            }
+        }
+
+        return sprintf(
+            'https://ui-avatars.com/api/?name=%s&color=7F9CF5&background=EBF4FF&size=300&bold=true&format=svg&font-size=0.33',
+            urlencode($displayName)
+        );
+    }
+
+    public function isArabic(string $name): bool
+    {
+        return preg_match('/[\p{Arabic}]/u', $name) === 1;
     }
 }

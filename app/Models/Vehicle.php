@@ -31,7 +31,7 @@ class Vehicle extends Model
 
     public function driver(): BelongsTo
     {
-        return $this->belongsTo(Driver::class);
+        return $this->belongsTo(User::class);
     }
 
     public function brand(): BelongsTo

@@ -4,28 +4,25 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Spatie\Translatable\HasTranslations;
 
 class WalletTransaction extends Model
 {
-    use HasFactory, HasTranslations;
+    use HasFactory;
 
-    public $translatable = ['description'];
+    protected $table = 'wallet_transactions';
 
     protected $guarded = ['id'];
 
     protected $casts = [
-        'amount' => 'decimal:2',
+        'amount' => 'float',
         'description' => 'array',
+        'meta' => 'array'
     ];
 
-    public function wallet()
+    public function wallet(): \Illuminate\Database\Eloquent\Relations\BelongsTo
     {
-        return $this->belongsTo(Wallet::class);
+        return $this->belongsTo(Wallet::class, 'wallet_id');
     }
 
-    public function related()
-    {
-        return $this->morphTo();
-    }
+
 }

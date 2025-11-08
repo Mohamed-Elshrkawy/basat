@@ -16,7 +16,7 @@ class ProfileController extends Controller
 
     public function __construct(Request $request)
     {
-        $this->user = User::find(auth('sanctum')->id());
+        $this->user = $request->user();
     }
 
     public function show(Request $request): \Illuminate\Http\JsonResponse

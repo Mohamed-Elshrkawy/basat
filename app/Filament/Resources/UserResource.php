@@ -50,6 +50,20 @@ class UserResource extends Resource
     {
         return $form
             ->schema([
+                Forms\Components\SpatieMediaLibraryFileUpload::make('avatar_url')
+                    ->label(__('Avatar'))
+                    ->collection('avatar')
+                    ->image()
+                    ->imageEditor()
+                    ->circleCropper()
+                    ->imageResizeMode('cover')
+                    ->imageCropAspectRatio('1:1')
+                    ->imageResizeTargetWidth('300')
+                    ->imageResizeTargetHeight('300')
+                    ->maxSize(2048)
+                    ->helperText(__('Max size: 2MB, Recommended: 300x300px'))
+                    ->columnSpan(1),
+
                 Forms\Components\Hidden::make('user_type')
                     ->default('customer')
                     ->dehydrated(),
@@ -81,8 +95,7 @@ class UserResource extends Resource
                             ->tel()
                             ->required()
                             ->unique(ignoreRecord: true)
-                            ->prefix('+966')
-                            ->maxLength(12),
+                            ->maxLength(15),
 
                         Forms\Components\TextInput::make('password')
                             ->label(__('Password'))
@@ -93,8 +106,10 @@ class UserResource extends Resource
                             ->required(fn (string $context): bool => $context === 'create')
                             ->maxLength(255),
 
-                        Forms\Components\DateTimePicker::make('mobile_verified_at')
-                            ->label(__('Mobile Verified At'))
+                        Forms\Components\Toggle::make('is_active')
+                            ->label(__('Verify Mobile'))
+                            ->inline(false)
+                            ->default(false)
                             ->nullable(),
                     ])->columns(2),
 
@@ -105,6 +120,11 @@ class UserResource extends Resource
     {
         return $table
             ->columns([
+                Tables\Columns\ImageColumn::make('avatar_url')
+                    ->label(__('Avatar'))
+                    ->circular()
+                    ->size(50),
+
                 Tables\Columns\TextColumn::make('name')
                     ->label(__('Name'))
                     ->searchable()
@@ -131,7 +151,7 @@ class UserResource extends Resource
                         'success' => 'female',
                     ]),
 
-                Tables\Columns\IconColumn::make('mobile_verified_at')
+                Tables\Columns\IconColumn::make('is_active')
                     ->label(__('Verified'))
                     ->boolean()
                     ->trueIcon('heroicon-o-check-circle')
@@ -161,7 +181,7 @@ class UserResource extends Resource
 
                 Tables\Filters\Filter::make('verified')
                     ->label(__('Verified Only'))
-                    ->query(fn (Builder $query): Builder => $query->whereNotNull('mobile_verified_at')),
+                    ->query(fn (Builder $query): Builder => $query->where('is_active', true)),
             ])
             ->actions([
                 Tables\Actions\ActionGroup::make([
@@ -172,10 +192,10 @@ class UserResource extends Resource
                         ->label(__('Verify Mobile'))
                         ->icon('heroicon-o-check-circle')
                         ->color('success')
-                        ->hidden(fn ($record) => $record->mobile_verified_at !== null)
+                        ->hidden(fn ($record) => $record->is_active)
                         ->requiresConfirmation()
                         ->action(function ($record) {
-                            $record->update(['mobile_verified_at' => now()]);
+                            $record->update(['is_active' => true]);
 
                             Notification::make()
                                 ->title(__('Mobile verified successfully'))
@@ -187,17 +207,16 @@ class UserResource extends Resource
                         ->label(__('Unverify Mobile'))
                         ->icon('heroicon-o-x-circle')
                         ->color('danger')
-                        ->hidden(fn ($record) => $record->mobile_verified_at === null)
+                        ->hidden(fn ($record) => !$record->is_active)
                         ->requiresConfirmation()
                         ->action(function ($record) {
-                            $record->update(['mobile_verified_at' => null]);
+                            $record->update(['is_active' => false]);
 
                             Notification::make()
                                 ->title(__('Mobile unverified successfully'))
                                 ->warning()
                                 ->send();
                         }),
-
                     Tables\Actions\Action::make('add_balance')
                         ->label(__('Add Balance'))
                         ->icon('heroicon-o-banknotes')
@@ -216,8 +235,8 @@ class UserResource extends Resource
                                 ->maxLength(255),
                         ])
                         ->action(function ($record, array $data) {
-                            $wallet = $record->wallet()->firstOrCreate(['balance' => 0]);
-                            $wallet->increment('balance', $data['amount']);
+
+                            $record->deposit($data['amount'], ['en' => $data['note'], 'ar' => $data['note']]);
 
                             Notification::make()
                                 ->title(__('Balance added successfully'))
@@ -244,9 +263,7 @@ class UserResource extends Resource
                                 ->maxLength(255),
                         ])
                         ->action(function ($record, array $data) {
-                            $wallet = $record->wallet()->firstOrCreate(['balance' => 0]);
-
-                            if ($wallet->balance < $data['amount']) {
+                            if ($record->balance() < $data['amount']) {
                                 Notification::make()
                                     ->title(__('Insufficient balance'))
                                     ->danger()
@@ -254,7 +271,7 @@ class UserResource extends Resource
                                 return;
                             }
 
-                            $wallet->decrement('balance', $data['amount']);
+                            $record->withdraw($data['amount'], ['en' => $data['note'], 'ar' => $data['note']]);
 
                             Notification::make()
                                 ->title(__('Balance deducted successfully'))

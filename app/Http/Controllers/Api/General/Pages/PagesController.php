@@ -18,13 +18,13 @@ class PagesController extends Controller
 {
     public function pages(): \Illuminate\Http\JsonResponse
     {
-        return json(StaticPageType::toArray());
+        return json(StaticPageType::getAll());
     }
 
     public function showPage(ListRequest $request, StaticPageType $page): \Illuminate\Http\JsonResponse
     {
         $contents = StaticPage::query()
-            ->where('type', $page->value)
+            ->where('key', $page->value)
             ->latest()
             ->get();
 
@@ -33,15 +33,17 @@ class PagesController extends Controller
 
     public function contactSubmit(ContactRequest $request): \Illuminate\Http\JsonResponse
     {
-        $data =[
-            'name' => auth()->user()->name ?? $request->name,
-            'phone' => auth()->user()->phone ?? $request->phone,
-            'email' => auth()->user()->email ?? $request->email,
+        $user = auth('sanctum')->user();
+
+        $data = [
+            'name' => $user?->name ?? $request->name,
+            'phone' => $user?->phone ?? $request->phone,
+            'email' => $user?->email ?? $request->email,
             'type' => $request->type,
             'subject' => $request->subject,
             'message' => $request->message,
-
         ];
+
         if (ContactMessage::where($data)->exists()) {
 
             return json(__('Your message already sent'), status: 'fail', headerStatus: 422);
@@ -59,7 +61,7 @@ class PagesController extends Controller
 
     public function faq(): \Illuminate\Http\JsonResponse
     {
-        $faqs = Faq::active()->orderBy('order')->get();
+        $faqs = Faq::active()->orderBy('order_column')->get();
         return json(FaqResource::collection($faqs));
     }
 }

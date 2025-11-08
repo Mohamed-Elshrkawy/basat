@@ -14,10 +14,12 @@ return new class extends Migration
         Schema::create('wallet_transactions', function (Blueprint $table) {
             $table->id();
             $table->foreignId('wallet_id')->constrained()->cascadeOnDelete();
-            $table->decimal('amount', 10, 2);
-            $table->enum('type', ['deposit', 'withdrawal', 'payment', 'refund', 'payout']);
-            $table->json('description');
-            $table->morphs('related');
+            $table->string('type')->nullable();
+            $table->string('status')->nullable();
+            $table->decimal('amount', 10, 2)->default(0);
+            $table->json('description')->nullable();
+            $table->json('meta')->nullable();
+            $table->boolean('is_up')->nullable()->default(false);
             $table->timestamps();
         });
     }

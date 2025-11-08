@@ -12,7 +12,7 @@ class GeneralController extends Controller
 {
     public function cities(): \Illuminate\Http\JsonResponse
     {
-        $cities = City::where('status', 1)->get();
+        $cities = City::active()->get();
         return json(CityResource::collection($cities));
     }
 
