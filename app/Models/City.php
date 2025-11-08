@@ -38,12 +38,12 @@ class City extends Model
 
     public function routesAsStart(): HasMany
     {
-        return $this->hasMany(PublicBusRoute::class, 'start_city_id');
+        return $this->hasMany(Route::class, 'start_city_id');
     }
 
     public function routesAsEnd(): HasMany
     {
-        return $this->hasMany(PublicBusRoute::class, 'end_city_id');
+        return $this->hasMany(Route::class, 'end_city_id');
     }
 
     public function stops(): HasMany
@@ -53,7 +53,7 @@ class City extends Model
 
     public function getAllRelatedRoutes()
     {
-        return PublicBusRoute::where(function ($query) {
+        return Route::where(function ($query) {
             $query->where('start_city_id', $this->id)
                 ->orWhere('end_city_id', $this->id);
         })->get();
