@@ -146,7 +146,6 @@ class RouteResource extends Resource
 
                 Tables\Columns\TextColumn::make('name')
                     ->label(__('Route Name'))
-                    ->getStateUsing(fn($record) => $record->getTranslation('name', 'ar'))
                     ->searchable(query: function ($query, $search) {
                         $query->where('name->ar', 'like', "%{$search}%")
                             ->orWhere('name->en', 'like', "%{$search}%");

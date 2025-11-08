@@ -123,8 +123,8 @@ class Route extends Model
 
     public function getFullRouteName(): string
     {
-        return $this->getTranslation('name', 'ar') . ' (' .
-            $this->startCity?->getTranslation('name', 'ar') . ' - ' .
-            $this->endCity?->getTranslation('name', 'ar') . ')';
+        return $this->name . ' (' .
+            $this->startCity?->name . ' - ' .
+            $this->endCity?->name . ')';
     }
 }

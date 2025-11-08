@@ -284,7 +284,6 @@ class ScheduleResource extends Resource
 
                 Tables\Columns\TextColumn::make('route.name')
                     ->label(__('Route'))
-                    ->getStateUsing(fn ($record) => $record->route?->getTranslation('name', 'ar'))
                     ->searchable()
                     ->sortable()
                     ->weight('bold'),
