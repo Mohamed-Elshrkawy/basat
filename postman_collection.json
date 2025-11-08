@@ -280,7 +280,7 @@
                                                     "key": "phone",
                                                     "value": "1234567890",
                                                     "type": "text",
-                                                    "description": "required|exists:users,phone,deleted_at,\"NULL\",user_type,\"NULL\""
+                                                    "description": "required|exists:users,phone,user_type,\"NULL\""
                                                 },
                                                 {
                                                     "key": "password",
@@ -416,7 +416,7 @@
                                                     "key": "phone",
                                                     "value": "1234567890",
                                                     "type": "text",
-                                                    "description": "required|exists:users,phone,deleted_at,\"NULL\",user_type,\"NULL\""
+                                                    "description": "required|exists:users,phone,user_type,\"NULL\""
                                                 }
                                             ]
                                         },
@@ -448,13 +448,13 @@
                                                     "key": "phone",
                                                     "value": "1234567890",
                                                     "type": "text",
-                                                    "description": "required|exists:users,phone,deleted_at,\"NULL\",user_type,\"NULL\""
+                                                    "description": "required|exists:users,phone,user_type,\"NULL\""
                                                 },
                                                 {
                                                     "key": "code",
                                                     "value": "",
                                                     "type": "text",
-                                                    "description": "required|digits_between:4,6|exists:users,reset_code,user_type,\"NULL\",deleted_at,\"NULL\",phone,\"NULL\""
+                                                    "description": "required|digits_between:4,6|exists:users,reset_code,user_type,\"NULL\",phone,\"NULL\""
                                                 },
                                                 {
                                                     "key": "device_token",
@@ -568,6 +568,320 @@
                                     "response": []
                                 }
                             ]
+                        },
+                        {
+                            "name": "Password",
+                            "item": [
+                                {
+                                    "name": "Forget",
+                                    "request": {
+                                        "method": "POST",
+                                        "header": [],
+                                        "body": {
+                                            "mode": "formdata",
+                                            "formdata": [
+                                                {
+                                                    "key": "phone",
+                                                    "value": "1234567890",
+                                                    "type": "text",
+                                                    "description": "required|exists:users,phone,user_type,\"NULL\""
+                                                }
+                                            ]
+                                        },
+                                        "url": {
+                                            "raw": "{{URL}}\/api\/client\/password\/forget",
+                                            "host": [
+                                                "{{URL}}"
+                                            ],
+                                            "path": [
+                                                "client",
+                                                "password",
+                                                "forget"
+                                            ],
+                                            "query": []
+                                        },
+                                        "description": "No description available"
+                                    },
+                                    "response": []
+                                },
+                                {
+                                    "name": "Verify",
+                                    "request": {
+                                        "method": "POST",
+                                        "header": [],
+                                        "body": {
+                                            "mode": "formdata",
+                                            "formdata": [
+                                                {
+                                                    "key": "phone",
+                                                    "value": "1234567890",
+                                                    "type": "text",
+                                                    "description": "required|exists:users,phone,user_type,\"NULL\""
+                                                },
+                                                {
+                                                    "key": "code",
+                                                    "value": "",
+                                                    "type": "text",
+                                                    "description": "required|digits_between:4,6|exists:users,reset_code,user_type,\"NULL\",phone,\"NULL\""
+                                                }
+                                            ]
+                                        },
+                                        "url": {
+                                            "raw": "{{URL}}\/api\/client\/password\/verify",
+                                            "host": [
+                                                "{{URL}}"
+                                            ],
+                                            "path": [
+                                                "client",
+                                                "password",
+                                                "verify"
+                                            ],
+                                            "query": []
+                                        },
+                                        "description": "No description available"
+                                    },
+                                    "response": []
+                                },
+                                {
+                                    "name": "Reset",
+                                    "request": {
+                                        "method": "POST",
+                                        "header": [],
+                                        "body": {
+                                            "mode": "formdata",
+                                            "formdata": [
+                                                {
+                                                    "key": "phone",
+                                                    "value": "1234567890",
+                                                    "type": "text",
+                                                    "description": "required|exists:users,phone,user_type,\"NULL\""
+                                                },
+                                                {
+                                                    "key": "code",
+                                                    "value": "",
+                                                    "type": "text",
+                                                    "description": "required|digits_between:4,6|exists:users,reset_code,user_type,\"NULL\",phone,\"NULL\""
+                                                },
+                                                {
+                                                    "key": "password",
+                                                    "value": "123456",
+                                                    "type": "text",
+                                                    "description": "sometimes|nullable|string"
+                                                }
+                                            ]
+                                        },
+                                        "url": {
+                                            "raw": "{{URL}}\/api\/client\/password\/reset",
+                                            "host": [
+                                                "{{URL}}"
+                                            ],
+                                            "path": [
+                                                "client",
+                                                "password",
+                                                "reset"
+                                            ],
+                                            "query": []
+                                        },
+                                        "description": "No description available"
+                                    },
+                                    "response": []
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "name": "Profile",
+                    "item": [
+                        {
+                            "name": "Profile",
+                            "item": [
+                                {
+                                    "name": "Profile Show",
+                                    "request": {
+                                        "method": "GET",
+                                        "header": [],
+                                        "body": {
+                                            "mode": "formdata",
+                                            "formdata": []
+                                        },
+                                        "url": {
+                                            "raw": "{{URL}}\/api\/client\/profile",
+                                            "host": [
+                                                "{{URL}}"
+                                            ],
+                                            "path": [
+                                                "client",
+                                                "profile"
+                                            ],
+                                            "query": []
+                                        },
+                                        "description": "No description available"
+                                    },
+                                    "response": []
+                                },
+                                {
+                                    "name": "Profile Update Password",
+                                    "request": {
+                                        "method": "POST",
+                                        "header": [],
+                                        "body": {
+                                            "mode": "formdata",
+                                            "formdata": [
+                                                {
+                                                    "key": "current_password",
+                                                    "value": "",
+                                                    "type": "text",
+                                                    "description": "required|string"
+                                                },
+                                                {
+                                                    "key": "password",
+                                                    "value": "123456",
+                                                    "type": "text",
+                                                    "description": "required|string|min:8"
+                                                },
+                                                {
+                                                    "key": "_method",
+                                                    "value": "PUT",
+                                                    "type": "text",
+                                                    "description": "for laravel to identify the request method, is required when body has keys"
+                                                }
+                                            ]
+                                        },
+                                        "url": {
+                                            "raw": "{{URL}}\/api\/client\/profile\/update-password",
+                                            "host": [
+                                                "{{URL}}"
+                                            ],
+                                            "path": [
+                                                "client",
+                                                "profile",
+                                                "update-password"
+                                            ],
+                                            "query": []
+                                        },
+                                        "description": "No description available"
+                                    },
+                                    "response": []
+                                },
+                                {
+                                    "name": "Profile Update",
+                                    "request": {
+                                        "method": "POST",
+                                        "header": [],
+                                        "body": {
+                                            "mode": "formdata",
+                                            "formdata": [
+                                                {
+                                                    "key": "_method",
+                                                    "value": "PUT",
+                                                    "type": "text",
+                                                    "description": "for laravel to identify the request method, is required when body has keys"
+                                                }
+                                            ]
+                                        },
+                                        "url": {
+                                            "raw": "{{URL}}\/api\/client\/profile",
+                                            "host": [
+                                                "{{URL}}"
+                                            ],
+                                            "path": [
+                                                "client",
+                                                "profile"
+                                            ],
+                                            "query": []
+                                        },
+                                        "description": "No description available"
+                                    },
+                                    "response": []
+                                },
+                                {
+                                    "name": "Profile Update Locale",
+                                    "request": {
+                                        "method": "POST",
+                                        "header": [],
+                                        "body": {
+                                            "mode": "formdata",
+                                            "formdata": []
+                                        },
+                                        "url": {
+                                            "raw": "{{URL}}\/api\/client\/profile\/language\/switch\/:localeId",
+                                            "host": [
+                                                "{{URL}}"
+                                            ],
+                                            "path": [
+                                                "client",
+                                                "profile",
+                                                "language",
+                                                "switch",
+                                                ":localeId"
+                                            ],
+                                            "query": []
+                                        },
+                                        "description": "No description available"
+                                    },
+                                    "response": []
+                                },
+                                {
+                                    "name": "Profile Notification Switch",
+                                    "request": {
+                                        "method": "POST",
+                                        "header": [],
+                                        "body": {
+                                            "mode": "formdata",
+                                            "formdata": [
+                                                {
+                                                    "key": "_method",
+                                                    "value": "PUT",
+                                                    "type": "text",
+                                                    "description": "for laravel to identify the request method, is required when body has keys"
+                                                }
+                                            ]
+                                        },
+                                        "url": {
+                                            "raw": "{{URL}}\/api\/client\/profile\/notification\/switch",
+                                            "host": [
+                                                "{{URL}}"
+                                            ],
+                                            "path": [
+                                                "client",
+                                                "profile",
+                                                "notification",
+                                                "switch"
+                                            ],
+                                            "query": []
+                                        },
+                                        "description": "No description available"
+                                    },
+                                    "response": []
+                                },
+                                {
+                                    "name": "Profile Delete Account",
+                                    "request": {
+                                        "method": "POST",
+                                        "header": [],
+                                        "body": {
+                                            "mode": "formdata",
+                                            "formdata": []
+                                        },
+                                        "url": {
+                                            "raw": "{{URL}}\/api\/client\/profile\/delete\/account",
+                                            "host": [
+                                                "{{URL}}"
+                                            ],
+                                            "path": [
+                                                "client",
+                                                "profile",
+                                                "delete",
+                                                "account"
+                                            ],
+                                            "query": []
+                                        },
+                                        "description": "No description available"
+                                    },
+                                    "response": []
+                                }
+                            ]
                         }
                     ]
                 }
@@ -594,7 +908,7 @@
                                                     "key": "phone",
                                                     "value": "1234567890",
                                                     "type": "text",
-                                                    "description": "required|exists:users,phone,deleted_at,\"NULL\",user_type,\"NULL\""
+                                                    "description": "required|exists:users,phone,user_type,\"NULL\""
                                                 },
                                                 {
                                                     "key": "password",
@@ -649,156 +963,6 @@
                                             }
                                         }
                                     ]
-                                },
-                                {
-                                    "name": "Register",
-                                    "request": {
-                                        "method": "POST",
-                                        "header": [],
-                                        "body": {
-                                            "mode": "formdata",
-                                            "formdata": [
-                                                {
-                                                    "key": "name",
-                                                    "value": "Example Name",
-                                                    "type": "text",
-                                                    "description": "required|string|max:255"
-                                                },
-                                                {
-                                                    "key": "national_id",
-                                                    "value": "",
-                                                    "type": "text",
-                                                    "description": "required|string|digits:10|unique:users,national_id,NULL,id,user_type,\"client\""
-                                                },
-                                                {
-                                                    "key": "gender",
-                                                    "value": "",
-                                                    "type": "text",
-                                                    "description": "required|in:male,female"
-                                                },
-                                                {
-                                                    "key": "phone",
-                                                    "value": "1234567890",
-                                                    "type": "text",
-                                                    "description": "required|string|unique:users,phone,NULL,id,user_type,\"client\""
-                                                },
-                                                {
-                                                    "key": "email",
-                                                    "value": "admin@info.com",
-                                                    "type": "text",
-                                                    "description": "nullable|email|max:255|unique:users,email,NULL,id,user_type,\"client\""
-                                                },
-                                                {
-                                                    "key": "password",
-                                                    "value": "123456",
-                                                    "type": "text",
-                                                    "description": "required|string|min:8|max:16"
-                                                },
-                                                {
-                                                    "key": "avatar",
-                                                    "value": "",
-                                                    "type": "text",
-                                                    "description": "nullable|image|mimes:jpg,jpeg,png|max:2048"
-                                                }
-                                            ]
-                                        },
-                                        "url": {
-                                            "raw": "{{URL}}\/api\/driver\/auth\/register",
-                                            "host": [
-                                                "{{URL}}"
-                                            ],
-                                            "path": [
-                                                "driver",
-                                                "auth",
-                                                "register"
-                                            ],
-                                            "query": []
-                                        },
-                                        "description": "No description available"
-                                    },
-                                    "response": []
-                                },
-                                {
-                                    "name": "Resend Otp",
-                                    "request": {
-                                        "method": "POST",
-                                        "header": [],
-                                        "body": {
-                                            "mode": "formdata",
-                                            "formdata": [
-                                                {
-                                                    "key": "phone",
-                                                    "value": "1234567890",
-                                                    "type": "text",
-                                                    "description": "required|exists:users,phone,deleted_at,\"NULL\",user_type,\"NULL\""
-                                                }
-                                            ]
-                                        },
-                                        "url": {
-                                            "raw": "{{URL}}\/api\/driver\/auth\/send",
-                                            "host": [
-                                                "{{URL}}"
-                                            ],
-                                            "path": [
-                                                "driver",
-                                                "auth",
-                                                "send"
-                                            ],
-                                            "query": []
-                                        },
-                                        "description": "No description available"
-                                    },
-                                    "response": []
-                                },
-                                {
-                                    "name": "Verify",
-                                    "request": {
-                                        "method": "POST",
-                                        "header": [],
-                                        "body": {
-                                            "mode": "formdata",
-                                            "formdata": [
-                                                {
-                                                    "key": "phone",
-                                                    "value": "1234567890",
-                                                    "type": "text",
-                                                    "description": "required|exists:users,phone,deleted_at,\"NULL\",user_type,\"NULL\""
-                                                },
-                                                {
-                                                    "key": "code",
-                                                    "value": "",
-                                                    "type": "text",
-                                                    "description": "required|digits_between:4,6|exists:users,reset_code,user_type,\"NULL\",deleted_at,\"NULL\",phone,\"NULL\""
-                                                },
-                                                {
-                                                    "key": "device_token",
-                                                    "value": "",
-                                                    "type": "text",
-                                                    "description": "sometimes|string"
-                                                },
-                                                {
-                                                    "key": "type",
-                                                    "value": "",
-                                                    "type": "text",
-                                                    "description": "sometimes|string|in:android,ios,huawei,web"
-                                                }
-                                            ]
-                                        },
-                                        "url": {
-                                            "raw": "{{URL}}\/api\/driver\/auth\/verify",
-                                            "host": [
-                                                "{{URL}}"
-                                            ],
-                                            "path": [
-                                                "driver",
-                                                "auth",
-                                                "verify"
-                                            ],
-                                            "query": []
-                                        },
-                                        "description": "No description available"
-                                    },
-                                    "response": []
                                 },
                                 {
                                     "name": "Logout",
@@ -882,6 +1046,294 @@
                                     "response": []
                                 }
                             ]
+                        },
+                        {
+                            "name": "Password",
+                            "item": [
+                                {
+                                    "name": "Forget",
+                                    "request": {
+                                        "method": "POST",
+                                        "header": [],
+                                        "body": {
+                                            "mode": "formdata",
+                                            "formdata": [
+                                                {
+                                                    "key": "phone",
+                                                    "value": "1234567890",
+                                                    "type": "text",
+                                                    "description": "required|exists:users,phone,user_type,\"NULL\""
+                                                }
+                                            ]
+                                        },
+                                        "url": {
+                                            "raw": "{{URL}}\/api\/driver\/password\/forget",
+                                            "host": [
+                                                "{{URL}}"
+                                            ],
+                                            "path": [
+                                                "driver",
+                                                "password",
+                                                "forget"
+                                            ],
+                                            "query": []
+                                        },
+                                        "description": "No description available"
+                                    },
+                                    "response": []
+                                },
+                                {
+                                    "name": "Verify",
+                                    "request": {
+                                        "method": "POST",
+                                        "header": [],
+                                        "body": {
+                                            "mode": "formdata",
+                                            "formdata": [
+                                                {
+                                                    "key": "phone",
+                                                    "value": "1234567890",
+                                                    "type": "text",
+                                                    "description": "required|exists:users,phone,user_type,\"NULL\""
+                                                },
+                                                {
+                                                    "key": "code",
+                                                    "value": "",
+                                                    "type": "text",
+                                                    "description": "required|digits_between:4,6|exists:users,reset_code,user_type,\"NULL\",phone,\"NULL\""
+                                                }
+                                            ]
+                                        },
+                                        "url": {
+                                            "raw": "{{URL}}\/api\/driver\/password\/verify",
+                                            "host": [
+                                                "{{URL}}"
+                                            ],
+                                            "path": [
+                                                "driver",
+                                                "password",
+                                                "verify"
+                                            ],
+                                            "query": []
+                                        },
+                                        "description": "No description available"
+                                    },
+                                    "response": []
+                                },
+                                {
+                                    "name": "Reset",
+                                    "request": {
+                                        "method": "POST",
+                                        "header": [],
+                                        "body": {
+                                            "mode": "formdata",
+                                            "formdata": [
+                                                {
+                                                    "key": "phone",
+                                                    "value": "1234567890",
+                                                    "type": "text",
+                                                    "description": "required|exists:users,phone,user_type,\"NULL\""
+                                                },
+                                                {
+                                                    "key": "code",
+                                                    "value": "",
+                                                    "type": "text",
+                                                    "description": "required|digits_between:4,6|exists:users,reset_code,user_type,\"NULL\",phone,\"NULL\""
+                                                },
+                                                {
+                                                    "key": "password",
+                                                    "value": "123456",
+                                                    "type": "text",
+                                                    "description": "sometimes|nullable|string"
+                                                }
+                                            ]
+                                        },
+                                        "url": {
+                                            "raw": "{{URL}}\/api\/driver\/password\/reset",
+                                            "host": [
+                                                "{{URL}}"
+                                            ],
+                                            "path": [
+                                                "driver",
+                                                "password",
+                                                "reset"
+                                            ],
+                                            "query": []
+                                        },
+                                        "description": "No description available"
+                                    },
+                                    "response": []
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "name": "Profile",
+                    "item": [
+                        {
+                            "name": "Profile",
+                            "item": [
+                                {
+                                    "name": "Profile Show",
+                                    "request": {
+                                        "method": "GET",
+                                        "header": [],
+                                        "body": {
+                                            "mode": "formdata",
+                                            "formdata": []
+                                        },
+                                        "url": {
+                                            "raw": "{{URL}}\/api\/driver\/profile",
+                                            "host": [
+                                                "{{URL}}"
+                                            ],
+                                            "path": [
+                                                "driver",
+                                                "profile"
+                                            ],
+                                            "query": []
+                                        },
+                                        "description": "No description available"
+                                    },
+                                    "response": []
+                                },
+                                {
+                                    "name": "Profile Update Password",
+                                    "request": {
+                                        "method": "POST",
+                                        "header": [],
+                                        "body": {
+                                            "mode": "formdata",
+                                            "formdata": [
+                                                {
+                                                    "key": "current_password",
+                                                    "value": "",
+                                                    "type": "text",
+                                                    "description": "required|string"
+                                                },
+                                                {
+                                                    "key": "password",
+                                                    "value": "123456",
+                                                    "type": "text",
+                                                    "description": "required|string|min:8"
+                                                },
+                                                {
+                                                    "key": "_method",
+                                                    "value": "PUT",
+                                                    "type": "text",
+                                                    "description": "for laravel to identify the request method, is required when body has keys"
+                                                }
+                                            ]
+                                        },
+                                        "url": {
+                                            "raw": "{{URL}}\/api\/driver\/profile\/update-password",
+                                            "host": [
+                                                "{{URL}}"
+                                            ],
+                                            "path": [
+                                                "driver",
+                                                "profile",
+                                                "update-password"
+                                            ],
+                                            "query": []
+                                        },
+                                        "description": "No description available"
+                                    },
+                                    "response": []
+                                },
+                                {
+                                    "name": "Profile Update",
+                                    "request": {
+                                        "method": "POST",
+                                        "header": [],
+                                        "body": {
+                                            "mode": "formdata",
+                                            "formdata": [
+                                                {
+                                                    "key": "_method",
+                                                    "value": "PUT",
+                                                    "type": "text",
+                                                    "description": "for laravel to identify the request method, is required when body has keys"
+                                                }
+                                            ]
+                                        },
+                                        "url": {
+                                            "raw": "{{URL}}\/api\/driver\/profile",
+                                            "host": [
+                                                "{{URL}}"
+                                            ],
+                                            "path": [
+                                                "driver",
+                                                "profile"
+                                            ],
+                                            "query": []
+                                        },
+                                        "description": "No description available"
+                                    },
+                                    "response": []
+                                },
+                                {
+                                    "name": "Profile Update Locale",
+                                    "request": {
+                                        "method": "POST",
+                                        "header": [],
+                                        "body": {
+                                            "mode": "formdata",
+                                            "formdata": []
+                                        },
+                                        "url": {
+                                            "raw": "{{URL}}\/api\/driver\/profile\/language\/switch\/:localeId",
+                                            "host": [
+                                                "{{URL}}"
+                                            ],
+                                            "path": [
+                                                "driver",
+                                                "profile",
+                                                "language",
+                                                "switch",
+                                                ":localeId"
+                                            ],
+                                            "query": []
+                                        },
+                                        "description": "No description available"
+                                    },
+                                    "response": []
+                                },
+                                {
+                                    "name": "Profile Notification Switch",
+                                    "request": {
+                                        "method": "POST",
+                                        "header": [],
+                                        "body": {
+                                            "mode": "formdata",
+                                            "formdata": [
+                                                {
+                                                    "key": "_method",
+                                                    "value": "PUT",
+                                                    "type": "text",
+                                                    "description": "for laravel to identify the request method, is required when body has keys"
+                                                }
+                                            ]
+                                        },
+                                        "url": {
+                                            "raw": "{{URL}}\/api\/driver\/profile\/notification\/switch",
+                                            "host": [
+                                                "{{URL}}"
+                                            ],
+                                            "path": [
+                                                "driver",
+                                                "profile",
+                                                "notification",
+                                                "switch"
+                                            ],
+                                            "query": []
+                                        },
+                                        "description": "No description available"
+                                    },
+                                    "response": []
+                                }
+                            ]
                         }
                     ]
                 }
@@ -896,30 +1348,6 @@
                         {
                             "name": "General",
                             "item": [
-                                {
-                                    "name": "Countries",
-                                    "request": {
-                                        "method": "GET",
-                                        "header": [],
-                                        "body": {
-                                            "mode": "formdata",
-                                            "formdata": []
-                                        },
-                                        "url": {
-                                            "raw": "{{URL}}\/api\/general\/countries",
-                                            "host": [
-                                                "{{URL}}"
-                                            ],
-                                            "path": [
-                                                "general",
-                                                "countries"
-                                            ],
-                                            "query": []
-                                        },
-                                        "description": "No description available"
-                                    },
-                                    "response": []
-                                },
                                 {
                                     "name": "Cities",
                                     "request": {
@@ -937,30 +1365,6 @@
                                             "path": [
                                                 "general",
                                                 "cities"
-                                            ],
-                                            "query": []
-                                        },
-                                        "description": "No description available"
-                                    },
-                                    "response": []
-                                },
-                                {
-                                    "name": "Interests",
-                                    "request": {
-                                        "method": "GET",
-                                        "header": [],
-                                        "body": {
-                                            "mode": "formdata",
-                                            "formdata": []
-                                        },
-                                        "url": {
-                                            "raw": "{{URL}}\/api\/general\/interests",
-                                            "host": [
-                                                "{{URL}}"
-                                            ],
-                                            "path": [
-                                                "general",
-                                                "interests"
                                             ],
                                             "query": []
                                         },
@@ -1060,7 +1464,26 @@
                                         "header": [],
                                         "body": {
                                             "mode": "formdata",
-                                            "formdata": []
+                                            "formdata": [
+                                                {
+                                                    "key": "type",
+                                                    "value": "",
+                                                    "type": "text",
+                                                    "description": "required|in:suggestion,complaint"
+                                                },
+                                                {
+                                                    "key": "subject",
+                                                    "value": "",
+                                                    "type": "text",
+                                                    "description": "required"
+                                                },
+                                                {
+                                                    "key": "message",
+                                                    "value": "",
+                                                    "type": "text",
+                                                    "description": "required"
+                                                }
+                                            ]
                                         },
                                         "url": {
                                             "raw": "{{URL}}\/api\/general\/pages\/contact",
@@ -1071,6 +1494,31 @@
                                                 "general",
                                                 "pages",
                                                 "contact"
+                                            ],
+                                            "query": []
+                                        },
+                                        "description": "No description available"
+                                    },
+                                    "response": []
+                                },
+                                {
+                                    "name": "Faq",
+                                    "request": {
+                                        "method": "GET",
+                                        "header": [],
+                                        "body": {
+                                            "mode": "formdata",
+                                            "formdata": []
+                                        },
+                                        "url": {
+                                            "raw": "{{URL}}\/api\/general\/pages\/faqs",
+                                            "host": [
+                                                "{{URL}}"
+                                            ],
+                                            "path": [
+                                                "general",
+                                                "pages",
+                                                "faqs"
                                             ],
                                             "query": []
                                         },

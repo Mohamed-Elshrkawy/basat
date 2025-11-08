@@ -31,7 +31,7 @@ Route::middleware(['auth:api', 'client'])->group(callback: function () {
         Route::get('/', 'show')->name('profile.show');
         Route::put('update-password', 'updatePassword')->name('profile.update.password');
         Route::put('/', 'update')->name('profile.update');
-        Route::post('/language/switch/{locale}', 'updateLocale')->whereIn('locale', config('translatable.locales'))->name('profile.update.locale');
+        Route::post('/language/switch/{locale}', 'updateLocale')->whereIn('locale', config('app.available_locales'))->name('profile.update.locale');
         Route::put('notification/switch', 'switchNotification')->name('profile.notification.switch');
     });
 
