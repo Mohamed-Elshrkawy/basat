@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources;
 
+use App\Filament\Resources\ScheduleResource\Pages;
 use App\Models\Schedule;
 use App\Models\Route;
 use App\Models\Stop;
@@ -9,6 +10,9 @@ use App\Models\User;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
+use Filament\Tables;
+use Filament\Tables\Table;
+
 
 
 class ScheduleResource extends Resource
@@ -268,4 +272,29 @@ class ScheduleResource extends Resource
                     ->skippable(),
             ]);
     }
+
+    public static function getRelations(): array
+    {
+        return [
+            //
+        ];
+    }
+
+        public static function getPages(): array
+        { return [
+            'index' => Pages\ListSchedules::route('/'),
+            'create' => Pages\CreateSchedule::route('/create'),
+            'view' => Pages\ViewSchedule::route('/{record}'),
+            'edit' => Pages\EditSchedule::route('/{record}/edit'),
+            ];
+        }
+        public static function getNavigationBadge(): ?string
+        {
+            return static::getModel()::active()->count();
+        }
+        public static function getNavigationBadgeColor(): ?string
+        {
+            $count = static::getModel()::active()->count();
+            return $count > 0 ? 'success' : 'gray';
+        }
 }
