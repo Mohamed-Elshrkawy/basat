@@ -62,7 +62,7 @@ class StopResource extends Resource
                 Forms\Components\Section::make('تحديد الموقع على الخريطة')
                     ->description('انقر على الخريطة لتحديد موقع المحطة')
                     ->schema([
-                        Forms\Components\View::make('filament.forms.components.stop-map-picker')
+                        Forms\Components\View::make('filament.forms.components.map-picker')
                             ->columnSpanFull(),
                     ])
                     ->collapsible(),
