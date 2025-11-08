@@ -1,0 +1,50 @@
+<?php
+
+namespace App\Notifications;
+
+use App\Enums\UserTypeEnum;
+use App\Models\NotificationGroup;
+use App\Services\PushNotification\FCMService;
+use App\Services\PushNotification\SendByRedis;
+use Illuminate\Bus\Queueable;
+use Illuminate\Notifications\Notification;
+
+class GeneralNotification extends Notification
+{
+    use Queueable;
+
+    protected FCMService $fcmService;
+
+
+    public function __construct(public array $data, public ?NotificationGroup $group = null , ?FCMService $fcmService = null)
+    {
+        $this->fcmService = $fcmService ?? new FCMService();
+    }
+
+    public function via($notifiable): array
+    {
+        $channels = ['database'];
+
+        if ((bool)$notifiable->notify || (bool)$notifiable->times_notify) {
+            if (in_array($notifiable->user_type, [UserTypeEnum::Admin->value])) {
+                $channels[] = SendByRedis::class;
+            }
+            elseif (in_array($notifiable->user_type , [UserTypeEnum::Client->value])) {
+                $channels[] = 'fcm';
+            }
+        }
+        return $channels;
+    }
+
+
+    public function toArray($notifiable): array
+    {
+        return $this->data;
+    }
+
+
+    public function toFcm($notifiable): array
+    {
+        return $this->fcmService->sendNotificationsToUsers([$notifiable->id], $this->data);
+    }
+}

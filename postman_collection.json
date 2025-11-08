@@ -1,0 +1,1334 @@
+{
+    "info": {
+        "id": "31977773-79c30d79-8edf-422b-b3ab-a21b0281e4b9",
+        "original_id": "31977773-79c30d79-8edf-422b-b3ab-a21b0281e4b9",
+        "name": "BASAT API",
+        "schema": "https:\/\/schema.getpostman.com\/json\/collection\/v2.1.0\/collection.json"
+    },
+    "variable": [
+        {
+            "key": "URL",
+            "description": "staging",
+            "enabled": true,
+            "value": null,
+            "sessionValue": null,
+            "init_value": "staging"
+        },
+        {
+            "key": "URL",
+            "description": "Production",
+            "enabled": false,
+            "value": null
+        },
+        {
+            "key": "URL",
+            "description": "Tester",
+            "enabled": false,
+            "value": null
+        },
+        {
+            "key": "URL",
+            "description": "Local",
+            "enabled": false,
+            "value": null
+        },
+        {
+            "key": "admin_token",
+            "description": "",
+            "value": ""
+        }
+    ],
+    "item": [
+        {
+            "name": "Laravel",
+            "item": [
+                {
+                    "name": "Sanctum",
+                    "item": [
+                        {
+                            "name": "Http",
+                            "item": [
+                                {
+                                    "name": "Controllers",
+                                    "item": [
+                                        {
+                                            "name": "CsrfCookie",
+                                            "item": [
+                                                {
+                                                    "name": "Sanctum Csrf-Cookie",
+                                                    "request": {
+                                                        "method": "GET",
+                                                        "header": [],
+                                                        "body": {
+                                                            "mode": "formdata",
+                                                            "formdata": []
+                                                        },
+                                                        "url": {
+                                                            "raw": "{{URL}}\/api\/sanctum\/csrf-cookie",
+                                                            "host": [
+                                                                "{{URL}}"
+                                                            ],
+                                                            "path": [
+                                                                "sanctum",
+                                                                "csrf-cookie"
+                                                            ],
+                                                            "query": []
+                                                        },
+                                                        "description": "Return an empty response simply to trigger the storage of the CSRF cookie in the browser."
+                                                    },
+                                                    "response": []
+                                                }
+                                            ]
+                                        }
+                                    ]
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "name": "Livewire",
+            "item": [
+                {
+                    "name": "Mechanisms",
+                    "item": [
+                        {
+                            "name": "HandleRequests",
+                            "item": [
+                                {
+                                    "name": "HandleRequests",
+                                    "item": [
+                                        {
+                                            "name": "Livewire Update",
+                                            "request": {
+                                                "method": "POST",
+                                                "header": [],
+                                                "body": {
+                                                    "mode": "formdata",
+                                                    "formdata": []
+                                                },
+                                                "url": {
+                                                    "raw": "{{URL}}\/api\/livewire\/update",
+                                                    "host": [
+                                                        "{{URL}}"
+                                                    ],
+                                                    "path": [
+                                                        "livewire",
+                                                        "update"
+                                                    ],
+                                                    "query": []
+                                                },
+                                                "description": "No description available"
+                                            },
+                                            "response": []
+                                        }
+                                    ]
+                                }
+                            ]
+                        },
+                        {
+                            "name": "FrontendAssets",
+                            "item": [
+                                {
+                                    "name": "FrontendAssets",
+                                    "item": [
+                                        {
+                                            "name": "Return Java Script As File",
+                                            "request": {
+                                                "method": "GET",
+                                                "header": [],
+                                                "body": {
+                                                    "mode": "formdata",
+                                                    "formdata": []
+                                                },
+                                                "url": {
+                                                    "raw": "{{URL}}\/api\/livewire\/livewire.js",
+                                                    "host": [
+                                                        "{{URL}}"
+                                                    ],
+                                                    "path": [
+                                                        "livewire",
+                                                        "livewire.js"
+                                                    ],
+                                                    "query": []
+                                                },
+                                                "description": "No description available"
+                                            },
+                                            "response": []
+                                        },
+                                        {
+                                            "name": "Maps",
+                                            "request": {
+                                                "method": "GET",
+                                                "header": [],
+                                                "body": {
+                                                    "mode": "formdata",
+                                                    "formdata": []
+                                                },
+                                                "url": {
+                                                    "raw": "{{URL}}\/api\/livewire\/livewire.min.js.map",
+                                                    "host": [
+                                                        "{{URL}}"
+                                                    ],
+                                                    "path": [
+                                                        "livewire",
+                                                        "livewire.min.js.map"
+                                                    ],
+                                                    "query": []
+                                                },
+                                                "description": "No description available"
+                                            },
+                                            "response": []
+                                        }
+                                    ]
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "name": "Features",
+                    "item": [
+                        {
+                            "name": "SupportFileUploads",
+                            "item": [
+                                {
+                                    "name": "FileUpload",
+                                    "item": [
+                                        {
+                                            "name": "Livewire Upload-File",
+                                            "request": {
+                                                "method": "POST",
+                                                "header": [],
+                                                "body": {
+                                                    "mode": "formdata",
+                                                    "formdata": []
+                                                },
+                                                "url": {
+                                                    "raw": "{{URL}}\/api\/livewire\/upload-file",
+                                                    "host": [
+                                                        "{{URL}}"
+                                                    ],
+                                                    "path": [
+                                                        "livewire",
+                                                        "upload-file"
+                                                    ],
+                                                    "query": []
+                                                },
+                                                "description": "No description available"
+                                            },
+                                            "response": []
+                                        }
+                                    ]
+                                },
+                                {
+                                    "name": "FilePreview",
+                                    "item": [
+                                        {
+                                            "name": "Livewire Preview-File",
+                                            "request": {
+                                                "method": "GET",
+                                                "header": [],
+                                                "body": {
+                                                    "mode": "formdata",
+                                                    "formdata": []
+                                                },
+                                                "url": {
+                                                    "raw": "{{URL}}\/api\/livewire\/preview-file\/:filenameId",
+                                                    "host": [
+                                                        "{{URL}}"
+                                                    ],
+                                                    "path": [
+                                                        "livewire",
+                                                        "preview-file",
+                                                        ":filenameId"
+                                                    ],
+                                                    "query": []
+                                                },
+                                                "description": "No description available"
+                                            },
+                                            "response": []
+                                        }
+                                    ]
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "name": "Client",
+            "item": [
+                {
+                    "name": "Auth",
+                    "item": [
+                        {
+                            "name": "Auth",
+                            "item": [
+                                {
+                                    "name": "Login",
+                                    "request": {
+                                        "method": "POST",
+                                        "header": [],
+                                        "body": {
+                                            "mode": "formdata",
+                                            "formdata": [
+                                                {
+                                                    "key": "phone",
+                                                    "value": "1234567890",
+                                                    "type": "text",
+                                                    "description": "required|exists:users,phone,deleted_at,\"NULL\",user_type,\"NULL\""
+                                                },
+                                                {
+                                                    "key": "password",
+                                                    "value": "123456",
+                                                    "type": "text",
+                                                    "description": "required|string"
+                                                },
+                                                {
+                                                    "key": "device_token",
+                                                    "value": "",
+                                                    "type": "text",
+                                                    "description": "sometimes|string"
+                                                },
+                                                {
+                                                    "key": "type",
+                                                    "value": "",
+                                                    "type": "text",
+                                                    "description": "sometimes|string|in:android,ios,huawei,web"
+                                                }
+                                            ]
+                                        },
+                                        "url": {
+                                            "raw": "{{URL}}\/api\/client\/auth\/login",
+                                            "host": [
+                                                "{{URL}}"
+                                            ],
+                                            "path": [
+                                                "client",
+                                                "auth",
+                                                "login"
+                                            ],
+                                            "query": []
+                                        },
+                                        "description": "No description available"
+                                    },
+                                    "response": [],
+                                    "event": [
+                                        {
+                                            "listen": "test",
+                                            "script": {
+                                                "exec": [
+                                                    "pm.test(\"http response is ok 200  POST \/admin\/login login admin user only\", function (){",
+                                                    "    pm.response.to.have.status(200);",
+                                                    "    const responseJson = pm.response.json();",
+                                                    "    if(responseJson){",
+                                                    "        pm.collectionVariables.set(\"client_token\", responseJson.data.token);",
+                                                    "        pm.expect(responseJson.data.token).to.be.a(\"string\");",
+                                                    "    }",
+                                                    "});"
+                                                ],
+                                                "type": "text\/javascript"
+                                            }
+                                        }
+                                    ]
+                                },
+                                {
+                                    "name": "Register",
+                                    "request": {
+                                        "method": "POST",
+                                        "header": [],
+                                        "body": {
+                                            "mode": "formdata",
+                                            "formdata": [
+                                                {
+                                                    "key": "name",
+                                                    "value": "Example Name",
+                                                    "type": "text",
+                                                    "description": "required|string|max:255"
+                                                },
+                                                {
+                                                    "key": "national_id",
+                                                    "value": "",
+                                                    "type": "text",
+                                                    "description": "required|string|digits:10|unique:users,national_id,NULL,id,user_type,\"client\""
+                                                },
+                                                {
+                                                    "key": "gender",
+                                                    "value": "",
+                                                    "type": "text",
+                                                    "description": "required|in:male,female"
+                                                },
+                                                {
+                                                    "key": "phone",
+                                                    "value": "1234567890",
+                                                    "type": "text",
+                                                    "description": "required|string|unique:users,phone,NULL,id,user_type,\"client\""
+                                                },
+                                                {
+                                                    "key": "email",
+                                                    "value": "admin@info.com",
+                                                    "type": "text",
+                                                    "description": "nullable|email|max:255|unique:users,email,NULL,id,user_type,\"client\""
+                                                },
+                                                {
+                                                    "key": "password",
+                                                    "value": "123456",
+                                                    "type": "text",
+                                                    "description": "required|string|min:8|max:16"
+                                                },
+                                                {
+                                                    "key": "avatar",
+                                                    "value": "",
+                                                    "type": "text",
+                                                    "description": "nullable|image|mimes:jpg,jpeg,png|max:2048"
+                                                }
+                                            ]
+                                        },
+                                        "url": {
+                                            "raw": "{{URL}}\/api\/client\/auth\/register",
+                                            "host": [
+                                                "{{URL}}"
+                                            ],
+                                            "path": [
+                                                "client",
+                                                "auth",
+                                                "register"
+                                            ],
+                                            "query": []
+                                        },
+                                        "description": "No description available"
+                                    },
+                                    "response": []
+                                },
+                                {
+                                    "name": "Resend Otp",
+                                    "request": {
+                                        "method": "POST",
+                                        "header": [],
+                                        "body": {
+                                            "mode": "formdata",
+                                            "formdata": [
+                                                {
+                                                    "key": "phone",
+                                                    "value": "1234567890",
+                                                    "type": "text",
+                                                    "description": "required|exists:users,phone,deleted_at,\"NULL\",user_type,\"NULL\""
+                                                }
+                                            ]
+                                        },
+                                        "url": {
+                                            "raw": "{{URL}}\/api\/client\/auth\/send",
+                                            "host": [
+                                                "{{URL}}"
+                                            ],
+                                            "path": [
+                                                "client",
+                                                "auth",
+                                                "send"
+                                            ],
+                                            "query": []
+                                        },
+                                        "description": "No description available"
+                                    },
+                                    "response": []
+                                },
+                                {
+                                    "name": "Verify",
+                                    "request": {
+                                        "method": "POST",
+                                        "header": [],
+                                        "body": {
+                                            "mode": "formdata",
+                                            "formdata": [
+                                                {
+                                                    "key": "phone",
+                                                    "value": "1234567890",
+                                                    "type": "text",
+                                                    "description": "required|exists:users,phone,deleted_at,\"NULL\",user_type,\"NULL\""
+                                                },
+                                                {
+                                                    "key": "code",
+                                                    "value": "",
+                                                    "type": "text",
+                                                    "description": "required|digits_between:4,6|exists:users,reset_code,user_type,\"NULL\",deleted_at,\"NULL\",phone,\"NULL\""
+                                                },
+                                                {
+                                                    "key": "device_token",
+                                                    "value": "",
+                                                    "type": "text",
+                                                    "description": "sometimes|string"
+                                                },
+                                                {
+                                                    "key": "type",
+                                                    "value": "",
+                                                    "type": "text",
+                                                    "description": "sometimes|string|in:android,ios,huawei,web"
+                                                }
+                                            ]
+                                        },
+                                        "url": {
+                                            "raw": "{{URL}}\/api\/client\/auth\/verify",
+                                            "host": [
+                                                "{{URL}}"
+                                            ],
+                                            "path": [
+                                                "client",
+                                                "auth",
+                                                "verify"
+                                            ],
+                                            "query": []
+                                        },
+                                        "description": "No description available"
+                                    },
+                                    "response": []
+                                },
+                                {
+                                    "name": "Logout",
+                                    "request": {
+                                        "method": "POST",
+                                        "header": [],
+                                        "body": {
+                                            "mode": "formdata",
+                                            "formdata": [
+                                                {
+                                                    "key": "device_token",
+                                                    "value": "",
+                                                    "type": "text",
+                                                    "description": "sometimes|string"
+                                                },
+                                                {
+                                                    "key": "type",
+                                                    "value": "",
+                                                    "type": "text",
+                                                    "description": "sometimes|string|in:android,ios,huawei,web"
+                                                }
+                                            ]
+                                        },
+                                        "url": {
+                                            "raw": "{{URL}}\/api\/client\/logout",
+                                            "host": [
+                                                "{{URL}}"
+                                            ],
+                                            "path": [
+                                                "client",
+                                                "logout"
+                                            ],
+                                            "query": []
+                                        },
+                                        "description": "No description available"
+                                    },
+                                    "response": []
+                                },
+                                {
+                                    "name": "Refresh Token",
+                                    "request": {
+                                        "method": "POST",
+                                        "header": [],
+                                        "body": {
+                                            "mode": "formdata",
+                                            "formdata": [
+                                                {
+                                                    "key": "old_device_token",
+                                                    "value": "",
+                                                    "type": "text",
+                                                    "description": "sometimes|nullable|string"
+                                                },
+                                                {
+                                                    "key": "device_token",
+                                                    "value": "",
+                                                    "type": "text",
+                                                    "description": "required|string"
+                                                },
+                                                {
+                                                    "key": "type",
+                                                    "value": "",
+                                                    "type": "text",
+                                                    "description": "required|string|in:android,ios"
+                                                }
+                                            ]
+                                        },
+                                        "url": {
+                                            "raw": "{{URL}}\/api\/client\/token\/refresh",
+                                            "host": [
+                                                "{{URL}}"
+                                            ],
+                                            "path": [
+                                                "client",
+                                                "token",
+                                                "refresh"
+                                            ],
+                                            "query": []
+                                        },
+                                        "description": "No description available"
+                                    },
+                                    "response": []
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "name": "Driver",
+            "item": [
+                {
+                    "name": "Auth",
+                    "item": [
+                        {
+                            "name": "Auth",
+                            "item": [
+                                {
+                                    "name": "Login",
+                                    "request": {
+                                        "method": "POST",
+                                        "header": [],
+                                        "body": {
+                                            "mode": "formdata",
+                                            "formdata": [
+                                                {
+                                                    "key": "phone",
+                                                    "value": "1234567890",
+                                                    "type": "text",
+                                                    "description": "required|exists:users,phone,deleted_at,\"NULL\",user_type,\"NULL\""
+                                                },
+                                                {
+                                                    "key": "password",
+                                                    "value": "123456",
+                                                    "type": "text",
+                                                    "description": "required|string"
+                                                },
+                                                {
+                                                    "key": "device_token",
+                                                    "value": "",
+                                                    "type": "text",
+                                                    "description": "sometimes|string"
+                                                },
+                                                {
+                                                    "key": "type",
+                                                    "value": "",
+                                                    "type": "text",
+                                                    "description": "sometimes|string|in:android,ios,huawei,web"
+                                                }
+                                            ]
+                                        },
+                                        "url": {
+                                            "raw": "{{URL}}\/api\/driver\/auth\/login",
+                                            "host": [
+                                                "{{URL}}"
+                                            ],
+                                            "path": [
+                                                "driver",
+                                                "auth",
+                                                "login"
+                                            ],
+                                            "query": []
+                                        },
+                                        "description": "No description available"
+                                    },
+                                    "response": [],
+                                    "event": [
+                                        {
+                                            "listen": "test",
+                                            "script": {
+                                                "exec": [
+                                                    "pm.test(\"http response is ok 200  POST \/admin\/login login admin user only\", function (){",
+                                                    "    pm.response.to.have.status(200);",
+                                                    "    const responseJson = pm.response.json();",
+                                                    "    if(responseJson){",
+                                                    "        pm.collectionVariables.set(\"driver_token\", responseJson.data.token);",
+                                                    "        pm.expect(responseJson.data.token).to.be.a(\"string\");",
+                                                    "    }",
+                                                    "});"
+                                                ],
+                                                "type": "text\/javascript"
+                                            }
+                                        }
+                                    ]
+                                },
+                                {
+                                    "name": "Register",
+                                    "request": {
+                                        "method": "POST",
+                                        "header": [],
+                                        "body": {
+                                            "mode": "formdata",
+                                            "formdata": [
+                                                {
+                                                    "key": "name",
+                                                    "value": "Example Name",
+                                                    "type": "text",
+                                                    "description": "required|string|max:255"
+                                                },
+                                                {
+                                                    "key": "national_id",
+                                                    "value": "",
+                                                    "type": "text",
+                                                    "description": "required|string|digits:10|unique:users,national_id,NULL,id,user_type,\"client\""
+                                                },
+                                                {
+                                                    "key": "gender",
+                                                    "value": "",
+                                                    "type": "text",
+                                                    "description": "required|in:male,female"
+                                                },
+                                                {
+                                                    "key": "phone",
+                                                    "value": "1234567890",
+                                                    "type": "text",
+                                                    "description": "required|string|unique:users,phone,NULL,id,user_type,\"client\""
+                                                },
+                                                {
+                                                    "key": "email",
+                                                    "value": "admin@info.com",
+                                                    "type": "text",
+                                                    "description": "nullable|email|max:255|unique:users,email,NULL,id,user_type,\"client\""
+                                                },
+                                                {
+                                                    "key": "password",
+                                                    "value": "123456",
+                                                    "type": "text",
+                                                    "description": "required|string|min:8|max:16"
+                                                },
+                                                {
+                                                    "key": "avatar",
+                                                    "value": "",
+                                                    "type": "text",
+                                                    "description": "nullable|image|mimes:jpg,jpeg,png|max:2048"
+                                                }
+                                            ]
+                                        },
+                                        "url": {
+                                            "raw": "{{URL}}\/api\/driver\/auth\/register",
+                                            "host": [
+                                                "{{URL}}"
+                                            ],
+                                            "path": [
+                                                "driver",
+                                                "auth",
+                                                "register"
+                                            ],
+                                            "query": []
+                                        },
+                                        "description": "No description available"
+                                    },
+                                    "response": []
+                                },
+                                {
+                                    "name": "Resend Otp",
+                                    "request": {
+                                        "method": "POST",
+                                        "header": [],
+                                        "body": {
+                                            "mode": "formdata",
+                                            "formdata": [
+                                                {
+                                                    "key": "phone",
+                                                    "value": "1234567890",
+                                                    "type": "text",
+                                                    "description": "required|exists:users,phone,deleted_at,\"NULL\",user_type,\"NULL\""
+                                                }
+                                            ]
+                                        },
+                                        "url": {
+                                            "raw": "{{URL}}\/api\/driver\/auth\/send",
+                                            "host": [
+                                                "{{URL}}"
+                                            ],
+                                            "path": [
+                                                "driver",
+                                                "auth",
+                                                "send"
+                                            ],
+                                            "query": []
+                                        },
+                                        "description": "No description available"
+                                    },
+                                    "response": []
+                                },
+                                {
+                                    "name": "Verify",
+                                    "request": {
+                                        "method": "POST",
+                                        "header": [],
+                                        "body": {
+                                            "mode": "formdata",
+                                            "formdata": [
+                                                {
+                                                    "key": "phone",
+                                                    "value": "1234567890",
+                                                    "type": "text",
+                                                    "description": "required|exists:users,phone,deleted_at,\"NULL\",user_type,\"NULL\""
+                                                },
+                                                {
+                                                    "key": "code",
+                                                    "value": "",
+                                                    "type": "text",
+                                                    "description": "required|digits_between:4,6|exists:users,reset_code,user_type,\"NULL\",deleted_at,\"NULL\",phone,\"NULL\""
+                                                },
+                                                {
+                                                    "key": "device_token",
+                                                    "value": "",
+                                                    "type": "text",
+                                                    "description": "sometimes|string"
+                                                },
+                                                {
+                                                    "key": "type",
+                                                    "value": "",
+                                                    "type": "text",
+                                                    "description": "sometimes|string|in:android,ios,huawei,web"
+                                                }
+                                            ]
+                                        },
+                                        "url": {
+                                            "raw": "{{URL}}\/api\/driver\/auth\/verify",
+                                            "host": [
+                                                "{{URL}}"
+                                            ],
+                                            "path": [
+                                                "driver",
+                                                "auth",
+                                                "verify"
+                                            ],
+                                            "query": []
+                                        },
+                                        "description": "No description available"
+                                    },
+                                    "response": []
+                                },
+                                {
+                                    "name": "Logout",
+                                    "request": {
+                                        "method": "POST",
+                                        "header": [],
+                                        "body": {
+                                            "mode": "formdata",
+                                            "formdata": [
+                                                {
+                                                    "key": "device_token",
+                                                    "value": "",
+                                                    "type": "text",
+                                                    "description": "sometimes|string"
+                                                },
+                                                {
+                                                    "key": "type",
+                                                    "value": "",
+                                                    "type": "text",
+                                                    "description": "sometimes|string|in:android,ios,huawei,web"
+                                                }
+                                            ]
+                                        },
+                                        "url": {
+                                            "raw": "{{URL}}\/api\/driver\/logout",
+                                            "host": [
+                                                "{{URL}}"
+                                            ],
+                                            "path": [
+                                                "driver",
+                                                "logout"
+                                            ],
+                                            "query": []
+                                        },
+                                        "description": "No description available"
+                                    },
+                                    "response": []
+                                },
+                                {
+                                    "name": "Refresh Token",
+                                    "request": {
+                                        "method": "POST",
+                                        "header": [],
+                                        "body": {
+                                            "mode": "formdata",
+                                            "formdata": [
+                                                {
+                                                    "key": "old_device_token",
+                                                    "value": "",
+                                                    "type": "text",
+                                                    "description": "sometimes|nullable|string"
+                                                },
+                                                {
+                                                    "key": "device_token",
+                                                    "value": "",
+                                                    "type": "text",
+                                                    "description": "required|string"
+                                                },
+                                                {
+                                                    "key": "type",
+                                                    "value": "",
+                                                    "type": "text",
+                                                    "description": "required|string|in:android,ios"
+                                                }
+                                            ]
+                                        },
+                                        "url": {
+                                            "raw": "{{URL}}\/api\/driver\/token\/refresh",
+                                            "host": [
+                                                "{{URL}}"
+                                            ],
+                                            "path": [
+                                                "driver",
+                                                "token",
+                                                "refresh"
+                                            ],
+                                            "query": []
+                                        },
+                                        "description": "No description available"
+                                    },
+                                    "response": []
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "name": "General",
+            "item": [
+                {
+                    "name": "General",
+                    "item": [
+                        {
+                            "name": "General",
+                            "item": [
+                                {
+                                    "name": "Countries",
+                                    "request": {
+                                        "method": "GET",
+                                        "header": [],
+                                        "body": {
+                                            "mode": "formdata",
+                                            "formdata": []
+                                        },
+                                        "url": {
+                                            "raw": "{{URL}}\/api\/general\/countries",
+                                            "host": [
+                                                "{{URL}}"
+                                            ],
+                                            "path": [
+                                                "general",
+                                                "countries"
+                                            ],
+                                            "query": []
+                                        },
+                                        "description": "No description available"
+                                    },
+                                    "response": []
+                                },
+                                {
+                                    "name": "Cities",
+                                    "request": {
+                                        "method": "GET",
+                                        "header": [],
+                                        "body": {
+                                            "mode": "formdata",
+                                            "formdata": []
+                                        },
+                                        "url": {
+                                            "raw": "{{URL}}\/api\/general\/cities",
+                                            "host": [
+                                                "{{URL}}"
+                                            ],
+                                            "path": [
+                                                "general",
+                                                "cities"
+                                            ],
+                                            "query": []
+                                        },
+                                        "description": "No description available"
+                                    },
+                                    "response": []
+                                },
+                                {
+                                    "name": "Interests",
+                                    "request": {
+                                        "method": "GET",
+                                        "header": [],
+                                        "body": {
+                                            "mode": "formdata",
+                                            "formdata": []
+                                        },
+                                        "url": {
+                                            "raw": "{{URL}}\/api\/general\/interests",
+                                            "host": [
+                                                "{{URL}}"
+                                            ],
+                                            "path": [
+                                                "general",
+                                                "interests"
+                                            ],
+                                            "query": []
+                                        },
+                                        "description": "No description available"
+                                    },
+                                    "response": []
+                                },
+                                {
+                                    "name": "Settings",
+                                    "request": {
+                                        "method": "GET",
+                                        "header": [],
+                                        "body": {
+                                            "mode": "formdata",
+                                            "formdata": []
+                                        },
+                                        "url": {
+                                            "raw": "{{URL}}\/api\/general\/settings",
+                                            "host": [
+                                                "{{URL}}"
+                                            ],
+                                            "path": [
+                                                "general",
+                                                "settings"
+                                            ],
+                                            "query": []
+                                        },
+                                        "description": "No description available"
+                                    },
+                                    "response": []
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "name": "Pages",
+                    "item": [
+                        {
+                            "name": "Pages",
+                            "item": [
+                                {
+                                    "name": "Pages",
+                                    "request": {
+                                        "method": "GET",
+                                        "header": [],
+                                        "body": {
+                                            "mode": "formdata",
+                                            "formdata": []
+                                        },
+                                        "url": {
+                                            "raw": "{{URL}}\/api\/general\/pages\/pages",
+                                            "host": [
+                                                "{{URL}}"
+                                            ],
+                                            "path": [
+                                                "general",
+                                                "pages",
+                                                "pages"
+                                            ],
+                                            "query": []
+                                        },
+                                        "description": "No description available"
+                                    },
+                                    "response": []
+                                },
+                                {
+                                    "name": "Show Page",
+                                    "request": {
+                                        "method": "GET",
+                                        "header": [],
+                                        "body": {
+                                            "mode": "formdata",
+                                            "formdata": []
+                                        },
+                                        "url": {
+                                            "raw": "{{URL}}\/api\/general\/pages\/page\/:pageId",
+                                            "host": [
+                                                "{{URL}}"
+                                            ],
+                                            "path": [
+                                                "general",
+                                                "pages",
+                                                "page",
+                                                ":pageId"
+                                            ],
+                                            "query": []
+                                        },
+                                        "description": "No description available"
+                                    },
+                                    "response": []
+                                },
+                                {
+                                    "name": "Contact Submit",
+                                    "request": {
+                                        "method": "POST",
+                                        "header": [],
+                                        "body": {
+                                            "mode": "formdata",
+                                            "formdata": []
+                                        },
+                                        "url": {
+                                            "raw": "{{URL}}\/api\/general\/pages\/contact",
+                                            "host": [
+                                                "{{URL}}"
+                                            ],
+                                            "path": [
+                                                "general",
+                                                "pages",
+                                                "contact"
+                                            ],
+                                            "query": []
+                                        },
+                                        "description": "No description available"
+                                    },
+                                    "response": []
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "name": "Notification",
+                    "item": [
+                        {
+                            "name": "Notification",
+                            "item": [
+                                {
+                                    "name": "Notifications Index",
+                                    "request": {
+                                        "method": "GET",
+                                        "header": [],
+                                        "body": {
+                                            "mode": "formdata",
+                                            "formdata": []
+                                        },
+                                        "url": {
+                                            "raw": "{{URL}}\/api\/general\/notifications",
+                                            "host": [
+                                                "{{URL}}"
+                                            ],
+                                            "path": [
+                                                "general",
+                                                "notifications"
+                                            ],
+                                            "query": []
+                                        },
+                                        "description": "No description available"
+                                    },
+                                    "response": []
+                                },
+                                {
+                                    "name": "Notifications Mark As Read",
+                                    "request": {
+                                        "method": "POST",
+                                        "header": [],
+                                        "body": {
+                                            "mode": "formdata",
+                                            "formdata": [
+                                                {
+                                                    "key": "_method",
+                                                    "value": "PUT",
+                                                    "type": "text",
+                                                    "description": "for laravel to identify the request method, is required when body has keys"
+                                                }
+                                            ]
+                                        },
+                                        "url": {
+                                            "raw": "{{URL}}\/api\/general\/notifications\/:notificationId",
+                                            "host": [
+                                                "{{URL}}"
+                                            ],
+                                            "path": [
+                                                "general",
+                                                "notifications",
+                                                ":notificationId"
+                                            ],
+                                            "query": []
+                                        },
+                                        "description": "No description available"
+                                    },
+                                    "response": []
+                                },
+                                {
+                                    "name": "Notifications Destroy",
+                                    "request": {
+                                        "method": "DELETE",
+                                        "header": [],
+                                        "body": {
+                                            "mode": "formdata",
+                                            "formdata": []
+                                        },
+                                        "url": {
+                                            "raw": "{{URL}}\/api\/general\/notifications\/:notificationId",
+                                            "host": [
+                                                "{{URL}}"
+                                            ],
+                                            "path": [
+                                                "general",
+                                                "notifications",
+                                                ":notificationId"
+                                            ],
+                                            "query": []
+                                        },
+                                        "description": "No description available"
+                                    },
+                                    "response": []
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "name": "Wallet",
+                    "item": [
+                        {
+                            "name": "Wallet",
+                            "item": [
+                                {
+                                    "name": "Wallet Index",
+                                    "request": {
+                                        "method": "GET",
+                                        "header": [],
+                                        "body": {
+                                            "mode": "formdata",
+                                            "formdata": []
+                                        },
+                                        "url": {
+                                            "raw": "{{URL}}\/api\/general\/wallet",
+                                            "host": [
+                                                "{{URL}}"
+                                            ],
+                                            "path": [
+                                                "general",
+                                                "wallet"
+                                            ],
+                                            "query": []
+                                        },
+                                        "description": "No description available"
+                                    },
+                                    "response": []
+                                },
+                                {
+                                    "name": "Wallet Transactions",
+                                    "request": {
+                                        "method": "GET",
+                                        "header": [],
+                                        "body": {
+                                            "mode": "formdata",
+                                            "formdata": []
+                                        },
+                                        "url": {
+                                            "raw": "{{URL}}\/api\/general\/wallet\/transactions",
+                                            "host": [
+                                                "{{URL}}"
+                                            ],
+                                            "path": [
+                                                "general",
+                                                "wallet",
+                                                "transactions"
+                                            ],
+                                            "query": []
+                                        },
+                                        "description": "No description available"
+                                    },
+                                    "response": []
+                                },
+                                {
+                                    "name": "Wallet Withdraw",
+                                    "request": {
+                                        "method": "POST",
+                                        "header": [],
+                                        "body": {
+                                            "mode": "formdata",
+                                            "formdata": []
+                                        },
+                                        "url": {
+                                            "raw": "{{URL}}\/api\/general\/wallet\/withdraw",
+                                            "host": [
+                                                "{{URL}}"
+                                            ],
+                                            "path": [
+                                                "general",
+                                                "wallet",
+                                                "withdraw"
+                                            ],
+                                            "query": []
+                                        },
+                                        "description": "No description available"
+                                    },
+                                    "response": []
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "name": "App",
+            "item": [
+                {
+                    "name": "Http",
+                    "item": [
+                        {
+                            "name": "Controllers",
+                            "item": [
+                                {
+                                    "name": "Locale",
+                                    "item": [
+                                        {
+                                            "name": "Filament Admin Locale Switch",
+                                            "request": {
+                                                "method": "GET",
+                                                "header": [],
+                                                "body": {
+                                                    "mode": "formdata",
+                                                    "formdata": []
+                                                },
+                                                "url": {
+                                                    "raw": "{{URL}}\/api\/admin\/locale\/:localeId",
+                                                    "host": [
+                                                        "{{URL}}"
+                                                    ],
+                                                    "path": [
+                                                        "admin",
+                                                        "locale",
+                                                        ":localeId"
+                                                    ],
+                                                    "query": []
+                                                },
+                                                "description": "No description available"
+                                            },
+                                            "response": []
+                                        }
+                                    ]
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ]
+        }
+    ],
+    "event": [
+        {
+            "listen": "prerequest",
+            "script": {
+                "type": "text\/javascript",
+                "exec": [
+                    "pm.request.headers.add({\r",
+                    "  key: \"Accept\",\r",
+                    "  value: \"application\/json\"\r",
+                    "});\r",
+                    "\r",
+                    "\r",
+                    "pm.request.headers.add({\r",
+                    "    key: \"Accept-Language\",\r",
+                    "    value: \"en\"\r",
+                    "});\r",
+                    "\r",
+                    "pm.request.headers.add({\r",
+                    "    key: \"Timezone\",\r",
+                    "    value: \"Africa\/Cairo\"\r",
+                    "});\r",
+                    ""
+                ]
+            }
+        }
+    ]
+}

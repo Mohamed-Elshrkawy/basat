@@ -1,0 +1,2510 @@
+{
+	"info": {
+		"_postman_id": "c9a2f7d1-12a3-4b6c-88e9-f0c1d2e3b4a5",
+		"name": "KSA Bus API V1.1 (Complete)",
+		"description": "## Postman Collection for KSA Bus API\n\nThis is the final and complete collection covering all endpoints for both Rider and Driver applications, including image upload functionality as per V1.1 requirements.\n\n### Setup Instructions\n\n1.  **Import the Collection**: Import this file into Postman.\n2.  **Set `baseUrl` Variable**: Create an environment or global variable named `baseUrl` and set its value to your API's base URL (e.g., `http://localhost:8000`).\n3.  **Authentication Flow**:\n    *   **Register**: Use the `Auth > Register New User` request. You can optionally upload an `avatar` file.\n    *   **Verify**: Use the `Auth > Verify Mobile` request with the verification code (`1111` by default) to activate the account.\n    *   **Login**: Use the `Auth > Login` request. A successful login will automatically save the `authToken` to a collection variable.\n    *   **Authenticated Requests**: All requests requiring authentication are pre-configured to use the `{{authToken}}` variable.\n\n### Notes:\n\n*   **File Uploads**: For requests with file uploads (`avatar`, `photo`), the body type is set to `form-data`. You need to manually select the file from your computer.\n*   **PUT/PATCH with Files**: Requests for updating resources with files (e.g., profile updates) are correctly configured to be sent as `POST` with a `_method` field set to `PUT`.\n*   **Dynamic IDs**: You'll find placeholders like `{{tripId}}`, `{{childId}}`, etc. You need to replace these with actual IDs from previous API responses.",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "36239409"
+	},
+	"item": [
+		{
+			"name": "Auth",
+			"description": "Public routes for user authentication.",
+			"item": [
+				{
+					"name": "Register New User",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "name",
+									"value": "Test Rider",
+									"type": "text"
+								},
+								{
+									"key": "national_id",
+									"value": "1122334455",
+									"type": "text"
+								},
+								{
+									"key": "gender",
+									"value": "male",
+									"type": "text",
+									"description": "male / female"
+								},
+								{
+									"key": "mobile",
+									"value": "966555111222",
+									"type": "text"
+								},
+								{
+									"key": "email",
+									"value": "testrider@example.com",
+									"type": "text"
+								},
+								{
+									"key": "password",
+									"value": "password",
+									"type": "text"
+								},
+								{
+									"key": "password_confirmation",
+									"value": "password",
+									"type": "text"
+								},
+								{
+									"key": "role",
+									"value": "rider",
+									"type": "text",
+									"description": "rider / driver"
+								},
+								{
+									"key": "avatar",
+									"type": "file",
+									"description": "(Optional) User profile picture."
+								}
+							]
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/auth/register",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"auth",
+								"register"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Login",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Successful Login\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"if (pm.response.code === 200) {",
+									"    var jsonData = pm.response.json();",
+									"    pm.collectionVariables.set(\"authToken\", jsonData.data.token);",
+									"    console.log(\"Auth Token set successfully!\");",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "mobile",
+									"value": "966555111222",
+									"type": "text"
+								},
+								{
+									"key": "password",
+									"value": "password",
+									"type": "text"
+								},
+								{
+									"key": "role",
+									"value": "rider",
+									"type": "text",
+									"description": "rider / driver"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/auth/login",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"auth",
+								"login"
+							]
+						},
+						"description": "Login as a rider or driver. A successful response will automatically save the `authToken` as a collection variable."
+					},
+					"response": []
+				},
+				{
+					"name": "Verify Mobile",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "mobile",
+									"value": "966555111222",
+									"type": "text"
+								},
+								{
+									"key": "verification_code",
+									"value": "1111",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/auth/verify-mobile",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"auth",
+								"verify-mobile"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Resend Verification Code",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "mobile",
+									"value": "966555111222",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/auth/resend-verification-code",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"auth",
+								"resend-verification-code"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Forgot Password",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "mobile",
+									"value": "966555111222",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/auth/forgot-password",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"auth",
+								"forgot-password"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Reset Password",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "mobile",
+									"value": "966555111222",
+									"type": "text"
+								},
+								{
+									"key": "verification_code",
+									"value": "1111",
+									"type": "text"
+								},
+								{
+									"key": "password",
+									"value": "newpassword",
+									"type": "text"
+								},
+								{
+									"key": "password_confirmation",
+									"value": "newpassword",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/auth/reset-password",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"auth",
+								"reset-password"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Content",
+			"description": "Public routes for fetching static content like pages and FAQs.",
+			"item": [
+				{
+					"name": "Get Static Page",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/content/about-us",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"content",
+								"about-us"
+							]
+						},
+						"description": "Get a static page by its key.\n\nAvailable keys:\n- `about-us`\n- `privacy-policy`\n- `terms-and-conditions`\n- `cancellation-policy`\n- `contact-us`"
+					},
+					"response": []
+				},
+				{
+					"name": "Get FAQs",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/content/faqs",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"content",
+								"faqs"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Store Contact Message",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "name",
+									"value": "Visitor Name",
+									"type": "text"
+								},
+								{
+									"key": "mobile",
+									"value": "966501234567",
+									"type": "text"
+								},
+								{
+									"key": "type",
+									"value": "suggestion",
+									"type": "text",
+									"description": "complaint, suggestion, other"
+								},
+								{
+									"key": "subject",
+									"value": "App Feedback",
+									"type": "text"
+								},
+								{
+									"key": "message",
+									"value": "This is a test message from the contact form.",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/content/contact-us",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"content",
+								"contact-us"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Shared (Authenticated)",
+			"description": "Authenticated routes available to both Riders and Drivers.",
+			"item": [
+				{
+					"name": "Logout",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{authToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/auth/logout",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"auth",
+								"logout"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Account Request",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{authToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/auth/delete-account",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"auth",
+								"delete-account"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Device Token",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{authToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "device_token",
+									"value": "firebase-device-token-string-12345",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/auth/device-token",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"auth",
+								"device-token"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Notifications",
+					"item": [
+						{
+							"name": "Get My Notifications",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{authToken}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [
+									{
+										"key": "Accept",
+										"value": "application/json"
+									}
+								],
+								"url": {
+									"raw": "{{baseUrl}}/api/v1/notifications?page=1",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"v1",
+										"notifications"
+									],
+									"query": [
+										{
+											"key": "page",
+											"value": "1"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Mark Notifications as Read",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{authToken}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [
+									{
+										"key": "Accept",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "formdata",
+									"formdata": [
+										{
+											"key": "ids[0]",
+											"value": "1",
+											"type": "text"
+										},
+										{
+											"key": "ids[1]",
+											"value": "2",
+											"type": "text"
+										}
+									]
+								},
+								"url": {
+									"raw": "{{baseUrl}}/api/v1/notifications/mark-as-read",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"v1",
+										"notifications",
+										"mark-as-read"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Mark All Notifications as Read",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{authToken}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [
+									{
+										"key": "Accept",
+										"value": "application/json"
+									}
+								],
+								"url": {
+									"raw": "{{baseUrl}}/api/v1/notifications/mark-all-as-read",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"v1",
+										"notifications",
+										"mark-all-as-read"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "Rider App",
+			"item": [
+				{
+					"name": "Profile",
+					"item": [
+						{
+							"name": "Get My Profile",
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{authToken}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [
+									{
+										"key": "Accept",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "formdata",
+									"formdata": []
+								},
+								"url": {
+									"raw": "{{baseUrl}}/api/v1/rider/profile",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"v1",
+										"rider",
+										"profile"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Update My Profile",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{authToken}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [
+									{
+										"key": "Accept",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "formdata",
+									"formdata": [
+										{
+											"key": "_method",
+											"value": "PUT",
+											"type": "text"
+										},
+										{
+											"key": "name",
+											"value": "Rider Updated Name",
+											"type": "text"
+										},
+										{
+											"key": "email",
+											"value": "rider.updated@example.com",
+											"type": "text"
+										},
+										{
+											"key": "avatar",
+											"type": "file"
+										}
+									]
+								},
+								"url": {
+									"raw": "{{baseUrl}}/api/v1/rider/profile",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"v1",
+										"rider",
+										"profile"
+									]
+								},
+								"description": "**Important**: To update profile with a file upload, the method must be `POST` with a `_method` field set to `PUT`."
+							},
+							"response": []
+						},
+						{
+							"name": "Change Password",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{authToken}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [
+									{
+										"key": "Accept",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "formdata",
+									"formdata": [
+										{
+											"key": "current_password",
+											"value": "password",
+											"type": "text"
+										},
+										{
+											"key": "password",
+											"value": "newpassword",
+											"type": "text"
+										},
+										{
+											"key": "password_confirmation",
+											"value": "newpassword",
+											"type": "text"
+										}
+									]
+								},
+								"url": {
+									"raw": "{{baseUrl}}/api/v1/rider/profile/change-password",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"v1",
+										"rider",
+										"profile",
+										"change-password"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Children Management",
+					"item": [
+						{
+							"name": "List My Children",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{authToken}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [
+									{
+										"key": "Accept",
+										"value": "application/json"
+									}
+								],
+								"url": {
+									"raw": "{{baseUrl}}/api/v1/rider/children",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"v1",
+										"rider",
+										"children"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Add New Child",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{authToken}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [
+									{
+										"key": "Accept",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "formdata",
+									"formdata": [
+										{
+											"key": "name",
+											"value": "My Child Name",
+											"type": "text"
+										},
+										{
+											"key": "gender",
+											"value": "male",
+											"type": "text"
+										},
+										{
+											"key": "photo",
+											"type": "file"
+										}
+									]
+								},
+								"url": {
+									"raw": "{{baseUrl}}/api/v1/rider/children",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"v1",
+										"rider",
+										"children"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Get Child Details",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{authToken}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [
+									{
+										"key": "Accept",
+										"value": "application/json"
+									}
+								],
+								"url": {
+									"raw": "{{baseUrl}}/api/v1/rider/children/{{childId}}",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"v1",
+										"rider",
+										"children",
+										"{{childId}}"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Update Child",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{authToken}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [
+									{
+										"key": "Accept",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "formdata",
+									"formdata": [
+										{
+											"key": "_method",
+											"value": "PUT",
+											"type": "text"
+										},
+										{
+											"key": "name",
+											"value": "Updated Child Name",
+											"type": "text"
+										},
+										{
+											"key": "photo",
+											"type": "file"
+										}
+									]
+								},
+								"url": {
+									"raw": "{{baseUrl}}/api/v1/rider/children/{{childId}}",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"v1",
+										"rider",
+										"children",
+										"{{childId}}"
+									]
+								},
+								"description": "**Important**: To update a child with a photo, the method must be `POST` with a `_method` field set to `PUT`."
+							},
+							"response": []
+						},
+						{
+							"name": "Delete Child",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{authToken}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "DELETE",
+								"header": [
+									{
+										"key": "Accept",
+										"value": "application/json"
+									}
+								],
+								"url": {
+									"raw": "{{baseUrl}}/api/v1/rider/children/{{childId}}",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"v1",
+										"rider",
+										"children",
+										"{{childId}}"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Trip Search & Booking",
+					"item": [
+						{
+							"name": "Search Public Bus Trips",
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Accept",
+										"value": "application/json"
+									}
+								],
+								"url": {
+									"raw": "{{baseUrl}}/api/v1/rider/search-trips?pickup_lat=24.7136&pickup_lng=46.6753&dropoff_lat=24.6877&dropoff_lng=46.7219&trip_date=2025-08-10",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"v1",
+										"rider",
+										"search-trips"
+									],
+									"query": [
+										{
+											"key": "pickup_lat",
+											"value": "24.7136"
+										},
+										{
+											"key": "pickup_lng",
+											"value": "46.6753"
+										},
+										{
+											"key": "dropoff_lat",
+											"value": "24.6877"
+										},
+										{
+											"key": "dropoff_lng",
+											"value": "46.7219"
+										},
+										{
+											"key": "trip_date",
+											"value": "2025-08-10"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Get Schedule Details (Seats)",
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Accept",
+										"value": "application/json"
+									}
+								],
+								"url": {
+									"raw": "{{baseUrl}}/api/v1/rider/schedules/{{scheduleId}}/details?trip_date=2025-08-10",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"v1",
+										"rider",
+										"schedules",
+										"{{scheduleId}}",
+										"details"
+									],
+									"query": [
+										{
+											"key": "trip_date",
+											"value": "2025-08-10"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Book Public Bus Trip",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{authToken}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [
+									{
+										"key": "Accept",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "formdata",
+									"formdata": [
+										{
+											"key": "schedule_id",
+											"value": "1",
+											"type": "text"
+										},
+										{
+											"key": "trip_date",
+											"value": "2025-08-10",
+											"type": "text"
+										},
+										{
+											"key": "pickup_stop_id",
+											"value": "1",
+											"type": "text"
+										},
+										{
+											"key": "dropoff_stop_id",
+											"value": "2",
+											"type": "text"
+										},
+										{
+											"key": "seat_numbers[0]",
+											"value": "5",
+											"type": "text"
+										},
+										{
+											"key": "seat_numbers[1]",
+											"value": "6",
+											"type": "text"
+										},
+										{
+											"key": "payment_method",
+											"value": "wallet",
+											"type": "text",
+											"description": "wallet / cash"
+										}
+									]
+								},
+								"url": {
+									"raw": "{{baseUrl}}/api/v1/rider/bookings",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"v1",
+										"rider",
+										"bookings"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Search Private Hire Drivers",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseUrl}}/api/v1/rider/search-private-hire?pickup_lat=24.7136&pickup_lng=46.6753&trip_datetime=2025-08-10 14:00:00",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"v1",
+										"rider",
+										"search-private-hire"
+									],
+									"query": [
+										{
+											"key": "pickup_lat",
+											"value": "24.7136"
+										},
+										{
+											"key": "pickup_lng",
+											"value": "46.6753"
+										},
+										{
+											"key": "trip_datetime",
+											"value": "2025-08-10 14:00:00"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Book Private Hire",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{authToken}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "formdata",
+									"formdata": [
+										{
+											"key": "driver_id",
+											"value": "1",
+											"type": "text"
+										},
+										{
+											"key": "vehicle_id",
+											"value": "1",
+											"type": "text"
+										},
+										{
+											"key": "pickup_lat",
+											"value": "24.7136",
+											"type": "text"
+										},
+										{
+											"key": "pickup_lng",
+											"value": "46.6753",
+											"type": "text"
+										},
+										{
+											"key": "pickup_address",
+											"value": "King Fahd Rd, Riyadh",
+											"type": "text"
+										},
+										{
+											"key": "dropoff_lat",
+											"value": "24.6877",
+											"type": "text"
+										},
+										{
+											"key": "dropoff_lng",
+											"value": "46.7219",
+											"type": "text"
+										},
+										{
+											"key": "dropoff_address",
+											"value": "Olaya St, Riyadh",
+											"type": "text"
+										},
+										{
+											"key": "trip_datetime",
+											"value": "2025-08-10 15:00:00",
+											"type": "text"
+										},
+										{
+											"key": "payment_method",
+											"value": "cash",
+											"type": "text"
+										}
+									]
+								},
+								"url": {
+									"raw": "{{baseUrl}}/api/v1/rider/bookings/private-hire",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"v1",
+										"rider",
+										"bookings",
+										"private-hire"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "My Trips",
+					"item": [
+						{
+							"name": "Get My Trips",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{authToken}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [
+									{
+										"key": "Accept",
+										"value": "application/json"
+									}
+								],
+								"url": {
+									"raw": "{{baseUrl}}/api/v1/rider/my-trips",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"v1",
+										"rider",
+										"my-trips"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Cancel Trip",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{authToken}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [
+									{
+										"key": "Accept",
+										"value": "application/json"
+									}
+								],
+								"url": {
+									"raw": "{{baseUrl}}/api/v1/rider/trips/{{tripId}}/cancel",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"v1",
+										"rider",
+										"trips",
+										"{{tripId}}",
+										"cancel"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Rate Trip",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{authToken}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [
+									{
+										"key": "Accept",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "formdata",
+									"formdata": [
+										{
+											"key": "rating",
+											"value": "5",
+											"type": "text"
+										},
+										{
+											"key": "comment",
+											"value": "Excellent service!",
+											"type": "text"
+										}
+									]
+								},
+								"url": {
+									"raw": "{{baseUrl}}/api/v1/rider/trips/{{tripId}}/rate",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"v1",
+										"rider",
+										"trips",
+										"{{tripId}}",
+										"rate"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Report Problem on Trip",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{authToken}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [
+									{
+										"key": "Accept",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "formdata",
+									"formdata": [
+										{
+											"key": "category",
+											"value": "Driver Behavior",
+											"type": "text"
+										},
+										{
+											"key": "description",
+											"value": "The driver was late and the bus was not clean.",
+											"type": "text"
+										}
+									]
+								},
+								"url": {
+									"raw": "{{baseUrl}}/api/v1/rider/trips/{{tripId}}/report-problem",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"v1",
+										"rider",
+										"trips",
+										"{{tripId}}",
+										"report-problem"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Track Driver Location",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{authToken}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [
+									{
+										"key": "Accept",
+										"value": "application/json"
+									}
+								],
+								"url": {
+									"raw": "{{baseUrl}}/api/v1/rider/trips/{{tripId}}/track",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"v1",
+										"rider",
+										"trips",
+										"{{tripId}}",
+										"track"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "School Service",
+					"item": [
+						{
+							"name": "Get School Packages",
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Accept",
+										"value": "application/json"
+									}
+								],
+								"url": {
+									"raw": "{{baseUrl}}/api/v1/rider/school-packages",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"v1",
+										"rider",
+										"school-packages"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Subscribe to School Service",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{authToken}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [
+									{
+										"key": "Accept",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "formdata",
+									"formdata": [
+										{
+											"key": "package_id",
+											"value": "1",
+											"type": "text"
+										},
+										{
+											"key": "children_ids[0]",
+											"value": "1",
+											"type": "text"
+										},
+										{
+											"key": "start_date",
+											"value": "2025-09-01",
+											"type": "text"
+										},
+										{
+											"key": "payment_method",
+											"value": "wallet",
+											"type": "text"
+										},
+										{
+											"key": "pickup_lat",
+											"value": "24.7136",
+											"type": "text"
+										},
+										{
+											"key": "pickup_lng",
+											"value": "46.6753",
+											"type": "text"
+										}
+									]
+								},
+								"url": {
+									"raw": "{{baseUrl}}/api/v1/rider/school-subscriptions",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"v1",
+										"rider",
+										"school-subscriptions"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Get My School Subscriptions",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{authToken}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [
+									{
+										"key": "Accept",
+										"value": "application/json"
+									}
+								],
+								"url": {
+									"raw": "{{baseUrl}}/api/v1/rider/my-school-subscriptions",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"v1",
+										"rider",
+										"my-school-subscriptions"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Report Child Absence",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{authToken}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "formdata",
+									"formdata": [
+										{
+											"key": "absence_date",
+											"value": "2025-09-05",
+											"type": "text"
+										},
+										{
+											"key": "reason",
+											"value": "Sick leave",
+											"type": "text"
+										}
+									]
+								},
+								"url": {
+									"raw": "{{baseUrl}}/api/v1/rider/school-subscriptions/{{subscriptionId}}/report-absence",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"v1",
+										"rider",
+										"school-subscriptions",
+										"{{subscriptionId}}",
+										"report-absence"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Wallet",
+					"item": [
+						{
+							"name": "Get My Wallet Balance",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{authToken}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [
+									{
+										"key": "Accept",
+										"value": "application/json"
+									}
+								],
+								"url": {
+									"raw": "{{baseUrl}}/api/v1/rider/wallet",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"v1",
+										"rider",
+										"wallet"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Get My Wallet Transactions",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{authToken}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [
+									{
+										"key": "Accept",
+										"value": "application/json"
+									}
+								],
+								"url": {
+									"raw": "{{baseUrl}}/api/v1/rider/wallet/transactions",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"v1",
+										"rider",
+										"wallet",
+										"transactions"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "Driver App",
+			"item": [
+				{
+					"name": "Profile & Status",
+					"item": [
+						{
+							"name": "Get My Profile",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{authToken}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [
+									{
+										"key": "Accept",
+										"value": "application/json"
+									}
+								],
+								"url": {
+									"raw": "{{baseUrl}}/api/v1/driver/profile",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"v1",
+										"driver",
+										"profile"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Update My Profile",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{authToken}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "formdata",
+									"formdata": [
+										{
+											"key": "_method",
+											"value": "PUT",
+											"type": "text"
+										},
+										{
+											"key": "name",
+											"value": "Driver Updated Name",
+											"type": "text"
+										},
+										{
+											"key": "bio",
+											"value": "Experienced driver with 10 years on the road.",
+											"type": "text"
+										},
+										{
+											"key": "avatar",
+											"type": "file"
+										}
+									]
+								},
+								"url": {
+									"raw": "{{baseUrl}}/api/v1/driver/profile",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"v1",
+										"driver",
+										"profile"
+									]
+								},
+								"description": "**Important**: To update profile with a file upload, the method must be `POST` with a `_method` field set to `PUT`."
+							},
+							"response": []
+						},
+						{
+							"name": "Change Password",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{authToken}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [
+									{
+										"key": "Accept",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "formdata",
+									"formdata": [
+										{
+											"key": "current_password",
+											"value": "password",
+											"type": "text"
+										},
+										{
+											"key": "password",
+											"value": "newpassword",
+											"type": "text"
+										},
+										{
+											"key": "password_confirmation",
+											"value": "newpassword",
+											"type": "text"
+										}
+									]
+								},
+								"url": {
+									"raw": "{{baseUrl}}/api/v1/driver/profile/change-password",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"v1",
+										"driver",
+										"profile",
+										"change-password"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Update Availability Status",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{authToken}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [
+									{
+										"key": "Accept",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "formdata",
+									"formdata": [
+										{
+											"key": "status",
+											"value": "available",
+											"type": "text",
+											"description": "available, on_trip, unavailable"
+										}
+									]
+								},
+								"url": {
+									"raw": "{{baseUrl}}/api/v1/driver/update-status",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"v1",
+										"driver",
+										"update-status"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Update Location",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{authToken}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [
+									{
+										"key": "Accept",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "formdata",
+									"formdata": [
+										{
+											"key": "lat",
+											"value": "24.7136",
+											"type": "text"
+										},
+										{
+											"key": "lng",
+											"value": "46.6753",
+											"type": "text"
+										}
+									]
+								},
+								"url": {
+									"raw": "{{baseUrl}}/api/v1/driver/update-location",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"v1",
+										"driver",
+										"update-location"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Trips & Earnings",
+					"item": [
+						{
+							"name": "Get My Trips",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{authToken}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [
+									{
+										"key": "Accept",
+										"value": "application/json"
+									}
+								],
+								"url": {
+									"raw": "{{baseUrl}}/api/v1/driver/trips?status=pending",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"v1",
+										"driver",
+										"trips"
+									],
+									"query": [
+										{
+											"key": "status",
+											"value": "pending",
+											"description": "(Optional) pending, approved, on_way, completed, etc."
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Get Trip Details",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{authToken}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [
+									{
+										"key": "Accept",
+										"value": "application/json"
+									}
+								],
+								"url": {
+									"raw": "{{baseUrl}}/api/v1/driver/trips/{{tripId}}",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"v1",
+										"driver",
+										"trips",
+										"{{tripId}}"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Update Trip Status",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{authToken}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "formdata",
+									"formdata": [
+										{
+											"key": "status",
+											"value": "on_way",
+											"type": "text",
+											"description": "on_way, completed, cancelled_by_driver"
+										}
+									]
+								},
+								"url": {
+									"raw": "{{baseUrl}}/api/v1/driver/trips/{{tripId}}/update-status",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"v1",
+										"driver",
+										"trips",
+										"{{tripId}}",
+										"update-status"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Check In Passenger",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{authToken}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "formdata",
+									"formdata": [
+										{
+											"key": "booking_id",
+											"value": "1",
+											"type": "text"
+										}
+									]
+								},
+								"url": {
+									"raw": "{{baseUrl}}/api/v1/driver/trips/check-in/{{tripId}}",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"v1",
+										"driver",
+										"trips",
+										"check-in",
+										"{{tripId}}"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Update Student Status (School Trip)",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{authToken}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "formdata",
+									"formdata": [
+										{
+											"key": "status",
+											"value": "picked_up",
+											"type": "text",
+											"description": "picked_up, absent"
+										},
+										{
+											"key": "trip_date",
+											"value": "2025-09-05",
+											"type": "text"
+										}
+									]
+								},
+								"url": {
+									"raw": "{{baseUrl}}/api/v1/driver/school-subscriptions/{{subscriptionId}}/update-status",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"v1",
+										"driver",
+										"school-subscriptions",
+										"{{subscriptionId}}",
+										"update-status"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Get Earnings Summary",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{authToken}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseUrl}}/api/v1/driver/earnings",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"v1",
+										"driver",
+										"earnings"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Get Earnings History (Transactions)",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{authToken}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseUrl}}/api/v1/driver/earnings/history",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"v1",
+										"driver",
+										"earnings",
+										"history"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Collect Payment From Rider Wallet",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{authToken}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "formdata",
+									"formdata": [
+										{
+											"key": "rider_mobile",
+											"value": "966555111222",
+											"type": "text"
+										}
+									]
+								},
+								"url": {
+									"raw": "{{baseUrl}}/api/v1/driver/trips/{{tripId}}/collect-payment",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"v1",
+										"driver",
+										"trips",
+										"{{tripId}}",
+										"collect-payment"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Report Problem on Trip",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{authToken}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [
+									{
+										"key": "Accept",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "formdata",
+									"formdata": [
+										{
+											"key": "category",
+											"value": "Rider Issue",
+											"type": "text"
+										},
+										{
+											"key": "description",
+											"value": "The rider is causing a disturbance.",
+											"type": "text"
+										}
+									]
+								},
+								"url": {
+									"raw": "{{baseUrl}}/api/v1/driver/trips/{{tripId}}/report-problem",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"v1",
+										"driver",
+										"trips",
+										"{{tripId}}",
+										"report-problem"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				}
+			]
+		}
+	],
+	"auth": {
+		"type": "noauth"
+	},
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "baseUrl",
+			"value": "http://127.0.0.1:8000",
+			"type": "string"
+		},
+		{
+			"key": "authToken",
+			"value": "",
+			"type": "string",
+			"description": "This token is automatically set after a successful login."
+		},
+		{
+			"key": "tripId",
+			"value": "1",
+			"type": "string"
+		},
+		{
+			"key": "childId",
+			"value": "1",
+			"type": "string"
+		},
+		{
+			"key": "subscriptionId",
+			"value": "1",
+			"type": "string"
+		},
+		{
+			"key": "scheduleId",
+			"value": "1",
+			"type": "string"
+		}
+	]
+}
