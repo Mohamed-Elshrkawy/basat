@@ -10,15 +10,18 @@ class EditRoute extends EditRecord
 {
     protected static string $resource = RouteResource::class;
 
-    protected static ?string $title = 'تعديل المسار';
+    public  function getTitle(): string
+    {
+        return __('Edit route');
+    }
 
     protected function getHeaderActions(): array
     {
         return [
             Actions\ViewAction::make()
-                ->label('عرض'),
+                ->label(__('View')),
             Actions\DeleteAction::make()
-                ->label('حذف'),
+                ->label(__('Delete')),
         ];
     }
 
@@ -29,6 +32,6 @@ class EditRoute extends EditRecord
 
     protected function getSavedNotificationTitle(): ?string
     {
-        return 'تم تحديث المسار بنجاح';
+        return __('Route updated successfully');
     }
 }

@@ -9,7 +9,10 @@ class CreateRoute extends CreateRecord
 {
     protected static string $resource = RouteResource::class;
 
-    protected static ?string $title = 'إضافة مسار جديد';
+    public  function getTitle(): string
+    {
+        return __('Add new route');
+    }
 
     protected function getRedirectUrl(): string
     {
@@ -18,6 +21,6 @@ class CreateRoute extends CreateRecord
 
     protected function getCreatedNotificationTitle(): ?string
     {
-        return 'تم إنشاء المسار بنجاح';
+        return __('Route created successfully');
     }
 }

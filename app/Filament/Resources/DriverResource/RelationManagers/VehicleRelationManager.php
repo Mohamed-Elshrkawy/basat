@@ -123,7 +123,6 @@ class VehicleRelationManager extends RelationManager
                             ->helperText(__('Inactive vehicles will not appear to customers')),
 
 
-                        // ✅ قسم الوسائل (Amenities)
                         Forms\Components\Section::make('الوسائل المتاحة')
                             ->schema([
                                 Forms\Components\Repeater::make('amenities')
@@ -139,7 +138,7 @@ class VehicleRelationManager extends RelationManager
                                             ->columnSpan(1),
 
                                         Forms\Components\TextInput::make('price')
-                                            ->label('السعر')
+                                            ->label(__('Price'))
                                             ->required()
                                             ->numeric()
                                             ->prefix('SAR')
@@ -149,7 +148,7 @@ class VehicleRelationManager extends RelationManager
                                             ->columnSpan(1),
                                     ])
                                     ->columns(2)
-                                    ->addActionLabel('إضافة وسيلة')
+                                    ->addActionLabel(__('Add Method'))
                                     ->reorderable(false)
                                     ->collapsible()
                                     ->itemLabel(fn (array $state): ?string =>

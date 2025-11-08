@@ -14,13 +14,16 @@ class CitiesMap extends Page
 
     protected static string $view = 'filament.resources.city-resource.pages.cities-map';
 
-    protected static ?string $title = 'خريطة المدن';
+    public  function getTitle(): string
+    {
+        return __('Cities map');
+    }
 
     protected function getHeaderActions(): array
     {
         return [
             Actions\Action::make('back')
-                ->label('رجوع للقائمة')
+                ->label(__('Back to list'))
                 ->icon('heroicon-o-arrow-left')
                 ->url(CityResource::getUrl('index'))
                 ->color('gray'),
@@ -46,15 +49,15 @@ class CitiesMap extends Page
             ]);
 
             Notification::make()
-                ->title('تم إضافة المدينة بنجاح')
-                ->body("تمت إضافة: {$data['name_ar']}")
+                ->title(__('City added successfully'))
+                ->body(__('Added: :name', ['name' => $data['name_ar']]))
                 ->success()
                 ->send();
 
             return $city->fresh();
         } catch (\Exception $e) {
             Notification::make()
-                ->title('حدث خطأ')
+                ->title(__('An error occurred'))
                 ->body($e->getMessage())
                 ->danger()
                 ->send();
@@ -79,14 +82,14 @@ class CitiesMap extends Page
             ]);
 
             Notification::make()
-                ->title('تم تحديث المدينة بنجاح')
+                ->title(__('City updated successfully'))
                 ->success()
                 ->send();
 
             return $city->fresh();
         } catch (\Exception $e) {
             Notification::make()
-                ->title('حدث خطأ')
+                ->title(__('An error occurred'))
                 ->body($e->getMessage())
                 ->danger()
                 ->send();
@@ -104,15 +107,15 @@ class CitiesMap extends Page
             $city->delete();
 
             Notification::make()
-                ->title('تم حذف المدينة')
-                ->body("تم حذف: {$cityName}")
+                ->title(__('City deleted'))
+                ->body(__('Deleted: :name', ['name' => $cityName]))
                 ->success()
                 ->send();
 
             return true;
         } catch (\Exception $e) {
             Notification::make()
-                ->title('حدث خطأ')
+                ->title(__('An error occurred'))
                 ->body($e->getMessage())
                 ->danger()
                 ->send();
@@ -132,14 +135,14 @@ class CitiesMap extends Page
             ]);
 
             Notification::make()
-                ->title('تم تحديث موقع المدينة')
+                ->title(__('City location updated'))
                 ->success()
                 ->send();
 
             return true;
         } catch (\Exception $e) {
             Notification::make()
-                ->title('حدث خطأ')
+                ->title(__('An error occurred'))
                 ->body($e->getMessage())
                 ->danger()
                 ->send();

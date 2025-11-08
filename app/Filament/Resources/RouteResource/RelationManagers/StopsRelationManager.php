@@ -13,7 +13,20 @@ class StopsRelationManager extends RelationManager
 {
     protected static string $relationship = 'stops';
 
-    protected static ?string $title = 'المحطات';
+    public static function getTitle(\Illuminate\Database\Eloquent\Model $ownerRecord, string $pageClass): string
+    {
+        return __('Stops');
+    }
+
+    public static function getModelLabel(): string
+    {
+        return __('Stop');
+    }
+
+    public static function getPluralModelLabel(): string
+    {
+        return __('Stops');
+    }
 
     protected static ?string $recordTitleAttribute = 'name';
 
@@ -21,13 +34,13 @@ class StopsRelationManager extends RelationManager
     {
         return $form
             ->schema([
-                Forms\Components\Section::make('معلومات المحطة')
+                Forms\Components\Section::make(__('Stop information'))
                     ->schema([
                         Forms\Components\Select::make('type')
-                            ->label('نوع المحطة')
+                            ->label(__('Stop type'))
                             ->options([
-                                'city' => 'مدينة',
-                                'custom' => 'محطة مخصصة',
+                                'city'   => __('City'),
+                                'custom' => __('Custom stop'),
                             ])
                             ->default('city')
                             ->required()
@@ -39,7 +52,7 @@ class StopsRelationManager extends RelationManager
                             }),
 
                         Forms\Components\Select::make('city_id')
-                            ->label('المدينة')
+                            ->label(__('City'))
                             ->relationship('city', 'name')
                             ->getOptionLabelFromRecordUsing(fn ($record) => $record->getTranslation('name', 'ar'))
                             ->searchable()
@@ -61,12 +74,12 @@ class StopsRelationManager extends RelationManager
                         Forms\Components\Grid::make(2)
                             ->schema([
                                 Forms\Components\TextInput::make('name.ar')
-                                    ->label('اسم المحطة (عربي)')
+                                    ->label(__('Stop name (Arabic)'))
                                     ->required()
                                     ->maxLength(255),
 
                                 Forms\Components\TextInput::make('name.en')
-                                    ->label('اسم المحطة (English)')
+                                    ->label(__('Stop name (English)'))
                                     ->required()
                                     ->maxLength(255),
                             ]),
@@ -74,7 +87,7 @@ class StopsRelationManager extends RelationManager
                         Forms\Components\Grid::make(2)
                             ->schema([
                                 Forms\Components\TextInput::make('lat')
-                                    ->label('خط العرض')
+                                    ->label(__('Latitude'))
                                     ->required()
                                     ->numeric()
                                     ->step(0.00000001)
@@ -82,7 +95,7 @@ class StopsRelationManager extends RelationManager
                                     ->maxValue(90),
 
                                 Forms\Components\TextInput::make('lng')
-                                    ->label('خط الطول')
+                                    ->label(__('Longitude'))
                                     ->required()
                                     ->numeric()
                                     ->step(0.00000001)
@@ -93,45 +106,45 @@ class StopsRelationManager extends RelationManager
                         Forms\Components\Grid::make(3)
                             ->schema([
                                 Forms\Components\TextInput::make('order')
-                                    ->label('الترتيب')
+                                    ->label(__('Order'))
                                     ->required()
                                     ->numeric()
                                     ->minValue(1)
                                     ->default(fn () => $this->getOwnerRecord()->stops()->max('order') + 1 ?? 1),
 
                                 Forms\Components\TextInput::make('distance_from_previous_km')
-                                    ->label('المسافة من السابقة (كم)')
+                                    ->label(__('Distance from previous (km)'))
                                     ->numeric()
                                     ->minValue(0)
                                     ->step(0.01)
-                                    ->suffix('كم')
+                                    ->suffix(__(' km'))
                                     ->default(0),
 
                                 Forms\Components\TextInput::make('range_meters')
-                                    ->label('نطاق المحطة')
+                                    ->label(__('Stop radius'))
                                     ->numeric()
                                     ->minValue(100)
-                                    ->suffix('متر')
+                                    ->suffix(__(' meter'))
                                     ->default(2000)
-                                    ->helperText('المسافة المسموحة للركوب/النزول حول المحطة'),
+                                    ->helperText(__('Allowed distance to board or drop around the stop')),
                             ]),
 
                         Forms\Components\Grid::make(2)
                             ->schema([
                                 Forms\Components\TextInput::make('estimated_time_minutes')
-                                    ->label('الوقت المقدر من السابقة')
+                                    ->label(__('Estimated time from previous'))
                                     ->numeric()
                                     ->minValue(0)
-                                    ->suffix('دقيقة')
+                                    ->suffix(__(' minute'))
                                     ->default(0),
 
                                 Forms\Components\TextInput::make('cumulative_time_minutes')
-                                    ->label('الوقت التراكمي من البداية')
+                                    ->label(__('Cumulative time from start'))
                                     ->numeric()
                                     ->minValue(0)
-                                    ->suffix('دقيقة')
+                                    ->suffix(__(' minute'))
                                     ->default(0)
-                                    ->helperText('الوقت الإجمالي من محطة البداية'),
+                                    ->helperText(__('Total time from the starting stop')),
                             ]),
                     ]),
             ]);
@@ -145,100 +158,104 @@ class StopsRelationManager extends RelationManager
             ->defaultSort('order', 'asc')
             ->columns([
                 Tables\Columns\TextColumn::make('order')
-                    ->label('#')
+                    ->label(__('Order #'))
                     ->sortable()
                     ->alignCenter()
                     ->weight('bold')
                     ->badge()
                     ->color(fn ($record, $rowLoop) => match (true) {
                         $rowLoop->first => 'success',
-                        $rowLoop->last => 'danger',
-                        default => 'primary',
+                        $rowLoop->last  => 'danger',
+                        default         => 'primary',
                     }),
 
                 Tables\Columns\TextColumn::make('name')
-                    ->label('اسم المحطة')
+                    ->label(__('Stop name'))
                     ->getStateUsing(fn ($record) => $record->getTranslation('name', 'ar'))
                     ->searchable()
                     ->weight('bold')
                     ->limit(30),
 
                 Tables\Columns\TextColumn::make('type')
-                    ->label('النوع')
+                    ->label(__('Type'))
                     ->badge()
                     ->color(fn (string $state): string => match ($state) {
-                        'city' => 'info',
+                        'city'   => 'info',
                         'custom' => 'warning',
                     })
                     ->formatStateUsing(fn (string $state): string => match ($state) {
-                        'city' => 'مدينة',
-                        'custom' => 'محطة مخصصة',
+                        'city'   => __('City'),
+                        'custom' => __('Custom stop'),
                     }),
 
                 Tables\Columns\TextColumn::make('city.name')
-                    ->label('المدينة')
+                    ->label(__('City'))
                     ->getStateUsing(fn ($record) => $record->city ? $record->city->getTranslation('name', 'ar') : '-')
                     ->badge()
                     ->color('success')
                     ->limit(20),
 
                 Tables\Columns\TextColumn::make('lat')
-                    ->label('الموقع')
+                    ->label(__('Location'))
                     ->getStateUsing(fn ($record) => number_format($record->lat, 4) . ', ' . number_format($record->lng, 4))
                     ->copyable()
-                    ->copyMessage('تم نسخ الإحداثيات')
+                    ->copyMessage(__('Coordinates copied'))
                     ->size('xs')
                     ->color('gray'),
 
                 Tables\Columns\TextColumn::make('distance_from_previous_km')
-                    ->label('المسافة')
+                    ->label(__('Distance'))
                     ->numeric(2)
-                    ->suffix(' كم')
+                    ->suffix(__(' km'))
                     ->alignCenter()
                     ->sortable()
                     ->color('primary')
-                    ->tooltip('المسافة من المحطة السابقة'),
+                    ->tooltip(__('Distance from previous stop')),
 
                 Tables\Columns\TextColumn::make('estimated_time_minutes')
-                    ->label('الوقت')
+                    ->label(__('Estimated time'))
                     ->getStateUsing(function ($record) {
                         if ($record->estimated_time_minutes < 60) {
-                            return $record->estimated_time_minutes . ' د';
+                            return $record->estimated_time_minutes . ' ' . __('min');
                         }
-                        $hours = floor($record->estimated_time_minutes / 60);
+                        $hours   = floor($record->estimated_time_minutes / 60);
                         $minutes = $record->estimated_time_minutes % 60;
-                        return $minutes > 0 ? "{$hours} س {$minutes} د" : "{$hours} س";
+                        return $minutes > 0
+                            ? "{$hours} " . __('hr') . " {$minutes} " . __('min')
+                            : "{$hours} " . __('hr');
                     })
                     ->alignCenter()
                     ->badge()
                     ->color('info')
-                    ->tooltip('الوقت المقدر من المحطة السابقة'),
+                    ->tooltip(__('Estimated time from previous stop')),
 
                 Tables\Columns\TextColumn::make('cumulative_time_minutes')
-                    ->label('الوقت التراكمي')
+                    ->label(__('Cumulative time'))
                     ->getStateUsing(function ($record) {
                         if ($record->cumulative_time_minutes < 60) {
-                            return $record->cumulative_time_minutes . ' د';
+                            return $record->cumulative_time_minutes . ' ' . __('min');
                         }
-                        $hours = floor($record->cumulative_time_minutes / 60);
+                        $hours   = floor($record->cumulative_time_minutes / 60);
                         $minutes = $record->cumulative_time_minutes % 60;
-                        return $minutes > 0 ? "{$hours} س {$minutes} د" : "{$hours} س";
+                        return $minutes > 0
+                            ? "{$hours} " . __('hr') . " {$minutes} " . __('min')
+                            : "{$hours} " . __('hr');
                     })
                     ->alignCenter()
                     ->badge()
                     ->color('warning')
-                    ->tooltip('الوقت التراكمي من البداية'),
+                    ->tooltip(__('Cumulative time from start')),
             ])
             ->filters([
                 Tables\Filters\SelectFilter::make('type')
-                    ->label('نوع المحطة')
+                    ->label(__('Stop type'))
                     ->options([
-                        'city' => 'مدينة',
-                        'custom' => 'محطة مخصصة',
+                        'city'   => __('City'),
+                        'custom' => __('Custom stop'),
                     ]),
 
                 Tables\Filters\SelectFilter::make('city_id')
-                    ->label('المدينة')
+                    ->label(__('City'))
                     ->relationship('city', 'name')
                     ->getOptionLabelFromRecordUsing(fn ($record) => $record->getTranslation('name', 'ar'))
                     ->searchable()
@@ -246,29 +263,28 @@ class StopsRelationManager extends RelationManager
             ])
             ->headerActions([
                 Tables\Actions\CreateAction::make()
-                    ->label('إضافة محطة')
+                    ->label(__('Add stop'))
                     ->icon('heroicon-o-plus')
-                    ->modalHeading('إضافة محطة جديدة')
-                    ->successNotificationTitle('تم إضافة المحطة بنجاح'),
+                    ->modalHeading(__('Add new stop'))
+                    ->successNotificationTitle(__('Stop added successfully')),
             ])
             ->actions([
                 Tables\Actions\ActionGroup::make([
                     Tables\Actions\EditAction::make()
-                        ->modalHeading('تعديل المحطة')
-                        ->successNotificationTitle('تم تحديث المحطة بنجاح'),
+                        ->modalHeading(__('Edit stop'))
+                        ->successNotificationTitle(__('Stop updated successfully')),
 
                     Tables\Actions\Action::make('view_on_map')
-                        ->label('عرض على الخريطة')
+                        ->label(__('View on map'))
                         ->icon('heroicon-o-map')
                         ->color('success')
                         ->url(fn ($record) => "https://www.google.com/maps/@{$record->lat},{$record->lng},15z")
                         ->openUrlInNewTab(),
 
                     Tables\Actions\DeleteAction::make()
-                        ->modalHeading('حذف المحطة')
-                        ->successNotificationTitle('تم حذف المحطة بنجاح')
+                        ->modalHeading(__('Delete stop'))
+                        ->successNotificationTitle(__('Stop deleted successfully'))
                         ->before(function ($record) {
-                            // إعادة ترتيب المحطات المتبقية
                             $route = $record->route;
                             $order = $record->order;
 
@@ -279,7 +295,7 @@ class StopsRelationManager extends RelationManager
                                 });
                         }),
                 ])
-                    ->label('إجراءات')
+                    ->label(__('Actions'))
                     ->icon('heroicon-m-ellipsis-vertical')
                     ->size('sm')
                     ->button(),
@@ -287,15 +303,15 @@ class StopsRelationManager extends RelationManager
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
                     Tables\Actions\DeleteBulkAction::make()
-                        ->modalHeading('حذف المحطات المحددة'),
+                        ->modalHeading(__('Delete selected stops')),
                 ]),
             ])
-            ->emptyStateHeading('لا توجد محطات')
-            ->emptyStateDescription('قم بإنشاء محطات للمسار')
+            ->emptyStateHeading(__('No stops found'))
+            ->emptyStateDescription(__('Create stops for the route'))
             ->emptyStateIcon('heroicon-o-map-pin')
             ->emptyStateActions([
                 Tables\Actions\CreateAction::make()
-                    ->label('إضافة محطة')
+                    ->label(__('Add stop'))
                     ->icon('heroicon-o-plus'),
             ]);
     }

@@ -12,13 +12,16 @@ class ViewRoute extends ViewRecord
 {
     protected static string $resource = RouteResource::class;
 
-    protected static ?string $title = 'عرض المسار';
+    public  function getTitle(): string
+    {
+        return __('View route');
+    }
 
     protected function getHeaderActions(): array
     {
         return [
             Actions\EditAction::make()
-                ->label('تعديل'),
+                ->label(__('Edit')),
         ];
     }
 
@@ -26,40 +29,40 @@ class ViewRoute extends ViewRecord
     {
         return $infolist
             ->schema([
-                Infolists\Components\Section::make('معلومات المسار')
+                Infolists\Components\Section::make(__('Route information'))
                     ->schema([
                         Infolists\Components\Grid::make(2)
                             ->schema([
                                 Infolists\Components\TextEntry::make('name_ar')
-                                    ->label('اسم المسار (عربي)'),
+                                    ->label(__('Route name (Arabic)')),
 
                                 Infolists\Components\TextEntry::make('name_en')
-                                    ->label('اسم المسار (English)'),
+                                    ->label(__('Route name (English)')),
                             ]),
 
                         Infolists\Components\Grid::make(3)
                             ->schema([
                                 Infolists\Components\TextEntry::make('startCity.name')
-                                    ->label('مدينة البداية')
+                                    ->label(__('Start city'))
                                     ->getStateUsing(fn ($record) => $record->startCity?->getTranslation('name', 'ar'))
                                     ->badge()
                                     ->color('success'),
 
                                 Infolists\Components\TextEntry::make('endCity.name')
-                                    ->label('مدينة النهاية')
+                                    ->label(__('End city'))
                                     ->getStateUsing(fn ($record) => $record->endCity?->getTranslation('name', 'ar'))
                                     ->badge()
                                     ->color('info'),
 
                                 Infolists\Components\TextEntry::make('range_km')
-                                    ->label('المسافة')
-                                    ->suffix(' كم')
+                                    ->label(__('Distance'))
+                                    ->suffix(__(' km'))
                                     ->badge()
                                     ->color('warning'),
                             ]),
 
                         Infolists\Components\IconEntry::make('is_active')
-                            ->label('الحالة')
+                            ->label(__('Status'))
                             ->boolean()
                             ->trueIcon('heroicon-o-check-circle')
                             ->falseIcon('heroicon-o-x-circle')
@@ -67,7 +70,7 @@ class ViewRoute extends ViewRecord
                             ->falseColor('danger'),
                     ]),
 
-                Infolists\Components\Section::make('محطات المسار')
+                Infolists\Components\Section::make(__('Route stops'))
                     ->schema([
                         Infolists\Components\RepeatableEntry::make('routeStops')
                             ->label('')
@@ -75,20 +78,20 @@ class ViewRoute extends ViewRecord
                                 Infolists\Components\Grid::make(4)
                                     ->schema([
                                         Infolists\Components\TextEntry::make('stop.name')
-                                            ->label('المحطة')
+                                            ->label(__('Stop'))
                                             ->getStateUsing(fn ($record) => $record->stop?->getTranslation('name', 'ar'))
                                             ->badge()
                                             ->color('primary')
                                             ->columnSpan(2),
 
                                         Infolists\Components\TextEntry::make('arrival_time')
-                                            ->label('⏰ وقت الوصول')
+                                            ->label(__('⏰ Arrival time'))
                                             ->time('H:i')
                                             ->badge()
                                             ->color('success'),
 
                                         Infolists\Components\TextEntry::make('departure_time')
-                                            ->label('🚀 وقت المغادرة')
+                                            ->label(__('🚀 Departure time'))
                                             ->time('H:i')
                                             ->badge()
                                             ->color('info'),
@@ -98,16 +101,16 @@ class ViewRoute extends ViewRecord
                     ])
                     ->collapsible(),
 
-                Infolists\Components\Section::make('معلومات إضافية')
+                Infolists\Components\Section::make(__('Additional information'))
                     ->schema([
                         Infolists\Components\Grid::make(2)
                             ->schema([
                                 Infolists\Components\TextEntry::make('created_at')
-                                    ->label('تاريخ الإنشاء')
+                                    ->label(__('Created at'))
                                     ->dateTime('Y-m-d H:i'),
 
                                 Infolists\Components\TextEntry::make('updated_at')
-                                    ->label('آخر تحديث')
+                                    ->label(__('Last updated'))
                                     ->dateTime('Y-m-d H:i')
                                     ->since(),
                             ]),

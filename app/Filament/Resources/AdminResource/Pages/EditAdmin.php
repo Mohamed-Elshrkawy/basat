@@ -22,7 +22,6 @@ class EditAdmin extends EditRecord
         return $this->getResource()::getUrl('index');
     }
 
-    // ✅ التأكد من بقاء user_type = 'admin' عند التعديل
     protected function mutateFormDataBeforeSave(array $data): array
     {
         $data['user_type'] = 'admin';
@@ -30,10 +29,9 @@ class EditAdmin extends EditRecord
         return $data;
     }
 
-    // ✅ (اختياري) منع التعديل إذا كان المستخدم ليس admin
+    // ✅
     protected function beforeFill(): void
     {
-        // التحقق من أن السجل هو admin فعلاً
         if ($this->record->user_type !== 'admin') {
             abort(403, 'غير مصرح لك بتعديل هذا المستخدم');
         }

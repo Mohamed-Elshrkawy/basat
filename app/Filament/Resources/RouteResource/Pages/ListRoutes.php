@@ -10,13 +10,17 @@ class ListRoutes extends ListRecords
 {
     protected static string $resource = RouteResource::class;
 
-    protected static ?string $title = 'المسارات';
+    // ✅ عنوان الصفحة مترجم
+    public  function getTitle(): string
+    {
+        return __('Routes');
+    }
 
     protected function getHeaderActions(): array
     {
         return [
             Actions\CreateAction::make()
-                ->label('➕ إضافة مسار جديد'),
+                ->label(__('➕ Add new route')),
         ];
     }
 }
