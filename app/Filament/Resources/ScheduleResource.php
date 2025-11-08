@@ -9,6 +9,7 @@ use App\Models\Stop;
 use App\Models\User;
 use Filament\Forms;
 use Filament\Forms\Form;
+use Filament\Notifications\Notification;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
@@ -271,6 +272,128 @@ class ScheduleResource extends Resource
                     ->columnSpanFull()
                     ->skippable(),
             ]);
+    }
+
+    public static function table(Table $table): Table
+    {
+        return $table
+            ->columns([
+                Tables\Columns\TextColumn::make('id')
+                    ->label(__('Id'))
+                    ->sortable(),
+
+                Tables\Columns\TextColumn::make('route.name')
+                    ->label(__('Route'))
+                    ->getStateUsing(fn ($record) => $record->route?->getTranslation('name', 'ar'))
+                    ->searchable()
+                    ->sortable()
+                    ->weight('bold'),
+
+                Tables\Columns\BadgeColumn::make('trip_type')
+                    ->label(__('Trip Type'))
+                    ->formatStateUsing(fn (string $state): string => $state === 'one_way' ? __('One Way') : __('Round Trip'))
+                    ->colors([ 'info' => 'one_way', 'success' => 'round_trip' ]),
+
+                Tables\Columns\TextColumn::make('departure_time')
+                    ->label(__('Departure Time'))
+                    ->time('H:i')
+                    ->sortable(),
+
+                Tables\Columns\TextColumn::make('fare')
+                    ->label(__('Fare'))
+                    ->money('SAR')
+                    ->sortable(),
+
+                Tables\Columns\TextColumn::make('driver.name')
+                    ->label(__('Driver'))
+                    ->searchable()
+                    ->default(__('Not Assigned'))
+                    ->toggleable(),
+
+                Tables\Columns\TextColumn::make('available_seats')
+                    ->label(__('Available Seats'))
+                    ->badge()
+                    ->color(fn ($state) => $state > 20 ? 'success' : ($state > 10 ? 'warning' : 'danger'))
+                    ->sortable(),
+
+                Tables\Columns\TextColumn::make('days_of_week')
+                    ->label(__('Days Of Week'))
+                    ->formatStateUsing(function ($state) {
+                        if (!$state) return '-';
+                        $days = [
+                            'Monday' => __('Monday'),
+                            'Tuesday' => __('Tuesday'),
+                            'Wednesday' => __('Wednesday'),
+                            'Thursday' => __('Thursday'),
+                            'Friday' => __('Friday'),
+                            'Saturday' => __('Saturday'),
+                            'Sunday' => __('Sunday'),
+                        ];
+                        return collect($state)->map(fn($d) => $days[$d] ?? $d)->implode('، ');
+                    })
+                    ->wrap()
+                    ->limit(30)
+                    ->toggleable(),
+
+                Tables\Columns\IconColumn::make('is_active')
+                    ->label(__('Status'))
+                    ->boolean()
+                    ->trueIcon('heroicon-o-check-circle')
+                    ->falseIcon('heroicon-o-x-circle')
+                    ->trueColor('success')
+                    ->falseColor('danger')
+                    ->sortable(),
+
+                Tables\Columns\TextColumn::make('created_at')
+                    ->label(__('Created At'))
+                    ->dateTime('Y-m-d')
+                    ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: true),
+            ])
+            ->filters([
+                Tables\Filters\SelectFilter::make('trip_type')
+                    ->label(__('Trip Type'))
+                    ->options([
+                        'one_way' => __('One Way Only'),
+                        'round_trip' => __('Round Trip')
+                    ]),
+
+                Tables\Filters\SelectFilter::make('route_id')
+                    ->label(__('Route'))
+                    ->options(fn () => Route::active()->get()->mapWithKeys(fn ($route) => [ $route->id => $route->getTranslation('name', 'ar') ]))
+                    ->searchable(),
+
+                Tables\Filters\TernaryFilter::make('is_active')
+                    ->label(__('Status'))
+                    ->placeholder(__('All'))
+                    ->trueLabel(__('Active'))
+                    ->falseLabel(__('Inactive')),
+
+                Tables\Filters\Filter::make('has_seats')
+                    ->label(__('Has Seats'))
+                    ->query(fn ($query) => $query->where('available_seats', '>', 0)),
+
+                Tables\Filters\TernaryFilter::make('has_driver')
+                    ->label(__('Driver'))
+                    ->placeholder(__('All'))
+                    ->trueLabel(__('Assigned'))
+                    ->falseLabel(__('Not Assigned'))
+                    ->queries(
+                        true: fn ($query) => $query->whereNotNull('driver_id'),
+                        false: fn ($query) => $query->whereNull('driver_id')
+                    ),
+            ])
+            ->actions([
+                Tables\Actions\ViewAction::make(),
+                Tables\Actions\EditAction::make(),
+                Tables\Actions\DeleteAction::make(),
+            ])
+            ->bulkActions([
+                Tables\Actions\BulkActionGroup::make([
+                    Tables\Actions\DeleteBulkAction::make(),
+                ]),
+            ])
+            ->defaultSort('departure_time', 'asc');
     }
 
     public static function getRelations(): array
