@@ -44,7 +44,6 @@ class AccountDeletionRequestResource extends Resource
         return __('User Management');
     }
 
-    // 🔹 نموذج الفورم
     public static function form(Form $form): Form
     {
         return $form->schema([
@@ -83,7 +82,6 @@ class AccountDeletionRequestResource extends Resource
         ]);
     }
 
-    // 🔹 جدول العرض
     public static function table(Table $table): Table
     {
         return $table

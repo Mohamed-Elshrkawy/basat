@@ -48,13 +48,13 @@ Route::middleware(['auth:api', 'client'])->group(callback: function () {
     });
 
     /** Booking Routes **/
-    Route::controller(BookingController::class)->prefix('bookings')->group(function () {
-        Route::get('', 'index');
-        Route::post('', 'store');
-        Route::get('/{id}', 'show');
-        Route::post('/{id}/cancel', 'cancel');
+    Route::controller(BookingController::class)->group(function () {
+        Route::get('bookings', 'index');
+        Route::post('bookings', 'store');
+        Route::get('bookings/{id}', 'show');
+        Route::post('bookings/{id}/cancel', 'cancel');
         Route::post('schedules/available-seats', 'availableSeats');
-        Route::post('/{id}/confirm-payment', 'confirmPayment');
+        Route::post('bookings/{id}/confirm-payment', 'confirmPayment');
     });
 
 });

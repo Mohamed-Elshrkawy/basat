@@ -2,9 +2,11 @@
 
 namespace App\Models;
 
+use App\Services\General\QRCodeService;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Support\Facades\Storage;
 
 class Booking extends Model
 {
@@ -43,6 +45,8 @@ class Booking extends Model
         'cancelled_at' => 'datetime',
     ];
 
+    protected $appends = ['qr_code_url'];
+
     /**
      * Boot the model
      */
@@ -54,6 +58,14 @@ class Booking extends Model
             if (empty($booking->booking_number)) {
                 $booking->booking_number = self::generateBookingNumber();
             }
+        });
+
+        static::created(function ($booking) {
+            app(QRCodeService::class)->generateForBooking($booking);
+        });
+
+        static::deleting(function ($booking) {
+            app(QRCodeService::class)->deleteQRCode($booking);
         });
     }
 
@@ -131,6 +143,20 @@ class Booking extends Model
     public function canBeCancelled(): bool
     {
         return in_array($this->status, ['pending', 'confirmed']);
+    }
+
+    /**
+     * Get QR Code URL
+     */
+    public function getQrCodeUrlAttribute(): string
+    {
+        $filename = "qrcodes/booking_{$this->booking_number}.png";
+
+        if (Storage::disk('public')->exists($filename)) {
+            return Storage::disk('public')->url($filename);
+        }
+
+        return app(QRCodeService::class)->generateForBooking($this);
     }
 
     /**

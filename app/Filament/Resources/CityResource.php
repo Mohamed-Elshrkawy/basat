@@ -87,9 +87,9 @@ class CityResource extends Resource
             ->columns([
                 Tables\Columns\TextColumn::make('name')
                     ->label(__('City Name'))
-                    ->getStateUsing(fn ($record) => $record->getTranslation('name', 'ar'))
                     ->searchable(query: function ($query, $search) {
-                        $query->where('name->ar', 'like', "%{$search}%");
+                        $query->where('name->ar', 'like', "%{$search}%")
+                            ->orWhere('name->en', 'like', "%{$search}%");
                     })
                     ->sortable(),
 

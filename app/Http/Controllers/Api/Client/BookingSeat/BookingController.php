@@ -3,28 +3,25 @@
 namespace App\Http\Controllers\Api\Client\BookingSeat;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Api\Client\BookingSeat\AvailableSeatsRequest;
+use App\Http\Requests\Api\Client\BookingSeat\CreateBookingRequest;
+use App\Http\Resources\Api\Client\BookingSeat\BookingDetailResource;
+use App\Http\Resources\Api\Client\BookingSeat\BookingResource;
 use App\Models\Booking;
 use App\Models\Schedule;
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Validation\ValidationException;
 
 class BookingController extends Controller
 {
     /**
      * Get available seats for a schedule on a specific date
-     *
-     * @param Request $request
-     * @return JsonResponse
      */
-    public function availableSeats(Request $request): JsonResponse
+    public function availableSeats(AvailableSeatsRequest $request): JsonResponse
     {
-        $validated = $request->validate([
-            'schedule_id' => 'required|exists:schedules,id',
-            'travel_date' => 'required|date|after_or_equal:today',
-        ]);
+        $validated = $request->validated();
 
         $schedule = Schedule::with('route')->find($validated['schedule_id']);
 
@@ -35,7 +32,6 @@ class BookingController extends Controller
             ], 404);
         }
 
-        // Get booked seats for this schedule on this date
         $bookedSeats = Booking::where('schedule_id', $validated['schedule_id'])
             ->where('travel_date', $validated['travel_date'])
             ->whereIn('status', ['pending', 'confirmed'])
@@ -44,7 +40,7 @@ class BookingController extends Controller
             ->unique()
             ->values();
 
-        $totalSeats = 50; // يمكن جعله متغير في جدول الباصات
+        $totalSeats = 50;
         $availableSeatsCount = $totalSeats - $bookedSeats->count();
 
         return response()->json([
@@ -61,24 +57,12 @@ class BookingController extends Controller
 
     /**
      * Create a new booking
-     *
-     * @param Request $request
-     * @return JsonResponse
      */
-    public function store(Request $request): JsonResponse
+    public function store(CreateBookingRequest $request): JsonResponse
     {
-        $validated = $request->validate([
-            'schedule_id' => 'required|exists:schedules,id',
-            'travel_date' => 'required|date|after_or_equal:today',
-            'trip_type' => 'required|in:one_way,round_trip',
-            'number_of_seats' => 'required|integer|min:1|max:10',
-            'seat_numbers' => 'required|array|min:1|max:10',
-            'seat_numbers.*' => 'required|integer|min:1|max:50',
-            'payment_method' => 'required|in:cash,card,wallet,bank_transfer',
-            'notes' => 'nullable|string|max:500',
-        ]);
+        $validated = $request->validated();
 
-        // التحقق من تطابق عدد المقاعد مع أرقام المقاعد
+        // التحقق من تطابق عدد المقاعد
         if (count($validated['seat_numbers']) !== $validated['number_of_seats']) {
             return response()->json([
                 'success' => false,
@@ -134,8 +118,7 @@ class BookingController extends Controller
                 ->unique()
                 ->toArray();
 
-            $requestedSeats = $validated['seat_numbers'];
-            $conflictingSeats = array_intersect($bookedSeats, $requestedSeats);
+            $conflictingSeats = array_intersect($bookedSeats, $validated['seat_numbers']);
 
             if (!empty($conflictingSeats)) {
                 DB::rollBack();
@@ -176,15 +159,12 @@ class BookingController extends Controller
                 'notes' => $validated['notes'] ?? null,
             ]);
 
-            // تقليل عدد المقاعد المتاحة
-            // $schedule->decrement('available_seats', $validated['number_of_seats']);
-
             DB::commit();
 
             return response()->json([
                 'success' => true,
                 'message' => 'تم إنشاء الحجز بنجاح',
-                'data' => $this->formatBooking($booking->load('schedule.route')),
+                'data' => new BookingResource($booking->load('schedule.route.startCity', 'schedule.route.endCity')),
             ], 201);
 
         } catch (\Exception $e) {
@@ -200,9 +180,6 @@ class BookingController extends Controller
 
     /**
      * Get user bookings
-     *
-     * @param Request $request
-     * @return JsonResponse
      */
     public function index(Request $request): JsonResponse
     {
@@ -219,7 +196,7 @@ class BookingController extends Controller
         return response()->json([
             'success' => true,
             'data' => [
-                'bookings' => $bookings->map(fn($booking) => $this->formatBooking($booking)),
+                'bookings' => BookingResource::collection($bookings),
                 'pagination' => [
                     'current_page' => $bookings->currentPage(),
                     'last_page' => $bookings->lastPage(),
@@ -232,9 +209,6 @@ class BookingController extends Controller
 
     /**
      * Get booking details
-     *
-     * @param int $id
-     * @return JsonResponse
      */
     public function show(int $id): JsonResponse
     {
@@ -251,16 +225,12 @@ class BookingController extends Controller
 
         return response()->json([
             'success' => true,
-            'data' => $this->formatBookingDetails($booking),
+            'data' => new BookingDetailResource($booking),
         ]);
     }
 
     /**
      * Cancel booking
-     *
-     * @param int $id
-     * @param Request $request
-     * @return JsonResponse
      */
     public function cancel(int $id, Request $request): JsonResponse
     {
@@ -294,7 +264,7 @@ class BookingController extends Controller
             return response()->json([
                 'success' => true,
                 'message' => 'تم إلغاء الحجز بنجاح',
-                'data' => $this->formatBooking($booking->load('schedule.route')),
+                'data' => new BookingResource($booking->load('schedule.route.startCity', 'schedule.route.endCity')),
             ]);
 
         } catch (\Exception $e) {
@@ -308,11 +278,7 @@ class BookingController extends Controller
     }
 
     /**
-     * Confirm payment (webhook or manual)
-     *
-     * @param int $id
-     * @param Request $request
-     * @return JsonResponse
+     * Confirm payment
      */
     public function confirmPayment(int $id, Request $request): JsonResponse
     {
@@ -346,7 +312,7 @@ class BookingController extends Controller
             return response()->json([
                 'success' => true,
                 'message' => 'تم تأكيد الدفع بنجاح',
-                'data' => $this->formatBooking($booking->load('schedule.route')),
+                'data' => new BookingResource($booking->load('schedule.route.startCity', 'schedule.route.endCity')),
             ]);
 
         } catch (\Exception $e) {
@@ -357,107 +323,5 @@ class BookingController extends Controller
                 'message' => 'حدث خطأ أثناء تأكيد الدفع',
             ], 500);
         }
-    }
-
-    /**
-     * Format booking data
-     *
-     * @param Booking $booking
-     * @return array
-     */
-    private function formatBooking(Booking $booking): array
-    {
-        return [
-            'id' => $booking->id,
-            'booking_number' => $booking->booking_number,
-            'route' => [
-                'from' => $booking->schedule->route->startCity->getTranslation('name', 'ar'),
-                'to' => $booking->schedule->route->endCity->getTranslation('name', 'ar'),
-            ],
-            'travel_date' => $booking->travel_date->format('Y-m-d'),
-            'travel_date_formatted' => $booking->travel_date->locale('ar')->isoFormat('dddd، D MMMM YYYY'),
-            'trip_type' => $booking->trip_type,
-            'trip_type_label' => $booking->trip_type === 'one_way' ? 'ذهاب فقط' : 'ذهاب وعودة',
-            'number_of_seats' => $booking->number_of_seats,
-            'seat_numbers' => $booking->seat_numbers,
-            'total_amount' => (float) $booking->total_amount,
-            'payment_method' => $booking->payment_method,
-            'payment_status' => $booking->payment_status,
-            'status' => $booking->status,
-            'status_label' => $this->getStatusLabel($booking->status),
-            'created_at' => $booking->created_at->format('Y-m-d H:i:s'),
-        ];
-    }
-
-    /**
-     * Format booking details
-     *
-     * @param Booking $booking
-     * @return array
-     */
-    private function formatBookingDetails(Booking $booking): array
-    {
-        return [
-            'id' => $booking->id,
-            'booking_number' => $booking->booking_number,
-            'schedule' => [
-                'id' => $booking->schedule->id,
-                'route' => [
-                    'from' => $booking->schedule->route->startCity->getTranslation('name', 'ar'),
-                    'to' => $booking->schedule->route->endCity->getTranslation('name', 'ar'),
-                ],
-                'departure_time' => $booking->schedule->departure_time,
-                'arrival_time' => $booking->schedule->arrival_time,
-                'return_departure_time' => $booking->schedule->return_departure_time,
-                'return_arrival_time' => $booking->schedule->return_arrival_time,
-                'driver' => $booking->schedule->driver ? [
-                    'name' => $booking->schedule->driver->name,
-                ] : null,
-            ],
-            'travel_date' => $booking->travel_date->format('Y-m-d'),
-            'travel_date_formatted' => $booking->travel_date->locale('ar')->isoFormat('dddd، D MMMM YYYY'),
-            'trip_type' => $booking->trip_type,
-            'trip_type_label' => $booking->trip_type === 'one_way' ? 'ذهاب فقط' : 'ذهاب وعودة',
-            'number_of_seats' => $booking->number_of_seats,
-            'seat_numbers' => $booking->seat_numbers,
-            'pricing' => [
-                'outbound_fare' => (float) $booking->outbound_fare,
-                'return_fare' => (float) $booking->return_fare,
-                'discount' => (float) $booking->discount,
-                'total_amount' => (float) $booking->total_amount,
-            ],
-            'payment' => [
-                'method' => $booking->payment_method,
-                'status' => $booking->payment_status,
-                'transaction_id' => $booking->transaction_id,
-                'paid_at' => $booking->paid_at?->format('Y-m-d H:i:s'),
-            ],
-            'status' => $booking->status,
-            'status_label' => $this->getStatusLabel($booking->status),
-            'notes' => $booking->notes,
-            'cancellation' => [
-                'reason' => $booking->cancellation_reason,
-                'cancelled_at' => $booking->cancelled_at?->format('Y-m-d H:i:s'),
-            ],
-            'created_at' => $booking->created_at->format('Y-m-d H:i:s'),
-        ];
-    }
-
-    /**
-     * Get status label in Arabic
-     *
-     * @param string $status
-     * @return string
-     */
-    private function getStatusLabel(string $status): string
-    {
-        return match($status) {
-            'pending' => 'في انتظار الدفع',
-            'confirmed' => 'مؤكد',
-            'cancelled' => 'ملغي',
-            'completed' => 'مكتمل',
-            'refunded' => 'تم الاسترداد',
-            default => $status,
-        };
     }
 }

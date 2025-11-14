@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api\Client\BookingSeat;
 use App\Http\Controllers\Controller;
 use App\Models\Schedule;
 use App\Models\Route;
+use App\Models\Booking;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
@@ -94,11 +95,16 @@ class ScheduleController extends Controller
     /**
      * Get schedule details by ID
      *
+     * @param Request $request
      * @param int $id
      * @return JsonResponse
      */
-    public function show(int $id): JsonResponse
+    public function show(Request $request, int $id): JsonResponse
     {
+        $validated = $request->validate([
+            'travel_date' => 'required|date|after_or_equal:today',
+        ]);
+
         $schedule = Schedule::with([
             'route.startCity',
             'route.endCity',
@@ -115,10 +121,67 @@ class ScheduleController extends Controller
             ], 404);
         }
 
+        // التحقق من أن الرحلة تعمل في هذا اليوم
+        $travelDate = Carbon::parse($validated['travel_date']);
+        $dayOfWeek = $travelDate->format('l');
+
+        if (!in_array($dayOfWeek, $schedule->days_of_week ?? [])) {
+            return response()->json([
+                'success' => false,
+                'message' => 'الرحلة غير متاحة في هذا اليوم',
+            ], 422);
+        }
+
+        // Get seats status for the travel date
+        $seatsStatus = $this->getSeatsStatus($schedule->id, $validated['travel_date']);
+
         return response()->json([
             'success' => true,
-            'data' => $this->formatScheduleDetails($schedule),
+            'data' => array_merge(
+                $this->formatScheduleDetails($schedule),
+                ['seats' => $seatsStatus]
+            ),
         ]);
+    }
+
+    /**
+     * Get seats status for a schedule on a specific date
+     *
+     * @param int $scheduleId
+     * @param string $travelDate
+     * @return array
+     */
+    private function getSeatsStatus(int $scheduleId, string $travelDate): array
+    {
+        // Get all booked seats for this schedule on this date
+        $bookedSeats = Booking::where('schedule_id', $scheduleId)
+            ->where('travel_date', $travelDate)
+            ->whereIn('status', ['pending', 'confirmed'])
+            ->pluck('seat_numbers')
+            ->flatten()
+            ->unique()
+            ->values()
+            ->toArray();
+
+        // Total seats (يمكن جعله متغير من جدول الباصات)
+        $totalSeats = 50;
+
+        // Build seats array
+        $seats = [];
+        for ($i = 1; $i <= $totalSeats; $i++) {
+            $seats[] = [
+                'seat_number' => $i,
+                'is_available' => !in_array($i, $bookedSeats),
+                'status' => in_array($i, $bookedSeats) ? 'booked' : 'available',
+            ];
+        }
+
+        return [
+            'total_seats' => $totalSeats,
+            'available_seats' => $totalSeats - count($bookedSeats),
+            'booked_seats_count' => count($bookedSeats),
+            'seats' => $seats,
+        ];
     }
 
     /**
