@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Filament\Resources\PublicBusRouteResource\RelationManagers;
+namespace App\Filament\Resources\RouteResource\RelationManagers;
 
 use Filament\Forms;
 use Filament\Forms\Form;
