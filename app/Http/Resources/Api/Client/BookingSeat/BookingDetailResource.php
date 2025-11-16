@@ -19,10 +19,10 @@ class BookingDetailResource extends JsonResource
             'booking_number' => $this->booking_number,
             'qr_code' => $this->qr_code_url,
             'schedule' => [
-                'id' => $this->schedule->id,
                 'route' => [
-                    'from' => $this->schedule->route->startCity->getTranslation('name', 'ar'),
-                    'to' => $this->schedule->route->endCity->getTranslation('name', 'ar'),
+                    'route' => $this->schedule->route->name,
+                    'from' => $this->schedule->route->startCity->name,
+                    'to' => $this->schedule->route->endCity->name,
                 ],
                 'departure_time' => $this->schedule->departure_time,
                 'arrival_time' => $this->schedule->arrival_time,
@@ -33,6 +33,32 @@ class BookingDetailResource extends JsonResource
                     'name' => $this->schedule->driver->name,
                 ] : null,
             ],
+            'outbound_stops' => [
+                'boarding' => [
+                    'id' => $this->outboundBoardingStop->id,
+                    'name' => $this->outboundBoardingStop->stop->name,
+                    'time' => $this->outboundBoardingStop->departure_time,
+                ],
+                'dropping' => [
+                    'id' => $this->outboundDroppingStop->id,
+                    'name' => $this->outboundDroppingStop->stop->name,
+                    'time' => $this->outboundDroppingStop->arrival_time,
+                ],
+            ],
+
+            // معلومات المحطات للعودة
+            'return_stops' => $this->trip_type === 'round_trip' ? [
+                'boarding' => [
+                    'id' => $this->returnBoardingStop->id,
+                    'name' => $this->returnBoardingStop->stop->name,
+                    'time' => $this->returnBoardingStop->departure_time,
+                ],
+                'dropping' => [
+                    'id' => $this->returnDroppingStop->id,
+                    'name' => $this->returnDroppingStop->stop->name,
+                    'time' => $this->returnDroppingStop->arrival_time,
+                ],
+            ] : null,
             'travel_date' => $this->travel_date->format('Y-m-d'),
             'travel_date_formatted' => $this->travel_date->locale('ar')->isoFormat('dddd، D MMMM YYYY'),
             'trip_type' => $this->trip_type,

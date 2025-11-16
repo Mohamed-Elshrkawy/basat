@@ -884,6 +884,307 @@
                             ]
                         }
                     ]
+                },
+                {
+                    "name": "BookingSeat",
+                    "item": [
+                        {
+                            "name": "Schedule",
+                            "item": [
+                                {
+                                    "name": "Search",
+                                    "request": {
+                                        "method": "GET",
+                                        "header": [],
+                                        "body": {
+                                            "mode": "formdata",
+                                            "formdata": []
+                                        },
+                                        "url": {
+                                            "raw": "{{URL}}\/api\/client\/schedules\/search",
+                                            "host": [
+                                                "{{URL}}"
+                                            ],
+                                            "path": [
+                                                "client",
+                                                "schedules",
+                                                "search"
+                                            ],
+                                            "query": []
+                                        },
+                                        "description": "Search for available schedules between two cities"
+                                    },
+                                    "response": []
+                                },
+                                {
+                                    "name": "Show",
+                                    "request": {
+                                        "method": "GET",
+                                        "header": [],
+                                        "body": {
+                                            "mode": "formdata",
+                                            "formdata": []
+                                        },
+                                        "url": {
+                                            "raw": "{{URL}}\/api\/client\/schedules\/:idId",
+                                            "host": [
+                                                "{{URL}}"
+                                            ],
+                                            "path": [
+                                                "client",
+                                                "schedules",
+                                                ":idId"
+                                            ],
+                                            "query": []
+                                        },
+                                        "description": "Get schedule details by ID"
+                                    },
+                                    "response": []
+                                }
+                            ]
+                        },
+                        {
+                            "name": "Booking",
+                            "item": [
+                                {
+                                    "name": "Index",
+                                    "request": {
+                                        "method": "GET",
+                                        "header": [],
+                                        "body": {
+                                            "mode": "formdata",
+                                            "formdata": []
+                                        },
+                                        "url": {
+                                            "raw": "{{URL}}\/api\/client\/bookings",
+                                            "host": [
+                                                "{{URL}}"
+                                            ],
+                                            "path": [
+                                                "client",
+                                                "bookings"
+                                            ],
+                                            "query": []
+                                        },
+                                        "description": "Get user bookings"
+                                    },
+                                    "response": []
+                                },
+                                {
+                                    "name": "Store",
+                                    "request": {
+                                        "method": "POST",
+                                        "header": [],
+                                        "body": {
+                                            "mode": "formdata",
+                                            "formdata": [
+                                                {
+                                                    "key": "schedule_id",
+                                                    "value": "",
+                                                    "type": "text",
+                                                    "description": "required|exists:schedules,id"
+                                                },
+                                                {
+                                                    "key": "travel_date",
+                                                    "value": "",
+                                                    "type": "text",
+                                                    "description": "required|date|after_or_equal:today"
+                                                },
+                                                {
+                                                    "key": "trip_type",
+                                                    "value": "",
+                                                    "type": "text",
+                                                    "description": "required|in:one_way,round_trip"
+                                                },
+                                                {
+                                                    "key": "number_of_seats",
+                                                    "value": "",
+                                                    "type": "text",
+                                                    "description": "required|integer|min:1|max:10"
+                                                },
+                                                {
+                                                    "key": "seat_numbers",
+                                                    "value": "",
+                                                    "type": "text",
+                                                    "description": "required|array|min:1|max:10"
+                                                },
+                                                {
+                                                    "key": "seat_numbers[*]",
+                                                    "value": "",
+                                                    "type": "text",
+                                                    "description": "required|integer|min:1|max:50"
+                                                },
+                                                {
+                                                    "key": "payment_method",
+                                                    "value": "",
+                                                    "type": "text",
+                                                    "description": "required|in:cash,wallet"
+                                                },
+                                                {
+                                                    "key": "notes",
+                                                    "value": "",
+                                                    "type": "text",
+                                                    "description": "nullable|string|max:500"
+                                                },
+                                                {
+                                                    "key": "outbound_boarding_stop_id",
+                                                    "value": "",
+                                                    "type": "text",
+                                                    "description": "required|exists:schedule_stops,id"
+                                                },
+                                                {
+                                                    "key": "outbound_dropping_stop_id",
+                                                    "value": "",
+                                                    "type": "text",
+                                                    "description": "required|exists:schedule_stops,id|different:outbound_boarding_stop_id"
+                                                },
+                                                {
+                                                    "key": "return_boarding_stop_id",
+                                                    "value": "",
+                                                    "type": "text",
+                                                    "description": "required_if:trip_type,round_trip|nullable|exists:schedule_stops,id"
+                                                },
+                                                {
+                                                    "key": "return_dropping_stop_id",
+                                                    "value": "",
+                                                    "type": "text",
+                                                    "description": "required_if:trip_type,round_trip|nullable|exists:schedule_stops,id|different:return_boarding_stop_id"
+                                                }
+                                            ]
+                                        },
+                                        "url": {
+                                            "raw": "{{URL}}\/api\/client\/bookings",
+                                            "host": [
+                                                "{{URL}}"
+                                            ],
+                                            "path": [
+                                                "client",
+                                                "bookings"
+                                            ],
+                                            "query": []
+                                        },
+                                        "description": "Create a new booking"
+                                    },
+                                    "response": []
+                                },
+                                {
+                                    "name": "Show",
+                                    "request": {
+                                        "method": "GET",
+                                        "header": [],
+                                        "body": {
+                                            "mode": "formdata",
+                                            "formdata": []
+                                        },
+                                        "url": {
+                                            "raw": "{{URL}}\/api\/client\/bookings\/:idId",
+                                            "host": [
+                                                "{{URL}}"
+                                            ],
+                                            "path": [
+                                                "client",
+                                                "bookings",
+                                                ":idId"
+                                            ],
+                                            "query": []
+                                        },
+                                        "description": "Get booking details"
+                                    },
+                                    "response": []
+                                },
+                                {
+                                    "name": "Cancel",
+                                    "request": {
+                                        "method": "POST",
+                                        "header": [],
+                                        "body": {
+                                            "mode": "formdata",
+                                            "formdata": []
+                                        },
+                                        "url": {
+                                            "raw": "{{URL}}\/api\/client\/bookings\/:idId\/cancel",
+                                            "host": [
+                                                "{{URL}}"
+                                            ],
+                                            "path": [
+                                                "client",
+                                                "bookings",
+                                                ":idId",
+                                                "cancel"
+                                            ],
+                                            "query": []
+                                        },
+                                        "description": "Cancel booking"
+                                    },
+                                    "response": []
+                                },
+                                {
+                                    "name": "Available Seats",
+                                    "request": {
+                                        "method": "POST",
+                                        "header": [],
+                                        "body": {
+                                            "mode": "formdata",
+                                            "formdata": [
+                                                {
+                                                    "key": "schedule_id",
+                                                    "value": "",
+                                                    "type": "text",
+                                                    "description": "required|exists:schedules,id"
+                                                },
+                                                {
+                                                    "key": "travel_date",
+                                                    "value": "",
+                                                    "type": "text",
+                                                    "description": "required|date|after_or_equal:today"
+                                                }
+                                            ]
+                                        },
+                                        "url": {
+                                            "raw": "{{URL}}\/api\/client\/schedules\/available-seats",
+                                            "host": [
+                                                "{{URL}}"
+                                            ],
+                                            "path": [
+                                                "client",
+                                                "schedules",
+                                                "available-seats"
+                                            ],
+                                            "query": []
+                                        },
+                                        "description": "Get available seats for a schedule on a specific date"
+                                    },
+                                    "response": []
+                                },
+                                {
+                                    "name": "Confirm Payment",
+                                    "request": {
+                                        "method": "POST",
+                                        "header": [],
+                                        "body": {
+                                            "mode": "formdata",
+                                            "formdata": []
+                                        },
+                                        "url": {
+                                            "raw": "{{URL}}\/api\/client\/bookings\/:idId\/confirm-payment",
+                                            "host": [
+                                                "{{URL}}"
+                                            ],
+                                            "path": [
+                                                "client",
+                                                "bookings",
+                                                ":idId",
+                                                "confirm-payment"
+                                            ],
+                                            "query": []
+                                        },
+                                        "description": "Confirm payment"
+                                    },
+                                    "response": []
+                                }
+                            ]
+                        }
+                    ]
                 }
             ]
         },
@@ -1336,6 +1637,257 @@
                             ]
                         }
                     ]
+                },
+                {
+                    "name": "BookingSeat",
+                    "item": [
+                        {
+                            "name": "Booking",
+                            "item": [
+                                {
+                                    "name": "Index",
+                                    "request": {
+                                        "method": "GET",
+                                        "header": [],
+                                        "body": {
+                                            "mode": "formdata",
+                                            "formdata": []
+                                        },
+                                        "url": {
+                                            "raw": "{{URL}}\/api\/driver\/trips",
+                                            "host": [
+                                                "{{URL}}"
+                                            ],
+                                            "path": [
+                                                "driver",
+                                                "trips"
+                                            ],
+                                            "query": []
+                                        },
+                                        "description": "Get driver's trips for the week with filters"
+                                    },
+                                    "response": []
+                                },
+                                {
+                                    "name": "Show",
+                                    "request": {
+                                        "method": "GET",
+                                        "header": [],
+                                        "body": {
+                                            "mode": "formdata",
+                                            "formdata": []
+                                        },
+                                        "url": {
+                                            "raw": "{{URL}}\/api\/driver\/trips\/:idId",
+                                            "host": [
+                                                "{{URL}}"
+                                            ],
+                                            "path": [
+                                                "driver",
+                                                "trips",
+                                                ":idId"
+                                            ],
+                                            "query": []
+                                        },
+                                        "description": "Get trip details"
+                                    },
+                                    "response": []
+                                },
+                                {
+                                    "name": "Start",
+                                    "request": {
+                                        "method": "POST",
+                                        "header": [],
+                                        "body": {
+                                            "mode": "formdata",
+                                            "formdata": []
+                                        },
+                                        "url": {
+                                            "raw": "{{URL}}\/api\/driver\/trips\/:idId\/start",
+                                            "host": [
+                                                "{{URL}}"
+                                            ],
+                                            "path": [
+                                                "driver",
+                                                "trips",
+                                                ":idId",
+                                                "start"
+                                            ],
+                                            "query": []
+                                        },
+                                        "description": "Start trip"
+                                    },
+                                    "response": []
+                                },
+                                {
+                                    "name": "Complete",
+                                    "request": {
+                                        "method": "POST",
+                                        "header": [],
+                                        "body": {
+                                            "mode": "formdata",
+                                            "formdata": []
+                                        },
+                                        "url": {
+                                            "raw": "{{URL}}\/api\/driver\/trips\/:idId\/complete",
+                                            "host": [
+                                                "{{URL}}"
+                                            ],
+                                            "path": [
+                                                "driver",
+                                                "trips",
+                                                ":idId",
+                                                "complete"
+                                            ],
+                                            "query": []
+                                        },
+                                        "description": "Complete trip"
+                                    },
+                                    "response": []
+                                },
+                                {
+                                    "name": "Mark Station Arrived",
+                                    "request": {
+                                        "method": "POST",
+                                        "header": [],
+                                        "body": {
+                                            "mode": "formdata",
+                                            "formdata": []
+                                        },
+                                        "url": {
+                                            "raw": "{{URL}}\/api\/driver\/trips\/:tripIdId\/stations\/:stationProgressIdId\/mark-arrived",
+                                            "host": [
+                                                "{{URL}}"
+                                            ],
+                                            "path": [
+                                                "driver",
+                                                "trips",
+                                                ":tripIdId",
+                                                "stations",
+                                                ":stationProgressIdId",
+                                                "mark-arrived"
+                                            ],
+                                            "query": []
+                                        },
+                                        "description": "Mark station as arrived"
+                                    },
+                                    "response": []
+                                },
+                                {
+                                    "name": "Mark Station Departed",
+                                    "request": {
+                                        "method": "POST",
+                                        "header": [],
+                                        "body": {
+                                            "mode": "formdata",
+                                            "formdata": []
+                                        },
+                                        "url": {
+                                            "raw": "{{URL}}\/api\/driver\/trips\/:tripIdId\/stations\/:stationProgressIdId\/mark-departed",
+                                            "host": [
+                                                "{{URL}}"
+                                            ],
+                                            "path": [
+                                                "driver",
+                                                "trips",
+                                                ":tripIdId",
+                                                "stations",
+                                                ":stationProgressIdId",
+                                                "mark-departed"
+                                            ],
+                                            "query": []
+                                        },
+                                        "description": "Mark station as departed"
+                                    },
+                                    "response": []
+                                },
+                                {
+                                    "name": "Check In Passenger",
+                                    "request": {
+                                        "method": "POST",
+                                        "header": [],
+                                        "body": {
+                                            "mode": "formdata",
+                                            "formdata": []
+                                        },
+                                        "url": {
+                                            "raw": "{{URL}}\/api\/driver\/trips\/:tripIdId\/passengers\/:bookingIdId\/check-in",
+                                            "host": [
+                                                "{{URL}}"
+                                            ],
+                                            "path": [
+                                                "driver",
+                                                "trips",
+                                                ":tripIdId",
+                                                "passengers",
+                                                ":bookingIdId",
+                                                "check-in"
+                                            ],
+                                            "query": []
+                                        },
+                                        "description": "Mark passenger as checked in (\u062d\u0636\u0631)"
+                                    },
+                                    "response": []
+                                },
+                                {
+                                    "name": "Board Passenger",
+                                    "request": {
+                                        "method": "POST",
+                                        "header": [],
+                                        "body": {
+                                            "mode": "formdata",
+                                            "formdata": []
+                                        },
+                                        "url": {
+                                            "raw": "{{URL}}\/api\/driver\/trips\/:tripIdId\/passengers\/:bookingIdId\/board",
+                                            "host": [
+                                                "{{URL}}"
+                                            ],
+                                            "path": [
+                                                "driver",
+                                                "trips",
+                                                ":tripIdId",
+                                                "passengers",
+                                                ":bookingIdId",
+                                                "board"
+                                            ],
+                                            "query": []
+                                        },
+                                        "description": "Mark passenger as boarded (\u0635\u0639\u062f \u0627\u0644\u0628\u0627\u0635)"
+                                    },
+                                    "response": []
+                                },
+                                {
+                                    "name": "Mark Passenger No Show",
+                                    "request": {
+                                        "method": "POST",
+                                        "header": [],
+                                        "body": {
+                                            "mode": "formdata",
+                                            "formdata": []
+                                        },
+                                        "url": {
+                                            "raw": "{{URL}}\/api\/driver\/trips\/:tripIdId\/passengers\/:bookingIdId\/no-show",
+                                            "host": [
+                                                "{{URL}}"
+                                            ],
+                                            "path": [
+                                                "driver",
+                                                "trips",
+                                                ":tripIdId",
+                                                "passengers",
+                                                ":bookingIdId",
+                                                "no-show"
+                                            ],
+                                            "query": []
+                                        },
+                                        "description": "Mark passenger as no show"
+                                    },
+                                    "response": []
+                                }
+                            ]
+                        }
+                    ]
                 }
             ]
         },
@@ -1475,13 +2027,31 @@
                                                     "key": "subject",
                                                     "value": "",
                                                     "type": "text",
-                                                    "description": "required"
+                                                    "description": "required|string"
                                                 },
                                                 {
                                                     "key": "message",
                                                     "value": "",
                                                     "type": "text",
-                                                    "description": "required"
+                                                    "description": "required|string"
+                                                },
+                                                {
+                                                    "key": "name",
+                                                    "value": "Example Name",
+                                                    "type": "text",
+                                                    "description": "nullable|string|required"
+                                                },
+                                                {
+                                                    "key": "phone",
+                                                    "value": "1234567890",
+                                                    "type": "text",
+                                                    "description": "nullable|string|required"
+                                                },
+                                                {
+                                                    "key": "email",
+                                                    "value": "admin@info.com",
+                                                    "type": "text",
+                                                    "description": "nullable|email|required"
                                                 }
                                             ]
                                         },

@@ -54,6 +54,7 @@ enum Settings: string
     case PAYMENT_APPLE_PAY = 'payment_apple_pay'; // __("Enable Apple Pay")
     case PAYMENT_STC_PAY = 'payment_stc_pay'; // __("Enable STC Pay")
     case PAYMENT_CASH = 'payment_cash'; // __("Enable Cash Payment")
+    case PAYMENT_WALLET = 'payment_wallet'; // __("Enable Wallet Payment")
 
     #--------------------------------------------
     # BASE HELPERS
@@ -149,7 +150,7 @@ enum Settings: string
             # PAYMENT METHODS
             #--------------------------------------------
             self::PAYMENT_CREDIT_CARD, self::PAYMENT_MADA, self::PAYMENT_APPLE_PAY,
-            self::PAYMENT_STC_PAY, self::PAYMENT_CASH => [
+            self::PAYMENT_STC_PAY, self::PAYMENT_CASH, self::PAYMENT_WALLET => [
                 'type' => 'boolean',
                 'group' => 'payment_methods',
                 'label' =>  str($this->value)->replace('_', ' ')->title(),

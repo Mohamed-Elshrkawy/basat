@@ -58,6 +58,7 @@ class SettingsSeeder extends Seeder
             Settings::PAYMENT_APPLE_PAY->value => '1',
             Settings::PAYMENT_STC_PAY->value => '1',
             Settings::PAYMENT_CASH->value => '1',
+            Settings::PAYMENT_WALLET->value => '1',
         ];
 
 

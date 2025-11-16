@@ -16,26 +16,20 @@ class TripListResource extends JsonResource
     {
         return [
             'id' => $this->id,
-            'schedule_id' => $this->schedule_id,
             'trip_number' => "TRIP-{$this->id}",
 
-            // التاريخ واليوم
             'trip_date' => $this->trip_date->format('Y-m-d'),
-            'trip_date_formatted' => $this->trip_date->locale('ar')->isoFormat('dddd، D MMMM YYYY'),
-            'day_name' => $this->trip_date->locale('ar')->dayName,
+            'trip_date_formatted' => $this->trip_date?->translatedFormat('D d M Y'),
 
-            // المسار
             'route' => [
-                'from' => $this->schedule->route->startCity->getTranslation('name', 'ar'),
-                'from_id' => $this->schedule->route->start_city_id,
-                'to' => $this->schedule->route->endCity->getTranslation('name', 'ar'),
-                'to_id' => $this->schedule->route->end_city_id,
+                'name' => $this->schedule->route->name,
+                'from' => $this->schedule->route->startCity->name,
+                'to' => $this->schedule->route->endCity->name,
             ],
 
             // الأوقات
-            'departure_time' => $this->schedule->departure_time,
-            'arrival_time' => $this->schedule->arrival_time,
-            'duration' => $this->schedule->duration ?? 'N/A',
+            'departure_time' => $this->schedule->departure_time->format('h:i A'),
+            'arrival_time' => $this->schedule->arrival_time->format('h:i A'),
 
             // الركاب
             'passengers' => [

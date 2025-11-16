@@ -12,27 +12,7 @@ class Booking extends Model
 {
     use HasFactory;
 
-    protected $fillable = [
-        'booking_number',
-        'user_id',
-        'schedule_id',
-        'travel_date',
-        'trip_type',
-        'number_of_seats',
-        'seat_numbers',
-        'outbound_fare',
-        'return_fare',
-        'discount',
-        'total_amount',
-        'payment_method',
-        'payment_status',
-        'transaction_id',
-        'paid_at',
-        'status',
-        'notes',
-        'cancellation_reason',
-        'cancelled_at',
-    ];
+    protected $guarded = ['id'];
 
     protected $casts = [
         'travel_date' => 'date',
@@ -75,7 +55,7 @@ class Booking extends Model
     public static function generateBookingNumber(): string
     {
         do {
-            $number = 'BK' . date('Ymd') . strtoupper(substr(uniqid(), -6));
+            $number = 'BK' . strtoupper(substr(uniqid(), -6));
         } while (self::where('booking_number', $number)->exists());
 
         return $number;
@@ -94,9 +74,24 @@ class Booking extends Model
         return $this->belongsTo(Schedule::class);
     }
 
-    public function boardingStop(): BelongsTo
+    public function outboundBoardingStop(): BelongsTo
     {
-        return $this->belongsTo(ScheduleStop::class, 'boarding_stop_id');
+        return $this->belongsTo(ScheduleStop::class, 'outbound_boarding_stop_id');
+    }
+
+    public function outboundDroppingStop(): BelongsTo
+    {
+        return $this->belongsTo(ScheduleStop::class, 'outbound_dropping_stop_id');
+    }
+
+    public function returnBoardingStop(): BelongsTo
+    {
+        return $this->belongsTo(ScheduleStop::class, 'return_boarding_stop_id');
+    }
+
+    public function returnDroppingStop(): BelongsTo
+    {
+        return $this->belongsTo(ScheduleStop::class, 'return_dropping_stop_id');
     }
 
     /**

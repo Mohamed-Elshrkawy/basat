@@ -41,11 +41,7 @@ class ScheduleController extends Controller
             ->get();
 
         if ($routes->isEmpty()) {
-            return response()->json([
-                'success' => false,
-                'message' => 'لا توجد مسارات متاحة بين المدينتين',
-                'data' => [],
-            ], 404);
+            return json(__('No routes found between the two cities'), status: 'fail', headerStatus: 422);
         }
 
         $routeIds = $routes->pluck('id');
@@ -56,15 +52,15 @@ class ScheduleController extends Controller
 
         for ($i = 0; $i < 7; $i++) {
             $currentDate = $startDate->copy()->addDays($i);
-            $dayOfWeek = $currentDate->format('l'); // Monday, Tuesday, etc.
+            $dayOfWeek = $currentDate->format('l');
 
             $daySchedules = Schedule::with(['route.startCity', 'route.endCity', 'driver'])
                 ->whereIn('route_id', $routeIds)
                 ->where('is_active', true)
                 ->where('available_seats', '>', 0)
                 ->whereJsonContains('days_of_week', $dayOfWeek)
-                ->when($tripType === 'round_trip', function ($query) {
-                    $query->where('trip_type', 'round_trip');
+                ->when($tripType, function ($query) use ($tripType) {
+                    $query->where('trip_type', $tripType);
                 })
                 ->get()
                 ->map(function ($schedule) use ($currentDate) {
@@ -81,15 +77,7 @@ class ScheduleController extends Controller
             }
         }
 
-        return response()->json([
-            'success' => true,
-            'data' => [
-                'from_city' => $routes->first()->startCity->getTranslation('name', 'ar'),
-                'to_city' => $routes->first()->endCity->getTranslation('name', 'ar'),
-                'trip_type' => $tripType,
-                'schedules' => $schedules,
-            ],
-        ]);
+        return json($schedules, __('Trips fetched successfully'));
     }
 
     /**
@@ -115,10 +103,7 @@ class ScheduleController extends Controller
             ->find($id);
 
         if (!$schedule) {
-            return response()->json([
-                'success' => false,
-                'message' => 'الرحلة غير موجودة',
-            ], 404);
+            return json(__('Schedule not found'), status: 'fail', headerStatus: 422);
         }
 
         // التحقق من أن الرحلة تعمل في هذا اليوم
@@ -126,21 +111,15 @@ class ScheduleController extends Controller
         $dayOfWeek = $travelDate->format('l');
 
         if (!in_array($dayOfWeek, $schedule->days_of_week ?? [])) {
-            return response()->json([
-                'success' => false,
-                'message' => 'الرحلة غير متاحة في هذا اليوم',
-            ], 422);
+            return json(__('Schedule not found'), status: 'fail', headerStatus: 422);
         }
 
         // Get seats status for the travel date
         $seatsStatus = $this->getSeatsStatus($schedule->id, $validated['travel_date']);
 
-        return response()->json([
-            'success' => true,
-            'data' => array_merge(
-                $this->formatScheduleDetails($schedule),
-                ['seats' => $seatsStatus]
-            ),
+        return json([
+            'tripe' => $this->formatScheduleDetails($schedule),
+            'seats' => $seatsStatus
         ]);
     }
 

@@ -20,7 +20,7 @@ class BookingController extends Controller
     {
         $driver = request()->user();
 
-        $filter = $request->query('filter', 'all'); // upcoming, current, completed, all
+        $filter = $request->query('filter', 'all');
 
         $query = TripInstance::with([
             'schedule.route.startCity',
@@ -41,19 +41,7 @@ class BookingController extends Controller
 
         $trips = $query->get();
 
-        return response()->json([
-            'success' => true,
-            'data' => [
-                'filter' => $filter,
-                'trips' => TripListResource::collection($trips),
-                'summary' => [
-                    'total' => $trips->count(),
-                    'upcoming' => $trips->where('status', 'scheduled')->count(),
-                    'in_progress' => $trips->where('status', 'in_progress')->count(),
-                    'completed' => $trips->where('status', 'completed')->count(),
-                ],
-            ],
-        ]);
+        return json(TripListResource::collection($trips), __('Trips fetched successfully'));
     }
 
     /**

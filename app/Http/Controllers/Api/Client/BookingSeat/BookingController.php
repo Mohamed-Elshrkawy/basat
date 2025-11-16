@@ -13,6 +13,7 @@ use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 
 class BookingController extends Controller
 {
@@ -62,37 +63,76 @@ class BookingController extends Controller
     {
         $validated = $request->validated();
 
+        if(!setting('enable_seat_booking'))
+        {
+            return json(__('Seat booking is disabled'), status: 'fail', headerStatus: 422);
+        }
+
+        if(!in_array($validated['payment_method'], enabled_payment_methods_array()))
+        {
+            return json(__('Payment method is not enabled'), status: 'fail', headerStatus: 422);
+        }
+
         // التحقق من تطابق عدد المقاعد
-        if (count($validated['seat_numbers']) !== $validated['number_of_seats']) {
-            return response()->json([
-                'success' => false,
-                'message' => 'عدد المقاعد لا يتطابق مع أرقام المقاعد المختارة',
-            ], 422);
+        if (count($validated['seat_numbers']) != $validated['number_of_seats']) {
+            return json(__('Number of seats does not match selected seat numbers'), status: 'fail', headerStatus: 422);
         }
 
         // التحقق من عدم تكرار أرقام المقاعد
-        if (count($validated['seat_numbers']) !== count(array_unique($validated['seat_numbers']))) {
-            return response()->json([
-                'success' => false,
-                'message' => 'لا يمكن تكرار رقم المقعد',
-            ], 422);
+        if (count($validated['seat_numbers']) != count(array_unique($validated['seat_numbers']))) {
+            return json(__('Seat numbers cannot be repeated'), status: 'fail', headerStatus: 422);
         }
 
-        $schedule = Schedule::with('route')->find($validated['schedule_id']);
+        $schedule = Schedule::with('route', 'scheduleStops')->find($validated['schedule_id']);
 
         if (!$schedule || !$schedule->is_active) {
-            return response()->json([
-                'success' => false,
-                'message' => 'الرحلة غير متاحة',
-            ], 404);
+            return json(__('Schedule not found'), status: 'fail', headerStatus: 422);
         }
 
         // التحقق من نوع الرحلة
         if ($validated['trip_type'] === 'round_trip' && $schedule->trip_type !== 'round_trip') {
-            return response()->json([
-                'success' => false,
-                'message' => 'هذه الرحلة لا تدعم الذهاب والعودة',
-            ], 422);
+            return json(__('This schedule does not support round trip'), status: 'fail', headerStatus: 422);
+        }
+
+        // التحقق من المحطات للذهاب
+        $outboundBoardingStop = $schedule->scheduleStops()
+            ->where('id', $validated['outbound_boarding_stop_id'])
+            ->where('direction', 'outbound')
+            ->first();
+
+        $outboundDroppingStop = $schedule->scheduleStops()
+            ->where('id', $validated['outbound_dropping_stop_id'])
+            ->where('direction', 'outbound')
+            ->first();
+
+        if (!$outboundBoardingStop || !$outboundDroppingStop) {
+            return json(__('Invalid outbound stops for this schedule'), status: 'fail', headerStatus: 422);
+        }
+
+        // التحقق من ترتيب المحطات (المحطة التي سيركب منها يجب أن تكون قبل المحطة التي سينزل فيها)
+        if ($outboundBoardingStop->order >= $outboundDroppingStop->order) {
+            return json(__('Boarding stop must be before dropping stop'), status: 'fail', headerStatus: 422);
+        }
+
+        // التحقق من المحطات للعودة إذا كانت الرحلة ذهاب وعودة
+        if ($validated['trip_type'] === 'round_trip') {
+            $returnBoardingStop = $schedule->scheduleStops()
+                ->where('id', $validated['return_boarding_stop_id'])
+                ->where('direction', 'return')
+                ->first();
+
+            $returnDroppingStop = $schedule->scheduleStops()
+                ->where('id', $validated['return_dropping_stop_id'])
+                ->where('direction', 'return')
+                ->first();
+
+            if (!$returnBoardingStop || !$returnDroppingStop) {
+                return json(__('Invalid return stops for this schedule'), status: 'fail', headerStatus: 422);
+            }
+
+            if ($returnBoardingStop->order >= $returnDroppingStop->order) {
+                return json(__('Boarding stop must be before dropping stop'), status: 'fail', headerStatus: 422);
+            }
         }
 
         // التحقق من اليوم
@@ -100,10 +140,7 @@ class BookingController extends Controller
         $dayOfWeek = $travelDate->format('l');
 
         if (!in_array($dayOfWeek, $schedule->days_of_week ?? [])) {
-            return response()->json([
-                'success' => false,
-                'message' => 'الرحلة غير متاحة في هذا اليوم',
-            ], 422);
+            return json(__('Schedule not available on this day'), status: 'fail', headerStatus: 422);
         }
 
         DB::beginTransaction();
@@ -122,11 +159,7 @@ class BookingController extends Controller
 
             if (!empty($conflictingSeats)) {
                 DB::rollBack();
-                return response()->json([
-                    'success' => false,
-                    'message' => 'بعض المقاعد محجوزة بالفعل',
-                    'conflicting_seats' => array_values($conflictingSeats),
-                ], 422);
+                return json(__('Some seats are already booked'), status: 'fail', headerStatus: 422);
             }
 
             // حساب السعر
@@ -149,6 +182,10 @@ class BookingController extends Controller
                 'trip_type' => $validated['trip_type'],
                 'number_of_seats' => $validated['number_of_seats'],
                 'seat_numbers' => $validated['seat_numbers'],
+                'outbound_boarding_stop_id' => $validated['outbound_boarding_stop_id'],
+                'outbound_dropping_stop_id' => $validated['outbound_dropping_stop_id'],
+                'return_boarding_stop_id' => $validated['return_boarding_stop_id'] ?? null,
+                'return_dropping_stop_id' => $validated['return_dropping_stop_id'] ?? null,
                 'outbound_fare' => $outboundFare,
                 'return_fare' => $returnFare,
                 'discount' => $discount,
@@ -161,27 +198,30 @@ class BookingController extends Controller
 
             DB::commit();
 
-            return response()->json([
-                'success' => true,
-                'message' => 'تم إنشاء الحجز بنجاح',
-                'data' => new BookingResource($booking->load('schedule.route.startCity', 'schedule.route.endCity')),
-            ], 201);
+            return json(
+                new BookingResource($booking->load([
+                    'schedule.route.startCity',
+                    'schedule.route.endCity',
+                    'outboundBoardingStop.stop',
+                    'outboundDroppingStop.stop',
+                    'returnBoardingStop.stop',
+                    'returnDroppingStop.stop'
+                ])),
+                __('Booking created successfully')
+            );
 
         } catch (\Exception $e) {
             DB::rollBack();
+            Log::error($e);
 
-            return response()->json([
-                'success' => false,
-                'message' => 'حدث خطأ أثناء إنشاء الحجز',
-                'error' => $e->getMessage(),
-            ], 500);
+            return json(__('Failed to create booking'), status: 'fail', headerStatus: 500);
         }
     }
 
     /**
      * Get user bookings
      */
-    public function index(Request $request): JsonResponse
+    public function index(Request $request)
     {
         $status = $request->query('status');
 
@@ -193,17 +233,9 @@ class BookingController extends Controller
             ->orderBy('created_at', 'desc')
             ->paginate(10);
 
-        return response()->json([
-            'success' => true,
-            'data' => [
-                'bookings' => BookingResource::collection($bookings),
-                'pagination' => [
-                    'current_page' => $bookings->currentPage(),
-                    'last_page' => $bookings->lastPage(),
-                    'per_page' => $bookings->perPage(),
-                    'total' => $bookings->total(),
-                ],
-            ],
+        return BookingResource::collection($bookings)->additional([
+            'status'=> 'success',
+            'message'=> __('Bookings fetched successfully')
         ]);
     }
 
@@ -217,16 +249,10 @@ class BookingController extends Controller
             ->find($id);
 
         if (!$booking) {
-            return response()->json([
-                'success' => false,
-                'message' => 'الحجز غير موجود',
-            ], 404);
+           return json(__('Booking not found'), status: 'fail', headerStatus: 422);
         }
 
-        return response()->json([
-            'success' => true,
-            'data' => new BookingDetailResource($booking),
-        ]);
+        return json( new BookingDetailResource($booking));
     }
 
     /**
@@ -241,39 +267,34 @@ class BookingController extends Controller
         $booking = Booking::where('user_id', Auth::id())->find($id);
 
         if (!$booking) {
-            return response()->json([
-                'success' => false,
-                'message' => 'الحجز غير موجود',
-            ], 404);
+            return json(__('Booking not found'), status: 'fail', headerStatus: 422);
         }
 
         if (!$booking->canBeCancelled()) {
-            return response()->json([
-                'success' => false,
-                'message' => 'لا يمكن إلغاء هذا الحجز',
-            ], 422);
+            return json(__('Booking can not be cancelled'), status: 'fail', headerStatus: 422);
         }
 
         DB::beginTransaction();
 
         try {
+            if($booking->isPaid())
+            {
+                $desc = [
+                    'ar' => 'استرداد مبلغ ' . $booking->total_amount . ' لحجز رقم ' . $booking->booking_number,
+                    'en' => 'Refund of amount ' . $booking->total_amount . ' for booking number ' . $booking->booking_number,
+                ];
+                $booking->user->deposit((float)$booking->total_amount,$desc);
+            }
             $booking->cancel($validated['reason'] ?? null);
 
             DB::commit();
 
-            return response()->json([
-                'success' => true,
-                'message' => 'تم إلغاء الحجز بنجاح',
-                'data' => new BookingResource($booking->load('schedule.route.startCity', 'schedule.route.endCity')),
-            ]);
+            return json(new BookingResource($booking->load('schedule.route.startCity', 'schedule.route.endCity')),__('Booking Cancelled'));
 
         } catch (\Exception $e) {
             DB::rollBack();
 
-            return response()->json([
-                'success' => false,
-                'message' => 'حدث خطأ أثناء إلغاء الحجز',
-            ], 500);
+            return json(__('Failed to cancel booking'), status: 'fail', headerStatus: 500);
         }
     }
 
@@ -283,45 +304,47 @@ class BookingController extends Controller
     public function confirmPayment(int $id, Request $request): JsonResponse
     {
         $validated = $request->validate([
-            'transaction_id' => 'required|string',
+            'transaction_id' => 'sometimes|string',
         ]);
 
         $booking = Booking::find($id);
 
         if (!$booking) {
-            return response()->json([
-                'success' => false,
-                'message' => 'الحجز غير موجود',
-            ], 404);
+            return json(__('Booking not found'), status: 'fail', headerStatus: 422);
         }
 
         if ($booking->isPaid()) {
-            return response()->json([
-                'success' => false,
-                'message' => 'تم دفع هذا الحجز مسبقاً',
-            ], 422);
+            return json(__('Booking already paid'), status: 'fail', headerStatus: 422);
+        }
+
+        $transactionId = $validated['transaction_id'] ?? null;
+
+        if(!in_array($booking->payment_method,['cash' ,'wallet']) && !$transactionId) {
+            return json(__('Transaction ID is required'), status: 'fail', headerStatus: 422);
         }
 
         DB::beginTransaction();
 
         try {
-            $booking->markAsPaid($validated['transaction_id']);
+            if($booking->payment_method == 'wallet')
+            {
+                $desc = [
+                    'ar' => 'تم خصم مبلغ ' . $booking->total_amount . ' من حسابك لحجز رقم ' . $booking->booking_number,
+                    'en' => 'An amount of ' . $booking->total_amount . ' has been deducted from your account for booking number ' . $booking->booking_number
+                ];
+                $booking->user->withdraw((float)$booking->total_amount, $desc);
+            }
+            $booking->markAsPaid($transactionId);
 
             DB::commit();
 
-            return response()->json([
-                'success' => true,
-                'message' => 'تم تأكيد الدفع بنجاح',
-                'data' => new BookingResource($booking->load('schedule.route.startCity', 'schedule.route.endCity')),
-            ]);
+            return json(new BookingResource($booking->load('schedule.route.startCity', 'schedule.route.endCity')),__('Booking Paid'));
 
         } catch (\Exception $e) {
             DB::rollBack();
+            Log::error($e->getMessage());
 
-            return response()->json([
-                'success' => false,
-                'message' => 'حدث خطأ أثناء تأكيد الدفع',
-            ], 500);
+            return json(__('Failed to confirm payment'), status: 'fail', headerStatus: 500);
         }
     }
 }

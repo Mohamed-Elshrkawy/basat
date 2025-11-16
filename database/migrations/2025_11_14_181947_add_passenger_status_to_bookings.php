@@ -27,7 +27,13 @@ return new class extends Migration
             $table->timestamp('arrived_at')->nullable()->after('boarded_at');
 
             // المحطة التي صعد منها
-            $table->foreignId('boarding_stop_id')->nullable()->constrained('schedule_stops')->after('arrived_at');
+            // محطات الذهاب
+            $table->foreignId('outbound_boarding_stop_id')->nullable()->after('seat_numbers')->constrained('schedule_stops')->nullOnDelete();
+            $table->foreignId('outbound_dropping_stop_id')->nullable()->after('outbound_boarding_stop_id')->constrained('schedule_stops')->nullOnDelete();
+
+            // محطات العودة
+            $table->foreignId('return_boarding_stop_id')->nullable()->after('outbound_dropping_stop_id')->constrained('schedule_stops')->nullOnDelete();
+            $table->foreignId('return_dropping_stop_id')->nullable()->after('return_boarding_stop_id')->constrained('schedule_stops')->nullOnDelete();
 
             // ملاحظات السائق
             $table->text('driver_notes')->nullable();
@@ -40,12 +46,19 @@ return new class extends Migration
     public function down(): void
     {
         Schema::table('bookings', function (Blueprint $table) {
+            $table->dropForeign(['outbound_boarding_stop_id']);
+            $table->dropForeign(['outbound_dropping_stop_id']);
+            $table->dropForeign(['return_boarding_stop_id']);
+            $table->dropForeign(['return_dropping_stop_id']);
             $table->dropColumn([
                 'passenger_status',
                 'checked_in_at',
                 'boarded_at',
                 'arrived_at',
-                'boarding_station_id',
+                'outbound_boarding_stop_id',
+                'outbound_dropping_stop_id',
+                'return_boarding_stop_id',
+                'return_dropping_stop_id',
                 'driver_notes'
             ]);
         });

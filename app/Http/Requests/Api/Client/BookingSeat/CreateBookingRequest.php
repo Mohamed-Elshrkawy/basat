@@ -26,8 +26,16 @@ class CreateBookingRequest extends ApiMasterRequest
             'number_of_seats' => 'required|integer|min:1|max:10',
             'seat_numbers' => 'required|array|min:1|max:10',
             'seat_numbers.*' => 'required|integer|min:1|max:50',
-            'payment_method' => 'required|in:cash,card,wallet,bank_transfer',
+            'payment_method' => 'required|in:' . implode(',', enabled_payment_methods_array()),
             'notes' => 'nullable|string|max:500',
+
+            // محطات الذهاب
+            'outbound_boarding_stop_id' => 'required|exists:schedule_stops,id',
+            'outbound_dropping_stop_id' => 'required|exists:schedule_stops,id|different:outbound_boarding_stop_id',
+
+            // محطات العودة (مطلوبة فقط إذا كانت الرحلة ذهاب وعودة)
+            'return_boarding_stop_id' => 'required_if:trip_type,round_trip|nullable|exists:schedule_stops,id',
+            'return_dropping_stop_id' => 'required_if:trip_type,round_trip|nullable|exists:schedule_stops,id|different:return_boarding_stop_id',
         ];
     }
 
@@ -44,6 +52,23 @@ class CreateBookingRequest extends ApiMasterRequest
             'seat_numbers' => __('Seat Numbers'),
             'payment_method' => __('Payment Method'),
             'notes' => __('Notes'),
+            'outbound_boarding_stop_id' => __('Outbound Boarding Stop'),
+            'outbound_dropping_stop_id' => __('Outbound Dropping Stop'),
+            'return_boarding_stop_id' => __('Return Boarding Stop'),
+            'return_dropping_stop_id' => __('Return Dropping Stop'),
+        ];
+    }
+
+    /**
+     * Get custom messages for validator errors.
+     */
+    public function messages(): array
+    {
+        return [
+            'outbound_dropping_stop_id.different' => __('Dropping stop must be different from boarding stop'),
+            'return_dropping_stop_id.different' => __('Dropping stop must be different from boarding stop'),
+            'return_boarding_stop_id.required_if' => __('Return boarding stop is required for round trip'),
+            'return_dropping_stop_id.required_if' => __('Return dropping stop is required for round trip'),
         ];
     }
 }

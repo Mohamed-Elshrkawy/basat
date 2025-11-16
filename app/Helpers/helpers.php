@@ -324,8 +324,21 @@ if (!function_exists('enabled_payment_methods')) {
                 'label_ar' => 'نقدي',
                 'enabled' => setting(SettingsEnum::PAYMENT_CASH, false),
             ],
+            'wallet' => [
+                'key' => 'wallet',
+                'label' => 'Wallet',
+                'label_ar' => 'محفظة',
+                'enabled' => setting(SettingsEnum::PAYMENT_WALLET, false),
+            ],
         ];
 
         return array_filter($methods, fn($method) => $method['enabled']);
+    }
+}
+
+if (!function_exists('enabled_payment_methods_array')) {
+    function enabled_payment_methods_array(): array
+    {
+        return array_keys(enabled_payment_methods());
     }
 }
