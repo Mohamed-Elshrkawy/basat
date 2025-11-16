@@ -334,7 +334,7 @@ class DriverResource extends Resource
                     })
                     ->badge(),
 
-                Tables\Columns\IconColumn::make('mobile_verified_at')
+                Tables\Columns\IconColumn::make('is_active')
                     ->label(__('Verified'))
                     ->boolean()
                     ->trueIcon('heroicon-o-check-circle')

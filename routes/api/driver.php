@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Api\Driver\Auth\PasswordController;
 use App\Http\Controllers\Api\Driver\Auth\AuthController;
+use App\Http\Controllers\Api\Driver\BookingSeat\BookingController;
 use App\Http\Controllers\Api\Driver\Profile\ProfileController;
 use Illuminate\Support\Facades\Route;
 
@@ -24,7 +25,7 @@ Route::controller(PasswordController::class)->prefix('password')->group(function
     Route::post('/reset', 'reset')->name('reset');
 });
 
-Route::middleware(['auth:api', 'client'])->group(callback: function () {
+Route::middleware(['auth:api'])->group(callback: function () {
 
     /** Profile Settings Routes **/
     Route::controller(ProfileController::class)->middleware(['auth:api', 'user.type'])->prefix('profile')->group(function () {
@@ -34,5 +35,48 @@ Route::middleware(['auth:api', 'client'])->group(callback: function () {
         Route::post('/language/switch/{locale}', 'updateLocale')->whereIn('locale', config('app.available_locales'))->name('profile.update.locale');
         Route::put('notification/switch', 'switchNotification')->name('profile.notification.switch');
     });
+
+    Route::controller(BookingController::class)->prefix('trips')->group(function () {
+
+        Route::get('/',  'index');
+
+        // تفاصيل رحلة
+        Route::get('{id}',  'show');
+
+        // بدء رحلة
+        Route::post('{id}/start',  'start');
+
+        // إتمام رحلة
+        Route::post('{id}/complete',  'complete');
+
+        // ====================================
+        // Station Progress - تقدم المحطات
+        // ====================================
+
+        // تسجيل الوصول لمحطة
+        Route::post('{tripId}/stations/{stationProgressId}/mark-arrived',
+             'markStationArrived');
+
+        // تسجيل المغادرة من محطة
+        Route::post('{tripId}/stations/{stationProgressId}/mark-departed',
+             'markStationDeparted');
+
+        // ====================================
+        // Passenger Management - إدارة الركاب
+        // ====================================
+
+        // تسجيل حضور راكب (check-in)
+        Route::post('{tripId}/passengers/{bookingId}/check-in',
+             'checkInPassenger');
+
+        // تسجيل صعود راكب (boarded)
+        Route::post('{tripId}/passengers/{bookingId}/board',
+             'boardPassenger');
+
+        // تسجيل عدم حضور
+        Route::post('{tripId}/passengers/{bookingId}/no-show',
+             'markPassengerNoShow');
+    });
+
 
 });

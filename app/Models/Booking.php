@@ -94,6 +94,11 @@ class Booking extends Model
         return $this->belongsTo(Schedule::class);
     }
 
+    public function boardingStop(): BelongsTo
+    {
+        return $this->belongsTo(ScheduleStop::class, 'boarding_stop_id');
+    }
+
     /**
      * Scopes
      */
@@ -143,6 +148,62 @@ class Booking extends Model
     public function canBeCancelled(): bool
     {
         return in_array($this->status, ['pending', 'confirmed']);
+    }
+
+    /**
+     * Passenger Status Methods
+     */
+    public function checkIn()
+    {
+        $this->update([
+            'passenger_status' => 'checked_in',
+            'checked_in_at' => now(),
+        ]);
+    }
+
+    public function board($stopId = null)
+    {
+        $this->update([
+            'passenger_status' => 'boarded',
+            'boarded_at' => now(),
+            'boarding_stop_id' => $stopId,
+        ]);
+    }
+
+    public function markArrived()
+    {
+        $this->update([
+            'passenger_status' => 'completed',
+            'arrived_at' => now(),
+            'status' => 'completed',
+        ]);
+    }
+
+    public function markNoShow()
+    {
+        $this->update([
+            'passenger_status' => 'no_show',
+        ]);
+    }
+
+    public function isCheckedIn(): bool
+    {
+        return $this->passenger_status === 'checked_in';
+    }
+
+    public function isBoarded(): bool
+    {
+        return $this->passenger_status === 'boarded';
+    }
+
+    public function hasArrived(): bool
+    {
+        return $this->passenger_status === 'completed';
+    }
+
+    public function isNoShow(): bool
+    {
+        return $this->passenger_status === 'no_show';
     }
 
     /**
