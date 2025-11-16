@@ -334,7 +334,7 @@ class DriverResource extends Resource
                     })
                     ->badge(),
 
-                Tables\Columns\IconColumn::make('mobile_verified_at')
+                Tables\Columns\IconColumn::make('is_active')
                     ->label(__('Verified'))
                     ->boolean()
                     ->trueIcon('heroicon-o-check-circle')
@@ -349,25 +349,38 @@ class DriverResource extends Resource
                     ->default('0.00'),
             ])
             ->filters([
-                Tables\Filters\SelectFilter::make('gender')
-                    ->label(__('Gender'))
+                Tables\Filters\SelectFilter::make('status')
+                    ->label(__('Status'))
                     ->options([
-                        'male' => __('Male'),
-                        'female' => __('Female'),
-                    ]),
-
-                Tables\Filters\SelectFilter::make('vehicle.type')
+                        'available' => __('✅ Available'),
+                        'on_trip' => __('🚌 On Trip'),
+                        'unavailable' => __('❌ Unavailable'),
+                    ])
+                    ->query(function (Builder $query, array $data): void {
+                        if ($data['value']) {
+                            $query->whereHas('driver', function ($query) use ($data) {
+                                $query->where('availability_status', $data['value']);
+                            });
+                        }
+                    }),
+                Tables\Filters\SelectFilter::make('type')
                     ->label(__('Vehicle Type'))
-                    ->relationship('vehicle', 'type')
                     ->options([
                         'public_bus' => __('🚌 Public Bus'),
                         'private_bus' => __('🚐 Private Bus'),
                         'school_bus' => __('🚍 School Bus'),
-                    ]),
+                    ])
+                    ->query(function (Builder $query, array $data): void {
+                        if (! empty($data['value'])) {
+                            $query->whereHas('vehicle', function ($q) use ($data) {
+                                $q->where('type', $data['value']);
+                            });
+                        }
+                    }),
 
                 Tables\Filters\Filter::make('verified')
                     ->label(__('Verified Only'))
-                    ->query(fn (Builder $query): Builder => $query->whereNotNull('mobile_verified_at')),
+                    ->query(fn (Builder $query): Builder => $query->where('is_active', true)),
             ])
             ->actions([
                 Tables\Actions\ActionGroup::make([
