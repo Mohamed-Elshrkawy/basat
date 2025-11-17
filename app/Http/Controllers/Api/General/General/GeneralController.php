@@ -26,5 +26,10 @@ class GeneralController extends Controller
         ]);
     }
 
+    public function paymentMethods(): \Illuminate\Http\JsonResponse
+    {
+        return json(enabled_payment_methods_array());
+    }
+
 
 }

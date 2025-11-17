@@ -12,6 +12,7 @@ use Illuminate\Support\Facades\Route;
 Route::controller(GeneralController::class)->group(function () {
     Route::get('cities', 'cities')->name('cities');
     Route::get('settings', 'settings')->name('settings');
+    Route::get('payment-methods', 'paymentMethods')->name('payment.methods');
 });
 
 /** Pages Routes **/
