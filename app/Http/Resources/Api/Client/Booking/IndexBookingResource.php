@@ -16,9 +16,9 @@ class IndexBookingResource extends JsonResource
     {
         $driver =$this->type == 'public_bus'? $this->schedule->driver: $this->driver;
 
-        $boarding = $this->type == 'public_bus'? $this->outboundBoardingStop : $this->startCity;
+        $boarding = $this->type == 'public_bus'? $this->outboundBoardingStop?->stop : $this->startCity;
 
-        $dropping = $this->type == 'public_bus'? $this->outboundDroppingStop : $this->endCity;
+        $dropping = $this->type == 'public_bus'? $this->outboundDroppingStop?->stop : $this->endCity;
 
         return [
             'id' => $this->id,

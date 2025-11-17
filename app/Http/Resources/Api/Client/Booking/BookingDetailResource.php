@@ -18,13 +18,13 @@ class BookingDetailResource extends JsonResource
 
         $vehicle =$this->type == 'public_bus'? $driver->vehicle: $this->vehicle;
 
-        $outbound_stops_boarding = $this->type == 'public_bus'? $this->outboundBoardingStop : $this->startCity;
+        $outbound_stops_boarding = $this->type == 'public_bus'? $this->outboundBoardingStop?->stop : $this->startCity;
 
-        $outbound_stops_dropping = $this->type == 'public_bus'? $this->outboundDroppingStop : $this->endCity;
+        $outbound_stops_dropping = $this->type == 'public_bus'? $this->outboundDroppingStop?->stop : $this->endCity;
 
-        $return_stops_boarding = $this->type == 'public_bus'? $this->returnBoardingStop : $this->endCity;
+        $return_stops_boarding = $this->type == 'public_bus'? $this->returnBoardingStop?->stop : $this->endCity;
 
-        $return_stops_dropping = $this->type == 'public_bus'? $this->returnDroppingStop : $this->startCity;
+        $return_stops_dropping = $this->type == 'public_bus'? $this->returnDroppingStop?->stop : $this->startCity;
 
         return [
             'id' => $this->id,
@@ -46,11 +46,11 @@ class BookingDetailResource extends JsonResource
             'return_stops' => $this->trip_type === 'round_trip' ? [
                 'boarding' => [
                     'id' => $return_stops_boarding->id,
-                    'name' => $return_stops_boarding->stop->name,
+                    'name' => $return_stops_boarding->name,
                 ],
                 'dropping' => [
                     'id' => $return_stops_dropping->id,
-                    'name' => $return_stops_dropping->stop->name,
+                    'name' => $return_stops_dropping->name,
                 ],
             ] : [],
 
