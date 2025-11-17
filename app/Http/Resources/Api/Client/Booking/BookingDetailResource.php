@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Resources\Api\Client\BookingSeat;
+namespace App\Http\Resources\Api\Client\Booking;
 
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
@@ -83,25 +83,21 @@ class BookingDetailResource extends JsonResource
             }),
 
             'number_of_seats' => $this->number_of_seats,
+
             'seat_numbers' => $this->seat_numbers,
 
-            'pricing' => [
-                'outbound_fare' => (float) $this->outbound_fare,
-                'return_fare' => (float) $this->return_fare,
-                'discount' => (float) $this->discount,
-                'total_amount' => (float) $this->total_amount,
-            ],
+            'total_amount' => round((float) $this->total_amount, 2),
+
 
             'payment' => [
                 'method' => $this->payment_method,
                 'status' => $this->payment_status,
-                'transaction_id' => $this->transaction_id,
                 'paid_at' => $this->paid_at?->format('Y-m-d H:i:s'),
             ],
 
             'status' => $this->status,
             'status_label' => $this->getStatusLabel(),
-            
+
         ];
     }
 

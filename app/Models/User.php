@@ -51,6 +51,11 @@ class User extends Authenticatable implements HasMedia
         return $this->hasOne(Vehicle::class, 'driver_id');
     }
 
+    public function cities(): \Illuminate\Database\Eloquent\Relations\BelongsToMany
+    {
+        return $this->belongsToMany(City::class, 'city_driver', 'driver_id', 'city_id')
+            ->withTimestamps();
+    }
 
     public function trips(): HasMany
     {
@@ -93,6 +98,16 @@ class User extends Authenticatable implements HasMedia
     public function problemReports(): HasMany
     {
         return $this->hasMany(ProblemReport::class, 'reporter_id');
+    }
+
+    public function privateTrips(): HasMany
+    {
+        return $this->hasMany(Booking::class, 'user_id')->where('type', 'private_bus');
+    }
+
+    public function privateTripsAsDriver(): HasMany
+    {
+        return $this->hasMany(Booking::class, 'driver_id')->where('type', 'private_bus');
     }
 
     public function getAvatarUrlAttribute(): ?string

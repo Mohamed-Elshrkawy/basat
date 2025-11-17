@@ -36,6 +36,7 @@ class DriversSeeder extends Seeder
                     'phone' => '0501234567',
                     'password' => 'password123',
                     'mobile_verified_at' => now(),
+                    'is_active'=>1,
                     'user_type' => 'driver',
                 ],
                 'driver' => [
@@ -64,6 +65,7 @@ class DriversSeeder extends Seeder
                     'phone' => '0502345678',
                     'password' => 'password123',
                     'mobile_verified_at' => now(),
+                    'is_active'=>1,
                     'user_type' => 'driver',
                 ],
                 'driver' => [
@@ -94,6 +96,7 @@ class DriversSeeder extends Seeder
                     'phone' => '0503456789',
                     'password' => 'password123',
                     'mobile_verified_at' => now(),
+                    'is_active'=>1,
                     'user_type' => 'driver',
                 ],
                 'driver' => [
@@ -121,6 +124,7 @@ class DriversSeeder extends Seeder
                     'phone' => '0504567890',
                     'password' => 'password123',
                     'mobile_verified_at' => now(),
+                    'is_active'=>1,
                     'user_type' => 'driver',
                 ],
                 'driver' => [
@@ -152,6 +156,7 @@ class DriversSeeder extends Seeder
                     'phone' => '0505678901',
                     'password' => 'password123',
                     'mobile_verified_at' => now(),
+                    'is_active'=>1,
                     'user_type' => 'driver',
                 ],
                 'driver' => [
@@ -181,6 +186,7 @@ class DriversSeeder extends Seeder
                     'phone' => '0506789012',
                     'password' => 'password123',
                     'mobile_verified_at' => now(),
+                    'is_active'=>1,
                     'user_type' => 'driver',
                 ],
                 'driver' => [
@@ -210,6 +216,7 @@ class DriversSeeder extends Seeder
                     'phone' => '0507890123',
                     'password' => 'password123',
                     'mobile_verified_at' => now(),
+                    'is_active'=>1,
                     'user_type' => 'driver',
                 ],
                 'driver' => [
@@ -238,6 +245,7 @@ class DriversSeeder extends Seeder
                     'phone' => '0508901234',
                     'password' => 'password123',
                     'mobile_verified_at' => now(),
+                    'is_active'=>1,
                     'user_type' => 'driver',
                 ],
                 'driver' => [
@@ -267,6 +275,7 @@ class DriversSeeder extends Seeder
                     'phone' => '0509012345',
                     'password' => 'password123',
                     'mobile_verified_at' => now(),
+                    'is_active'=>1,
                     'user_type' => 'driver',
                 ],
                 'driver' => [
@@ -296,6 +305,7 @@ class DriversSeeder extends Seeder
                     'phone' => '0510123456',
                     'password' => 'password123',
                     'mobile_verified_at' => now(),
+                    'is_active'=>1,
                     'user_type' => 'driver',
                 ],
                 'driver' => [
@@ -326,6 +336,7 @@ class DriversSeeder extends Seeder
                     'phone' => '0511234567',
                     'password' => 'password123',
                     'mobile_verified_at' => now(),
+                    'is_active'=>1,
                     'user_type' => 'driver',
                 ],
                 'driver' => [
@@ -356,6 +367,7 @@ class DriversSeeder extends Seeder
                     'gender' => $driverData['user']['gender'],
                     'phone' => $driverData['user']['phone'],
                     'password' => Hash::make($driverData['user']['password']),
+                    'is_active'=>true,
                     'mobile_verified_at' => $driverData['user']['mobile_verified_at'],
                     'user_type' => $driverData['user']['user_type'],
                 ]);
@@ -388,7 +400,7 @@ class DriversSeeder extends Seeder
 
                 // إنشاء السيارة
                 $vehicle = Vehicle::create([
-                    'driver_id' => $driver->id,
+                    'driver_id' => $user->id, // driver_id يشير إلى جدول users وليس drivers
                     'brand_id' => $brand->id,
                     'vehicle_model_id' => $vehicleModel->id,
                     'plate_number' => $driverData['vehicle']['plate_number'],

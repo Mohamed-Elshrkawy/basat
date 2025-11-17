@@ -24,34 +24,34 @@ class BookingResource extends JsonResource
                 'to' => $this->schedule->route->endCity->name,
             ],
             'outbound_stops' => [
-                'boarding' => [
+                'boarding' => $this->outboundBoardingStop ? [
                     'id' => $this->outboundBoardingStop->id,
                     'name' => $this->outboundBoardingStop->stop->name,
                     'time' => $this->outboundBoardingStop->departure_time,
                     'time_formatted' => $this->outboundBoardingStop->departure_time->translatedFormat('h:i A'),
-                ],
-                'dropping' => [
+                ] : null,
+                'dropping' => $this->outboundDroppingStop ? [
                     'id' => $this->outboundDroppingStop->id,
                     'name' => $this->outboundDroppingStop->stop->name,
                     'time' => $this->outboundDroppingStop->arrival_time,
                     'time_formatted' => $this->outboundDroppingStop->arrival_time->translatedFormat('h:i A'),
-                ],
+                ] : null,
             ],
 
             // معلومات المحطات للعودة
             'return_stops' => $this->trip_type === 'round_trip' ? [
-                'boarding' => [
+                'boarding' => $this->returnBoardingStop ? [
                     'id' => $this->returnBoardingStop->id,
                     'name' => $this->returnBoardingStop->stop->name,
                     'time' => $this->returnBoardingStop->departure_time,
                     'time_formatted' => $this->returnBoardingStop->departure_time->translatedFormat('h:i A'),
-                ],
-                'dropping' => [
+                ] : null,
+                'dropping' => $this->returnDroppingStop ? [
                     'id' => $this->returnDroppingStop->id,
                     'name' => $this->returnDroppingStop->stop->name,
                     'time' => $this->returnDroppingStop->arrival_time,
                     'time_formatted' => $this->returnDroppingStop->arrival_time->translatedFormat('h:i A'),
-                ],
+                ] : null,
             ] : null,
             'travel_date' => $this->travel_date->format('Y-m-d'),
             'travel_date_formatted' => $this->travel_date->translatedFormat('D, d M Y h:i A'),

@@ -55,7 +55,7 @@ class AccountDeletionRequestResource extends Resource
                         ->searchable()
                         ->preload()
                         ->required()
-                        ->disabled(fn($context) => $context === 'edit'),
+                        ->disabled(fn($operation) => $operation === 'edit'),
 
                     Forms\Components\Textarea::make('reason')
                         ->label(__('Deletion Reason'))
@@ -71,13 +71,13 @@ class AccountDeletionRequestResource extends Resource
                         ])
                         ->default('pending')
                         ->required()
-                        ->disabled(fn($context) => $context !== 'edit'),
+                        ->disabled(fn($operation) => $operation !== 'edit'),
 
                     Forms\Components\Textarea::make('notes')
                         ->label(__('Admin Notes'))
                         ->rows(3)
                         ->columnSpanFull()
-                        ->visible(fn($context) => $context === 'edit'),
+                        ->visible(fn($operation) => $operation === 'edit'),
                 ])->columns(2),
         ]);
     }
@@ -338,23 +338,23 @@ class AccountDeletionRequestResource extends Resource
         return 'warning';
     }
 
-//    public static function canViewAny(): bool
-//    {
-//        return auth()->user()->can('view_account_deletion_requests');
-//    }
-//
-//    public static function canCreate(): bool
-//    {
-//        return auth()->user()->can('create_account_deletion_requests');
-//    }
-//
-//    public static function canEdit(Model $record): bool
-//    {
-//        return auth()->user()->can('edit_account_deletion_requests');
-//    }
-//
-//    public static function canDelete(Model $record): bool
-//    {
-//        return auth()->user()->can('delete_account_deletion_requests');
-//    }
+    public static function canViewAny(): bool
+    {
+        return auth()->user()->can('view_account_deletion_requests');
+    }
+
+    public static function canCreate(): bool
+    {
+        return auth()->user()->can('create_account_deletion_requests');
+    }
+
+    public static function canEdit(Model $record): bool
+    {
+        return auth()->user()->can('edit_account_deletion_requests');
+    }
+
+    public static function canDelete(Model $record): bool
+    {
+        return auth()->user()->can('delete_account_deletion_requests');
+    }
 }

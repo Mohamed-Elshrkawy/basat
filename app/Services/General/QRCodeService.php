@@ -71,8 +71,14 @@ class QRCodeService
 
             $qrUrl = $apiUrl . '?' . http_build_query($params);
 
-            // تحميل الصورة
-            $imageContent = file_get_contents($qrUrl);
+            // تحميل الصورة مع timeout
+            $context = stream_context_create([
+                'http' => [
+                    'timeout' => 5, // 5 seconds timeout
+                    'ignore_errors' => true,
+                ],
+            ]);
+            $imageContent = @file_get_contents($qrUrl, false, $context);
 
             if ($imageContent) {
                 // حفظ الصورة

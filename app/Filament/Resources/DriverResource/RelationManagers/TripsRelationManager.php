@@ -138,16 +138,12 @@ class TripsRelationManager extends RelationManager
                             );
                     }),
             ])
-            ->headerActions([
-                // You can add actions here if needed
-            ])
+            ->headerActions([])
             ->actions([
                 Tables\Actions\ViewAction::make()
                     ->label(__('View')),
             ])
-            ->bulkActions([
-                // You can add bulk actions here if needed
-            ])
+            ->bulkActions([])
             ->defaultSort('created_at', 'desc')
             ->emptyStateHeading(__('No Trips Found'))
             ->emptyStateDescription(__('This driver has not completed any trips yet.'))

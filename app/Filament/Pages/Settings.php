@@ -20,7 +20,7 @@ class Settings extends Page implements HasForms
     protected static ?string $navigationIcon = 'heroicon-o-cog';
     protected static string $view = 'filament.pages.settings';
 
-    protected static ?int $navigationSort = 10;
+    protected static ?int $navigationSort = 17;
 
 
     public static function getNavigationLabel(): string

@@ -2,9 +2,10 @@
 
 use App\Http\Controllers\Api\Client\Auth\AuthController;
 use App\Http\Controllers\Api\Client\Auth\PasswordController;
-use App\Http\Controllers\Api\Client\BookingSeat\BookingController;
-use App\Http\Controllers\Api\Client\Profile\ProfileController;
+use App\Http\Controllers\Api\Client\Booking\BookingController;
 use App\Http\Controllers\Api\Client\BookingSeat\ScheduleController;
+use App\Http\Controllers\Api\Client\PrivateTrip\PrivateTripController;
+use App\Http\Controllers\Api\Client\Profile\ProfileController;
 use Illuminate\Support\Facades\Route;
 
 /** auth Routes **/
@@ -42,19 +43,25 @@ Route::middleware(['auth:api', 'client'])->group(callback: function () {
     });
 
     /** Schedules  Routes **/
-    Route::controller(ScheduleController::class)->prefix('schedules')->group(function () {
-        Route::get('/search',  'search');
-        Route::get('/{id}', 'show');
+    Route::controller(ScheduleController::class)->group(function () {
+        Route::get('schedules/search',  'search');
+        Route::get('schedules/{id}', 'show');
+        Route::post('bookings', 'store');
     });
 
     /** Booking Routes **/
     Route::controller(BookingController::class)->group(function () {
         Route::get('bookings', 'index');
-        Route::post('bookings', 'store');
-        Route::get('bookings/{id}', 'show');
-        Route::post('bookings/{id}/cancel', 'cancel');
-        Route::post('schedules/available-seats', 'availableSeats');
-        Route::post('bookings/{id}/confirm-payment', 'confirmPayment');
+        Route::get('bookings/{booking}', 'show');
+        Route::post('bookings/{booking}/cancel', 'cancel');
+        Route::post('bookings/{booking}/confirm-payment', 'confirmPayment');
+    });
+
+    /** Private Trip Routes **/
+    Route::controller(PrivateTripController::class)->prefix('private-trips')->group(function () {
+        Route::post('/search', 'search');
+        Route::post('/calculate-price', 'calculatePrice');
+        Route::post('/book', 'store');
     });
 
 });

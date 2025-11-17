@@ -16,7 +16,7 @@ class RoleResource extends Resource
 {
     protected static ?string $model = Role::class;
     protected static ?string $navigationIcon = 'heroicon-o-shield-check';
-    protected static ?int $navigationSort = 15;
+    protected static ?int $navigationSort = 16;
 
     public static function getNavigationLabel(): string
     {
@@ -40,26 +40,50 @@ class RoleResource extends Resource
 
     public static function form(Form $form): Form
     {
+        // Load translations from JSON
+        $translations = self::loadTranslations();
         $permissions = Permission::all();
 
         $permissionsByGroup = [
-            __('Auctions') => $permissions->filter(fn($p) => str_contains($p->name, '_auctions')),
-            __('Users') => $permissions->filter(fn($p) => str_contains($p->name, '_users')),
-            __('Cities') => $permissions->filter(fn($p) => str_contains($p->name, '_cities')),
-            __('Charities') => $permissions->filter(fn($p) => str_contains($p->name, '_charities')),
-            __('Categories') => $permissions->filter(fn($p) => str_contains($p->name, '_categories')),
-            __('Properties') => $permissions->filter(fn($p) => str_contains($p->name, '_properties')),
-            __('Banners') => $permissions->filter(fn($p) => str_contains($p->name, '_banners')),
-            __('Reports') => $permissions->filter(fn($p) =>
-                str_contains($p->name, '_payments') ||
-                str_contains($p->name, '_wallet_transactions')
+            __('User Management') => $permissions->filter(fn($p) =>
+                str_contains($p->name, '_admins') ||
+                str_contains($p->name, '_drivers') ||
+                str_contains($p->name, '_users')
             ),
-            __('Messages') => $permissions->filter(fn($p) => str_contains($p->name, '_contact_messages')),
-            __('Settings') => $permissions->filter(fn($p) => str_contains($p->name, '_settings')),
-            __('Roles') => $permissions->filter(fn($p) => str_contains($p->name, '_roles')),
-            __('Account Deletion Requests') => $permissions->filter(fn($p) => str_contains($p->name, '_account_deletion_requests')),
-            __('Conversations') => $permissions->filter(fn($p) => str_contains($p->name, '_conversations') || str_contains($p->name, '_conversation')),
-            __('Home') => $permissions->filter(fn($p) => str_starts_with($p->name, 'home_')),
+            __('Bookings') => $permissions->filter(fn($p) =>
+                str_contains($p->name, '_bookings') ||
+                str_contains($p->name, '_public_bus_bookings') ||
+                str_contains($p->name, '_private_bus_bookings')
+            ),
+            __('Vehicles') => $permissions->filter(fn($p) =>
+                str_contains($p->name, '_brands') ||
+                str_contains($p->name, '_vehicle_models') ||
+                str_contains($p->name, '_vehicles')
+            ),
+            __('Transportation') => $permissions->filter(fn($p) =>
+                str_contains($p->name, '_cities') ||
+                str_contains($p->name, '_stops') ||
+                str_contains($p->name, '_routes') ||
+                str_contains($p->name, '_schedules')
+            ),
+            __('Schools') => $permissions->filter(fn($p) =>
+                str_contains($p->name, '_schools') ||
+                str_contains($p->name, '_school_packages')
+            ),
+            __('Additional Services') => $permissions->filter(fn($p) =>
+                str_contains($p->name, '_amenities')
+            ),
+            __('Content Management') => $permissions->filter(fn($p) =>
+                str_contains($p->name, '_faqs') ||
+                str_contains($p->name, '_static_pages')
+            ),
+            __('Messages & Requests') => $permissions->filter(fn($p) =>
+                str_contains($p->name, '_contact_messages') ||
+                str_contains($p->name, '_account_deletion_requests')
+            ),
+            __('System Management') => $permissions->filter(fn($p) =>
+                str_contains($p->name, '_roles')
+            ),
         ];
 
         $checkboxSections = [];
@@ -75,8 +99,11 @@ class RoleResource extends Resource
                         Forms\Components\CheckboxList::make('permissions')
                             ->label(false)
                             ->options(
-                                $groupPermissions->mapWithKeys(function ($permission) {
-                                    return [$permission->id => __($permission->name)];
+                                $groupPermissions->mapWithKeys(function ($permission) use ($translations) {
+                                    $translatedName = $translations['permissions'][$permission->name][app()->getLocale()]
+                                        ?? $translations['permissions'][$permission->name]['ar']
+                                        ?? $permission->name;
+                                    return [$permission->id => $translatedName];
                                 })->toArray()
                             )
                             ->columns(1)
@@ -153,24 +180,43 @@ class RoleResource extends Resource
         ];
     }
 
-//    public static function canViewAny(): bool
-//    {
-//        return auth()->user()->can('view_roles');
-//    }
-//
-//
-//    public static function canCreate(): bool
-//    {
-//        return auth()->user()->can('create_roles');
-//    }
-//
-//    public static function canUpdate(Model $record): bool
-//    {
-//        return auth()->user()->can('update_roles');
-//    }
-//
-//    public static function canDelete(Model $record): bool
-//    {
-//        return auth()->user()->can('delete_roles');
-//    }
+    public static function canViewAny(): bool
+    {
+        return auth()->user()->can('view_roles');
+    }
+
+    public static function canCreate(): bool
+    {
+        return auth()->user()->can('create_roles');
+    }
+
+    public static function canUpdate(Model $record): bool
+    {
+        return auth()->user()->can('update_roles');
+    }
+
+    public static function canDelete(Model $record): bool
+    {
+        return auth()->user()->can('delete_roles');
+    }
+
+    /**
+     * Load translations from JSON file
+     */
+    protected static function loadTranslations(): array
+    {
+        $jsonPath = database_path('seeders/data/permissions_translations.json');
+
+        if (!file_exists($jsonPath)) {
+            return ['permissions' => []];
+        }
+
+        $data = json_decode(file_get_contents($jsonPath), true);
+
+        if (json_last_error() !== JSON_ERROR_NONE) {
+            return ['permissions' => []];
+        }
+
+        return $data;
+    }
 }

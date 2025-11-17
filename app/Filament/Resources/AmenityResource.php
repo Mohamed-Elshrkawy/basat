@@ -16,7 +16,7 @@ class AmenityResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-star';
 
-    protected static ?int $navigationSort = 8;
+    protected static ?int $navigationSort = 14;
 
     public static function getNavigationLabel(): string
     {

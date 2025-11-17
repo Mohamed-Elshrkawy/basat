@@ -1,0 +1,110 @@
+{
+    "resources": [
+        {
+            "name": "admins",
+            "permissions": ["view", "create", "edit", "delete"]
+        },
+        {
+            "name": "drivers",
+            "permissions": ["view", "create", "edit", "delete"]
+        },
+        {
+            "name": "users",
+            "permissions": ["view", "create", "edit", "delete"]
+        },
+        {
+            "name": "brands",
+            "permissions": ["view", "create", "edit", "delete"]
+        },
+        {
+            "name": "vehicle_models",
+            "permissions": ["view", "create", "edit", "delete"]
+        },
+        {
+            "name": "cities",
+            "permissions": ["view", "create", "edit", "delete"]
+        },
+        {
+            "name": "stops",
+            "permissions": ["view", "create", "edit", "delete"]
+        },
+        {
+            "name": "routes",
+            "permissions": ["view", "create", "edit", "delete"]
+        },
+        {
+            "name": "schedules",
+            "permissions": ["view", "create", "edit", "delete"]
+        },
+        {
+            "name": "schools",
+            "permissions": ["view", "create", "edit", "delete"]
+        },
+        {
+            "name": "school_packages",
+            "permissions": ["view", "create", "edit", "delete"]
+        },
+        {
+            "name": "amenities",
+            "permissions": ["view", "create", "edit", "delete"]
+        },
+        {
+            "name": "faqs",
+            "permissions": ["view", "create", "edit", "delete"]
+        },
+        {
+            "name": "static_pages",
+            "permissions": ["view", "create", "edit", "delete"]
+        },
+        {
+            "name": "account_deletion_requests",
+            "permissions": ["view", "create", "edit", "delete"]
+        },
+        {
+            "name": "contact_messages",
+            "permissions": ["view", "create", "edit", "delete"]
+        },
+        {
+            "name": "roles",
+            "permissions": ["view", "create", "update", "delete"]
+        },
+        {
+            "name": "bookings",
+            "permissions": ["view", "create", "edit", "delete"]
+        },
+        {
+            "name": "public_bus_bookings",
+            "permissions": ["view", "create", "edit", "delete"]
+        },
+        {
+            "name": "private_bus_bookings",
+            "permissions": ["view", "create", "edit", "delete"]
+        },
+        {
+            "name": "vehicles",
+            "permissions": ["view", "create", "edit", "delete"]
+        }
+    ],
+    "roles": [
+        {
+            "name": "admin",
+            "display_name": "مدير النظام",
+            "permissions": "*"
+        },
+        {
+            "name": "supervisor",
+            "display_name": "مشرف",
+            "permissions": "*"
+        }
+    ],
+    "admin_user": {
+        "name": "مدير النظام",
+        "email": "admin@basat.com",
+        "phone": "0500000000",
+        "password": "password",
+        "national_id": "1234567890",
+        "gender": "male",
+        "user_type": "admin",
+        "role": "admin"
+    }
+}

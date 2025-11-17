@@ -19,7 +19,7 @@ class UserResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-users';
 
-    protected static ?int $navigationSort = 1;
+    protected static ?int $navigationSort = 3;
 
     public static function getEloquentQuery(): Builder
     {
@@ -103,7 +103,7 @@ class UserResource extends Resource
                             ->revealable()
                             ->dehydrateStateUsing(fn ($state) => Hash::make($state))
                             ->dehydrated(fn ($state) => filled($state))
-                            ->required(fn (string $context): bool => $context === 'create')
+                            ->required(fn (string $operation): bool => $operation === 'create')
                             ->maxLength(255),
 
                         Forms\Components\Toggle::make('is_active')

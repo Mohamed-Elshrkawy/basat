@@ -940,35 +940,6 @@
                                         "description": "Get schedule details by ID"
                                     },
                                     "response": []
-                                }
-                            ]
-                        },
-                        {
-                            "name": "Booking",
-                            "item": [
-                                {
-                                    "name": "Index",
-                                    "request": {
-                                        "method": "GET",
-                                        "header": [],
-                                        "body": {
-                                            "mode": "formdata",
-                                            "formdata": []
-                                        },
-                                        "url": {
-                                            "raw": "{{URL}}\/api\/client\/bookings",
-                                            "host": [
-                                                "{{URL}}"
-                                            ],
-                                            "path": [
-                                                "client",
-                                                "bookings"
-                                            ],
-                                            "query": []
-                                        },
-                                        "description": "Get user bookings"
-                                    },
-                                    "response": []
                                 },
                                 {
                                     "name": "Store",
@@ -1013,12 +984,6 @@
                                                     "value": "",
                                                     "type": "text",
                                                     "description": "required|integer|min:1|max:50"
-                                                },
-                                                {
-                                                    "key": "payment_method",
-                                                    "value": "",
-                                                    "type": "text",
-                                                    "description": "required|in:cash,wallet"
                                                 },
                                                 {
                                                     "key": "notes",
@@ -1066,6 +1031,40 @@
                                         "description": "Create a new booking"
                                     },
                                     "response": []
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "name": "Booking",
+                    "item": [
+                        {
+                            "name": "Booking",
+                            "item": [
+                                {
+                                    "name": "Index",
+                                    "request": {
+                                        "method": "GET",
+                                        "header": [],
+                                        "body": {
+                                            "mode": "formdata",
+                                            "formdata": []
+                                        },
+                                        "url": {
+                                            "raw": "{{URL}}\/api\/client\/bookings",
+                                            "host": [
+                                                "{{URL}}"
+                                            ],
+                                            "path": [
+                                                "client",
+                                                "bookings"
+                                            ],
+                                            "query": []
+                                        },
+                                        "description": "Get user bookings"
+                                    },
+                                    "response": []
                                 },
                                 {
                                     "name": "Show",
@@ -1077,14 +1076,14 @@
                                             "formdata": []
                                         },
                                         "url": {
-                                            "raw": "{{URL}}\/api\/client\/bookings\/:idId",
+                                            "raw": "{{URL}}\/api\/client\/bookings\/:bookingId",
                                             "host": [
                                                 "{{URL}}"
                                             ],
                                             "path": [
                                                 "client",
                                                 "bookings",
-                                                ":idId"
+                                                ":bookingId"
                                             ],
                                             "query": []
                                         },
@@ -1102,57 +1101,19 @@
                                             "formdata": []
                                         },
                                         "url": {
-                                            "raw": "{{URL}}\/api\/client\/bookings\/:idId\/cancel",
+                                            "raw": "{{URL}}\/api\/client\/bookings\/:bookingId\/cancel",
                                             "host": [
                                                 "{{URL}}"
                                             ],
                                             "path": [
                                                 "client",
                                                 "bookings",
-                                                ":idId",
+                                                ":bookingId",
                                                 "cancel"
                                             ],
                                             "query": []
                                         },
                                         "description": "Cancel booking"
-                                    },
-                                    "response": []
-                                },
-                                {
-                                    "name": "Available Seats",
-                                    "request": {
-                                        "method": "POST",
-                                        "header": [],
-                                        "body": {
-                                            "mode": "formdata",
-                                            "formdata": [
-                                                {
-                                                    "key": "schedule_id",
-                                                    "value": "",
-                                                    "type": "text",
-                                                    "description": "required|exists:schedules,id"
-                                                },
-                                                {
-                                                    "key": "travel_date",
-                                                    "value": "",
-                                                    "type": "text",
-                                                    "description": "required|date|after_or_equal:today"
-                                                }
-                                            ]
-                                        },
-                                        "url": {
-                                            "raw": "{{URL}}\/api\/client\/schedules\/available-seats",
-                                            "host": [
-                                                "{{URL}}"
-                                            ],
-                                            "path": [
-                                                "client",
-                                                "schedules",
-                                                "available-seats"
-                                            ],
-                                            "query": []
-                                        },
-                                        "description": "Get available seats for a schedule on a specific date"
                                     },
                                     "response": []
                                 },
@@ -1166,19 +1127,263 @@
                                             "formdata": []
                                         },
                                         "url": {
-                                            "raw": "{{URL}}\/api\/client\/bookings\/:idId\/confirm-payment",
+                                            "raw": "{{URL}}\/api\/client\/bookings\/:bookingId\/confirm-payment",
                                             "host": [
                                                 "{{URL}}"
                                             ],
                                             "path": [
                                                 "client",
                                                 "bookings",
-                                                ":idId",
+                                                ":bookingId",
                                                 "confirm-payment"
                                             ],
                                             "query": []
                                         },
                                         "description": "Confirm payment"
+                                    },
+                                    "response": []
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "name": "PrivateTrip",
+                    "item": [
+                        {
+                            "name": "PrivateTrip",
+                            "item": [
+                                {
+                                    "name": "Search",
+                                    "request": {
+                                        "method": "POST",
+                                        "header": [],
+                                        "body": {
+                                            "mode": "formdata",
+                                            "formdata": [
+                                                {
+                                                    "key": "trip_type",
+                                                    "value": "",
+                                                    "type": "text",
+                                                    "description": "required|string|in:one_way,round_trip"
+                                                },
+                                                {
+                                                    "key": "start_city_id",
+                                                    "value": "",
+                                                    "type": "text",
+                                                    "description": "required|exists:cities,id"
+                                                },
+                                                {
+                                                    "key": "end_city_id",
+                                                    "value": "",
+                                                    "type": "text",
+                                                    "description": "required|exists:cities,id|different:start_city_id"
+                                                },
+                                                {
+                                                    "key": "number_of_seats",
+                                                    "value": "",
+                                                    "type": "text",
+                                                    "description": "required|integer|min:1|max:50"
+                                                },
+                                                {
+                                                    "key": "travel_date",
+                                                    "value": "",
+                                                    "type": "text",
+                                                    "description": "required|date|after_or_equal:today"
+                                                },
+                                                {
+                                                    "key": "return_date",
+                                                    "value": "",
+                                                    "type": "text",
+                                                    "description": "required_if:trip_type,round_trip|nullable|date|after:travel_date"
+                                                }
+                                            ]
+                                        },
+                                        "url": {
+                                            "raw": "{{URL}}\/api\/client\/private-trips\/search",
+                                            "host": [
+                                                "{{URL}}"
+                                            ],
+                                            "path": [
+                                                "client",
+                                                "private-trips",
+                                                "search"
+                                            ],
+                                            "query": []
+                                        },
+                                        "description": "Search for available private bus drivers"
+                                    },
+                                    "response": []
+                                },
+                                {
+                                    "name": "Calculate Price",
+                                    "request": {
+                                        "method": "POST",
+                                        "header": [],
+                                        "body": {
+                                            "mode": "formdata",
+                                            "formdata": [
+                                                {
+                                                    "key": "trip_type",
+                                                    "value": "",
+                                                    "type": "text",
+                                                    "description": "required|string|in:one_way,round_trip"
+                                                },
+                                                {
+                                                    "key": "driver_id",
+                                                    "value": "",
+                                                    "type": "text",
+                                                    "description": "required|exists:users,id"
+                                                },
+                                                {
+                                                    "key": "start_city_id",
+                                                    "value": "",
+                                                    "type": "text",
+                                                    "description": "required|exists:cities,id"
+                                                },
+                                                {
+                                                    "key": "end_city_id",
+                                                    "value": "",
+                                                    "type": "text",
+                                                    "description": "required|exists:cities,id|different:start_city_id"
+                                                },
+                                                {
+                                                    "key": "number_of_seats",
+                                                    "value": "",
+                                                    "type": "text",
+                                                    "description": "required|integer|min:1|max:50"
+                                                },
+                                                {
+                                                    "key": "travel_date",
+                                                    "value": "",
+                                                    "type": "text",
+                                                    "description": "required|date|after_or_equal:today"
+                                                },
+                                                {
+                                                    "key": "return_date",
+                                                    "value": "",
+                                                    "type": "text",
+                                                    "description": "required_if:trip_type,round_trip|nullable|date|after:travel_date"
+                                                },
+                                                {
+                                                    "key": "amenity_ids",
+                                                    "value": "",
+                                                    "type": "text",
+                                                    "description": "nullable|array"
+                                                },
+                                                {
+                                                    "key": "amenity_ids[*]",
+                                                    "value": "",
+                                                    "type": "text",
+                                                    "description": "exists:amenities,id"
+                                                },
+                                                {
+                                                    "key": "notes",
+                                                    "value": "",
+                                                    "type": "text",
+                                                    "description": "nullable|string|max:1000"
+                                                }
+                                            ]
+                                        },
+                                        "url": {
+                                            "raw": "{{URL}}\/api\/client\/private-trips\/calculate-price",
+                                            "host": [
+                                                "{{URL}}"
+                                            ],
+                                            "path": [
+                                                "client",
+                                                "private-trips",
+                                                "calculate-price"
+                                            ],
+                                            "query": []
+                                        },
+                                        "description": "Calculate price for a specific trip configuration"
+                                    },
+                                    "response": []
+                                },
+                                {
+                                    "name": "Store",
+                                    "request": {
+                                        "method": "POST",
+                                        "header": [],
+                                        "body": {
+                                            "mode": "formdata",
+                                            "formdata": [
+                                                {
+                                                    "key": "trip_type",
+                                                    "value": "",
+                                                    "type": "text",
+                                                    "description": "required|string|in:one_way,round_trip"
+                                                },
+                                                {
+                                                    "key": "driver_id",
+                                                    "value": "",
+                                                    "type": "text",
+                                                    "description": "required|exists:users,id"
+                                                },
+                                                {
+                                                    "key": "start_city_id",
+                                                    "value": "",
+                                                    "type": "text",
+                                                    "description": "required|exists:cities,id"
+                                                },
+                                                {
+                                                    "key": "end_city_id",
+                                                    "value": "",
+                                                    "type": "text",
+                                                    "description": "required|exists:cities,id|different:start_city_id"
+                                                },
+                                                {
+                                                    "key": "number_of_seats",
+                                                    "value": "",
+                                                    "type": "text",
+                                                    "description": "required|integer|min:1|max:50"
+                                                },
+                                                {
+                                                    "key": "travel_date",
+                                                    "value": "",
+                                                    "type": "text",
+                                                    "description": "required|date|after_or_equal:today"
+                                                },
+                                                {
+                                                    "key": "return_date",
+                                                    "value": "",
+                                                    "type": "text",
+                                                    "description": "required_if:trip_type,round_trip|nullable|date|after:travel_date"
+                                                },
+                                                {
+                                                    "key": "amenity_ids",
+                                                    "value": "",
+                                                    "type": "text",
+                                                    "description": "nullable|array"
+                                                },
+                                                {
+                                                    "key": "amenity_ids[*]",
+                                                    "value": "",
+                                                    "type": "text",
+                                                    "description": "exists:amenities,id"
+                                                },
+                                                {
+                                                    "key": "notes",
+                                                    "value": "",
+                                                    "type": "text",
+                                                    "description": "nullable|string|max:1000"
+                                                }
+                                            ]
+                                        },
+                                        "url": {
+                                            "raw": "{{URL}}\/api\/client\/private-trips\/book",
+                                            "host": [
+                                                "{{URL}}"
+                                            ],
+                                            "path": [
+                                                "client",
+                                                "private-trips",
+                                                "book"
+                                            ],
+                                            "query": []
+                                        },
+                                        "description": "Book a private trip"
                                     },
                                     "response": []
                                 }
@@ -1941,6 +2146,30 @@
                                             "path": [
                                                 "general",
                                                 "settings"
+                                            ],
+                                            "query": []
+                                        },
+                                        "description": "No description available"
+                                    },
+                                    "response": []
+                                },
+                                {
+                                    "name": "Payment Methods",
+                                    "request": {
+                                        "method": "GET",
+                                        "header": [],
+                                        "body": {
+                                            "mode": "formdata",
+                                            "formdata": []
+                                        },
+                                        "url": {
+                                            "raw": "{{URL}}\/api\/general\/payment-methods",
+                                            "host": [
+                                                "{{URL}}"
+                                            ],
+                                            "path": [
+                                                "general",
+                                                "payment-methods"
                                             ],
                                             "query": []
                                         },

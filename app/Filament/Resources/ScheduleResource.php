@@ -147,7 +147,7 @@ class ScheduleResource extends Resource
 
                     Forms\Components\Wizard\Step::make(__('Outbound Stops'))
                         ->schema([
-                            Forms\Components\Repeater::make('outbound Stops')
+                            Forms\Components\Repeater::make('outboundStops')
                                 ->relationship('scheduleStops', fn ($query) => $query->where('direction', 'outbound'))
                                 ->schema([
                                     Forms\Components\Grid::make(4)
@@ -180,7 +180,7 @@ class ScheduleResource extends Resource
                                 ->reorderable(true)
                                 ->collapsible()
                                 ->itemLabel(fn (array $state): ?string =>
-                                    Stop::find($state['stop_id'])?->getTranslation('name', 'ar') ?? __('NewStop')
+                                    Stop::find($state['stop_id'])?->getTranslation('name', 'ar') ?? __('New Stop')
                                 )
                                 ->addActionLabel(__('AddStop'))
                                 ->deleteAction(fn (Forms\Components\Actions\Action $action) => $action->requiresConfirmation())

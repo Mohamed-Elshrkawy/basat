@@ -117,7 +117,7 @@ class DriverResource extends Resource
                                             ->maxLength(16)
                                             ->dehydrateStateUsing(fn ($state) => Hash::make($state))
                                             ->dehydrated(fn ($state) => filled($state))
-                                            ->required(fn (string $context): bool => $context === 'create'),
+                                            ->required(fn (string $operation): bool => $operation === 'create'),
 
                                         Forms\Components\Toggle::make('is_active')
                                             ->label(__('Verify Mobile'))
@@ -232,9 +232,18 @@ class DriverResource extends Resource
                                                 'school_bus' => __('SchoolBus'),
                                             ])
                                             ->required()
-                                            ->default('public_bus'),
+                                            ->default('public_bus')
+                                            ->live(),
 
-
+                                        Forms\Components\Select::make('cities')
+                                            ->label(__('Operating Cities'))
+                                            ->helperText(__('Select cities where this private bus operates'))
+                                            ->multiple()
+                                            ->relationship('cities', 'name')
+                                            ->preload()
+                                            ->searchable()
+                                            ->visible(fn (Forms\Get $get) => $get('vehicle.type') === 'private_bus')
+                                            ->required(fn (Forms\Get $get) => $get('vehicle.type') === 'private_bus'),
 
                                         Forms\Components\Toggle::make('vehicle.is_active')
                                             ->label(__('IsActive'))

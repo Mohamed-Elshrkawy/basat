@@ -2,9 +2,6 @@
 
 namespace App\Console\Commands;
 
-use App\Rules\AttachmentExists;
-use App\Rules\Latitude;
-use App\Rules\Longitude;
 use Exception;
 use Illuminate\Console\Command;
 use Illuminate\Support\Arr;
@@ -345,10 +342,7 @@ class GeneratePostmanCollection extends Command
             $final = [];
             foreach ($rule as $i) {
                 if (
-                    $i instanceof Latitude
-                    || $i instanceof Longitude
-                    || $i instanceof AttachmentExists
-                    || $i instanceof Exists
+                    $i instanceof Exists
                     || $i instanceof Unique
                     || $i instanceof RequiredIf
                     || is_string($i)

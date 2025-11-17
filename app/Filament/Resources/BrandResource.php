@@ -20,7 +20,7 @@ class BrandResource extends Resource
     protected static ?string $navigationIcon = 'heroicon-o-bookmark';
 
 
-    protected static ?int $navigationSort = 1;
+    protected static ?int $navigationSort = 8;
 
     public static function getNavigationLabel(): string
     {
@@ -94,7 +94,7 @@ class BrandResource extends Resource
 
                 Tables\Columns\TextColumn::make('vehicle_models_count')
                     ->label(__('Models Count'))
-                    ->counts('vehicle Models')
+                    ->counts('vehicleModels')
                     ->badge()
                     ->color('info')
                     ->sortable(),

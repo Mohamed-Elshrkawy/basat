@@ -16,7 +16,7 @@ class FaqResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-question-mark-circle';
 
-    protected static ?int $navigationSort = 5;
+    protected static ?int $navigationSort = 20;
 
     public static function getNavigationGroup(): ?string
     {

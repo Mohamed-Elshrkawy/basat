@@ -14,21 +14,43 @@ class DatabaseSeeder extends Seeder
     public function run(): void
     {
         $this->call([
+            // الإعدادات والبيانات الأساسية
             RolesAndPermissionsSeeder::class,
             SettingsSeeder::class,
             StaticPageSeeder::class,
             FaqSeeder::class,
+
+            // البيانات الجغرافية
             CitySeeder::class,
+
+            // بيانات المركبات والوسائل
             VehicleDataSeeder::class,
-            StopsSeeder::class,
             AmenitiesSeeder::class,
-            DriversSeeder::class,
+
+            // المحطات والمسارات
+            StopsSeeder::class,
+
+            // المستخدمين والسائقين
+            UsersSeeder::class,
+            DriversSeeder::class, // سائقو الحافلات العامة
+            PrivateDriversSeeder::class, // سائقو الحافلات الخاصة
+
+            // المسارات والجداول (يحتاج سائقين)
             RoutesSeeder::class,
-            //ComprehensiveRoutesSeeder::class, // Enabled after modifying it for a single driver
-            //ComprehensivePublicBusTripsSeeder::class, // Enabled after modifying it for a single driver
-            // FrequentRoutesSeeder::class,
-            // WeekendAndNightTripsSeeder::class,
-            //TestDataSeeder::class,
+
+            // المدارس والأطفال
+//            SchoolsSeeder::class,
+//            ChildrenSeeder::class,
+
+            // الحجوزات (يحتاج مستخدمين وجداول)
+            BookingsSeeder::class,
+
+            // التقييمات (يحتاج حجوزات)
+            RatingsSeeder::class,
+
+            // التقارير والرسائل
+            ProblemReportsSeeder::class,
+            ContactMessagesSeeder::class,
         ]);
     }
 }

@@ -1,0 +1,458 @@
+{
+    "resources": {
+        "admins": {
+            "ar": "المسؤولين",
+            "en": "Admins"
+        },
+        "drivers": {
+            "ar": "السائقين",
+            "en": "Drivers"
+        },
+        "users": {
+            "ar": "المستخدمين",
+            "en": "Users"
+        },
+        "brands": {
+            "ar": "العلامات التجارية",
+            "en": "Brands"
+        },
+        "vehicle_models": {
+            "ar": "موديلات المركبات",
+            "en": "Vehicle Models"
+        },
+        "cities": {
+            "ar": "المدن",
+            "en": "Cities"
+        },
+        "stops": {
+            "ar": "المحطات",
+            "en": "Stops"
+        },
+        "routes": {
+            "ar": "المسارات",
+            "en": "Routes"
+        },
+        "schedules": {
+            "ar": "جداول الرحلات",
+            "en": "Schedules"
+        },
+        "schools": {
+            "ar": "المدارس",
+            "en": "Schools"
+        },
+        "school_packages": {
+            "ar": "باقات المدارس",
+            "en": "School Packages"
+        },
+        "amenities": {
+            "ar": "الخدمات والمرافق",
+            "en": "Amenities"
+        },
+        "faqs": {
+            "ar": "الأسئلة الشائعة",
+            "en": "FAQs"
+        },
+        "static_pages": {
+            "ar": "الصفحات الثابتة",
+            "en": "Static Pages"
+        },
+        "account_deletion_requests": {
+            "ar": "طلبات حذف الحساب",
+            "en": "Account Deletion Requests"
+        },
+        "contact_messages": {
+            "ar": "رسائل التواصل",
+            "en": "Contact Messages"
+        },
+        "roles": {
+            "ar": "الأدوار والصلاحيات",
+            "en": "Roles"
+        },
+        "bookings": {
+            "ar": "الحجوزات",
+            "en": "Bookings"
+        },
+        "public_bus_bookings": {
+            "ar": "حجوزات الباص العام",
+            "en": "Public Bus Bookings"
+        },
+        "private_bus_bookings": {
+            "ar": "حجوزات الباص الخاص",
+            "en": "Private Bus Bookings"
+        },
+        "vehicles": {
+            "ar": "المركبات",
+            "en": "Vehicles"
+        }
+    },
+    "actions": {
+        "view": {
+            "ar": "عرض",
+            "en": "View"
+        },
+        "create": {
+            "ar": "إنشاء",
+            "en": "Create"
+        },
+        "edit": {
+            "ar": "تعديل",
+            "en": "Edit"
+        },
+        "update": {
+            "ar": "تحديث",
+            "en": "Update"
+        },
+        "delete": {
+            "ar": "حذف",
+            "en": "Delete"
+        }
+    },
+    "roles": {
+        "admin": {
+            "ar": "مدير النظام",
+            "en": "Administrator"
+        },
+        "supervisor": {
+            "ar": "مشرف",
+            "en": "Supervisor"
+        }
+    },
+    "permissions": {
+        "view_admins": {
+            "ar": "عرض المسؤولين",
+            "en": "View Admins"
+        },
+        "create_admins": {
+            "ar": "إنشاء مسؤول",
+            "en": "Create Admin"
+        },
+        "edit_admins": {
+            "ar": "تعديل المسؤولين",
+            "en": "Edit Admins"
+        },
+        "delete_admins": {
+            "ar": "حذف المسؤولين",
+            "en": "Delete Admins"
+        },
+        "view_drivers": {
+            "ar": "عرض السائقين",
+            "en": "View Drivers"
+        },
+        "create_drivers": {
+            "ar": "إنشاء سائق",
+            "en": "Create Driver"
+        },
+        "edit_drivers": {
+            "ar": "تعديل السائقين",
+            "en": "Edit Drivers"
+        },
+        "delete_drivers": {
+            "ar": "حذف السائقين",
+            "en": "Delete Drivers"
+        },
+        "view_users": {
+            "ar": "عرض المستخدمين",
+            "en": "View Users"
+        },
+        "create_users": {
+            "ar": "إنشاء مستخدم",
+            "en": "Create User"
+        },
+        "edit_users": {
+            "ar": "تعديل المستخدمين",
+            "en": "Edit Users"
+        },
+        "delete_users": {
+            "ar": "حذف المستخدمين",
+            "en": "Delete Users"
+        },
+        "view_brands": {
+            "ar": "عرض العلامات التجارية",
+            "en": "View Brands"
+        },
+        "create_brands": {
+            "ar": "إنشاء علامة تجارية",
+            "en": "Create Brand"
+        },
+        "edit_brands": {
+            "ar": "تعديل العلامات التجارية",
+            "en": "Edit Brands"
+        },
+        "delete_brands": {
+            "ar": "حذف العلامات التجارية",
+            "en": "Delete Brands"
+        },
+        "view_vehicle_models": {
+            "ar": "عرض موديلات المركبات",
+            "en": "View Vehicle Models"
+        },
+        "create_vehicle_models": {
+            "ar": "إنشاء موديل مركبة",
+            "en": "Create Vehicle Model"
+        },
+        "edit_vehicle_models": {
+            "ar": "تعديل موديلات المركبات",
+            "en": "Edit Vehicle Models"
+        },
+        "delete_vehicle_models": {
+            "ar": "حذف موديلات المركبات",
+            "en": "Delete Vehicle Models"
+        },
+        "view_cities": {
+            "ar": "عرض المدن",
+            "en": "View Cities"
+        },
+        "create_cities": {
+            "ar": "إنشاء مدينة",
+            "en": "Create City"
+        },
+        "edit_cities": {
+            "ar": "تعديل المدن",
+            "en": "Edit Cities"
+        },
+        "delete_cities": {
+            "ar": "حذف المدن",
+            "en": "Delete Cities"
+        },
+        "view_stops": {
+            "ar": "عرض المحطات",
+            "en": "View Stops"
+        },
+        "create_stops": {
+            "ar": "إنشاء محطة",
+            "en": "Create Stop"
+        },
+        "edit_stops": {
+            "ar": "تعديل المحطات",
+            "en": "Edit Stops"
+        },
+        "delete_stops": {
+            "ar": "حذف المحطات",
+            "en": "Delete Stops"
+        },
+        "view_routes": {
+            "ar": "عرض المسارات",
+            "en": "View Routes"
+        },
+        "create_routes": {
+            "ar": "إنشاء مسار",
+            "en": "Create Route"
+        },
+        "edit_routes": {
+            "ar": "تعديل المسارات",
+            "en": "Edit Routes"
+        },
+        "delete_routes": {
+            "ar": "حذف المسارات",
+            "en": "Delete Routes"
+        },
+        "view_schedules": {
+            "ar": "عرض جداول الرحلات",
+            "en": "View Schedules"
+        },
+        "create_schedules": {
+            "ar": "إنشاء جدول رحلة",
+            "en": "Create Schedule"
+        },
+        "edit_schedules": {
+            "ar": "تعديل جداول الرحلات",
+            "en": "Edit Schedules"
+        },
+        "delete_schedules": {
+            "ar": "حذف جداول الرحلات",
+            "en": "Delete Schedules"
+        },
+        "view_schools": {
+            "ar": "عرض المدارس",
+            "en": "View Schools"
+        },
+        "create_schools": {
+            "ar": "إنشاء مدرسة",
+            "en": "Create School"
+        },
+        "edit_schools": {
+            "ar": "تعديل المدارس",
+            "en": "Edit Schools"
+        },
+        "delete_schools": {
+            "ar": "حذف المدارس",
+            "en": "Delete Schools"
+        },
+        "view_school_packages": {
+            "ar": "عرض باقات المدارس",
+            "en": "View School Packages"
+        },
+        "create_school_packages": {
+            "ar": "إنشاء باقة مدرسة",
+            "en": "Create School Package"
+        },
+        "edit_school_packages": {
+            "ar": "تعديل باقات المدارس",
+            "en": "Edit School Packages"
+        },
+        "delete_school_packages": {
+            "ar": "حذف باقات المدارس",
+            "en": "Delete School Packages"
+        },
+        "view_amenities": {
+            "ar": "عرض الخدمات والمرافق",
+            "en": "View Amenities"
+        },
+        "create_amenities": {
+            "ar": "إنشاء خدمة أو مرفق",
+            "en": "Create Amenity"
+        },
+        "edit_amenities": {
+            "ar": "تعديل الخدمات والمرافق",
+            "en": "Edit Amenities"
+        },
+        "delete_amenities": {
+            "ar": "حذف الخدمات والمرافق",
+            "en": "Delete Amenities"
+        },
+        "view_faqs": {
+            "ar": "عرض الأسئلة الشائعة",
+            "en": "View FAQs"
+        },
+        "create_faqs": {
+            "ar": "إنشاء سؤال شائع",
+            "en": "Create FAQ"
+        },
+        "edit_faqs": {
+            "ar": "تعديل الأسئلة الشائعة",
+            "en": "Edit FAQs"
+        },
+        "delete_faqs": {
+            "ar": "حذف الأسئلة الشائعة",
+            "en": "Delete FAQs"
+        },
+        "view_static_pages": {
+            "ar": "عرض الصفحات الثابتة",
+            "en": "View Static Pages"
+        },
+        "create_static_pages": {
+            "ar": "إنشاء صفحة ثابتة",
+            "en": "Create Static Page"
+        },
+        "edit_static_pages": {
+            "ar": "تعديل الصفحات الثابتة",
+            "en": "Edit Static Pages"
+        },
+        "delete_static_pages": {
+            "ar": "حذف الصفحات الثابتة",
+            "en": "Delete Static Pages"
+        },
+        "view_account_deletion_requests": {
+            "ar": "عرض طلبات حذف الحساب",
+            "en": "View Account Deletion Requests"
+        },
+        "create_account_deletion_requests": {
+            "ar": "إنشاء طلب حذف حساب",
+            "en": "Create Account Deletion Request"
+        },
+        "edit_account_deletion_requests": {
+            "ar": "تعديل طلبات حذف الحساب",
+            "en": "Edit Account Deletion Requests"
+        },
+        "delete_account_deletion_requests": {
+            "ar": "حذف طلبات حذف الحساب",
+            "en": "Delete Account Deletion Requests"
+        },
+        "view_contact_messages": {
+            "ar": "عرض رسائل التواصل",
+            "en": "View Contact Messages"
+        },
+        "create_contact_messages": {
+            "ar": "إنشاء رسالة تواصل",
+            "en": "Create Contact Message"
+        },
+        "edit_contact_messages": {
+            "ar": "تعديل رسائل التواصل",
+            "en": "Edit Contact Messages"
+        },
+        "delete_contact_messages": {
+            "ar": "حذف رسائل التواصل",
+            "en": "Delete Contact Messages"
+        },
+        "view_roles": {
+            "ar": "عرض الأدوار والصلاحيات",
+            "en": "View Roles"
+        },
+        "create_roles": {
+            "ar": "إنشاء دور",
+            "en": "Create Role"
+        },
+        "update_roles": {
+            "ar": "تحديث الأدوار",
+            "en": "Update Roles"
+        },
+        "delete_roles": {
+            "ar": "حذف الأدوار",
+            "en": "Delete Roles"
+        },
+        "view_bookings": {
+            "ar": "عرض الحجوزات",
+            "en": "View Bookings"
+        },
+        "create_bookings": {
+            "ar": "إنشاء حجز",
+            "en": "Create Booking"
+        },
+        "edit_bookings": {
+            "ar": "تعديل الحجوزات",
+            "en": "Edit Bookings"
+        },
+        "delete_bookings": {
+            "ar": "حذف الحجوزات",
+            "en": "Delete Bookings"
+        },
+        "view_public_bus_bookings": {
+            "ar": "عرض حجوزات الباص العام",
+            "en": "View Public Bus Bookings"
+        },
+        "create_public_bus_bookings": {
+            "ar": "إنشاء حجز باص عام",
+            "en": "Create Public Bus Booking"
+        },
+        "edit_public_bus_bookings": {
+            "ar": "تعديل حجوزات الباص العام",
+            "en": "Edit Public Bus Bookings"
+        },
+        "delete_public_bus_bookings": {
+            "ar": "حذف حجوزات الباص العام",
+            "en": "Delete Public Bus Bookings"
+        },
+        "view_private_bus_bookings": {
+            "ar": "عرض حجوزات الباص الخاص",
+            "en": "View Private Bus Bookings"
+        },
+        "create_private_bus_bookings": {
+            "ar": "إنشاء حجز باص خاص",
+            "en": "Create Private Bus Booking"
+        },
+        "edit_private_bus_bookings": {
+            "ar": "تعديل حجوزات الباص الخاص",
+            "en": "Edit Private Bus Bookings"
+        },
+        "delete_private_bus_bookings": {
+            "ar": "حذف حجوزات الباص الخاص",
+            "en": "Delete Private Bus Bookings"
+        },
+        "view_vehicles": {
+            "ar": "عرض المركبات",
+            "en": "View Vehicles"
+        },
+        "create_vehicles": {
+            "ar": "إنشاء مركبة",
+            "en": "Create Vehicle"
+        },
+        "edit_vehicles": {
+            "ar": "تعديل المركبات",
+            "en": "Edit Vehicles"
+        },
+        "delete_vehicles": {
+            "ar": "حذف المركبات",
+            "en": "Delete Vehicles"
+        }
+    }
+}

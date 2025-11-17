@@ -21,7 +21,7 @@ class ContactMessageResource extends Resource
     protected static ?string $navigationIcon = 'heroicon-o-envelope';
 
 
-    protected static ?int $navigationSort = 13;
+    protected static ?int $navigationSort = 18;
 
     public static function getNavigationLabel(): string
     {
@@ -215,23 +215,23 @@ class ContactMessageResource extends Resource
         ];
     }
 
+    public static function canViewAny(): bool
+    {
+        return auth()->user()->can('view_contact_messages');
+    }
+
     public static function canCreate(): bool
     {
         return false;
     }
-
-//    public static function canViewAny(): bool
-//    {
-//        return auth()->user()->can('view_contact_messages');
-//    }
 
     public static function canEdit(Model $record): bool
     {
         return false;
     }
 
-//    public static function canDelete(Model $record): bool
-//    {
-//        return auth()->user()->can('delete_contact_messages');
-//    }
+    public static function canDelete(Model $record): bool
+    {
+        return auth()->user()->can('delete_contact_messages');
+    }
 }
