@@ -23,6 +23,9 @@ class Booking extends Model
         'total_amount' => 'decimal:2',
         'paid_at' => 'datetime',
         'cancelled_at' => 'datetime',
+        'checked_in_at' => 'datetime',
+        'boarded_at' => 'datetime',
+        'arrived_at' => 'datetime',
     ];
 
     protected $appends = ['qr_code_url'];

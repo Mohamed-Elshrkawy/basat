@@ -34,9 +34,9 @@ class TripDetailResource extends JsonResource
             // الأوقات المخططة
             'scheduled_times' => [
                 'departure' => $this->schedule->departure_time,
-                'departure_formatted' => $this->schedule->departure_time->translatedFormat('D d M Y h:i A'),
+                'departure_formatted' => $this->schedule->departure_time->translatedFormat('h:i A'),
                 'arrival' => $this->schedule->arrival_time,
-                'arrival_formatted' => $this->schedule->arrival_time->translatedFormat('D d M Y h:i A'),
+                'arrival_formatted' => $this->schedule->arrival_time->translatedFormat('h:i A'),
             ],
 
             // الأوقات الفعلية
