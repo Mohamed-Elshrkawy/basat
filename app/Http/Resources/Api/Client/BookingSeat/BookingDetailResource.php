@@ -38,11 +38,13 @@ class BookingDetailResource extends JsonResource
                     'id' => $this->outboundBoardingStop->id,
                     'name' => $this->outboundBoardingStop->stop->name,
                     'time' => $this->outboundBoardingStop->departure_time,
+                    'time_formatted' => $this->outboundBoardingStop->departure_time->translatedFormat('h:i A'),
                 ],
                 'dropping' => [
                     'id' => $this->outboundDroppingStop->id,
                     'name' => $this->outboundDroppingStop->stop->name,
                     'time' => $this->outboundDroppingStop->arrival_time,
+                    'time_formatted' => $this->outboundDroppingStop->arrival_time->translatedFormat('h:i A'),
                 ],
             ],
 
@@ -52,15 +54,18 @@ class BookingDetailResource extends JsonResource
                     'id' => $this->returnBoardingStop->id,
                     'name' => $this->returnBoardingStop->stop->name,
                     'time' => $this->returnBoardingStop->departure_time,
+                    'time_formatted' => $this->returnBoardingStop->departure_time->translatedFormat('h:i A'),
                 ],
                 'dropping' => [
                     'id' => $this->returnDroppingStop->id,
                     'name' => $this->returnDroppingStop->stop->name,
                     'time' => $this->returnDroppingStop->arrival_time,
+                    'time_formatted' => $this->returnDroppingStop->arrival_time->translatedFormat('h:i A'),
                 ],
             ] : null,
+
             'travel_date' => $this->travel_date->format('Y-m-d'),
-            'travel_date_formatted' => $this->travel_date->locale('ar')->isoFormat('dddd، D MMMM YYYY'),
+            'travel_date_formatted' => $this->travel_date->translatedFormat('D, d M Y h:i A'),
             'trip_type' => $this->trip_type,
             'trip_type_label' => $this->trip_type === 'one_way' ? 'ذهاب فقط' : 'ذهاب وعودة',
             'number_of_seats' => $this->number_of_seats,

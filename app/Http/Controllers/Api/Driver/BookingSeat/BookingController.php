@@ -60,16 +60,10 @@ class BookingController extends Controller
             ->find($id);
 
         if (!$trip) {
-            return response()->json([
-                'success' => false,
-                'message' => 'الرحلة غير موجودة',
-            ], 404);
+            return json(__('Trip Not Fond'), status: 'fail', headerStatus: 422);
         }
 
-        return response()->json([
-            'success' => true,
-            'data' => new TripDetailResource($trip),
-        ]);
+        return json( new TripDetailResource($trip));
     }
 
     /**
@@ -82,17 +76,12 @@ class BookingController extends Controller
         $trip = TripInstance::forDriver($driver->id)->find($id);
 
         if (!$trip) {
-            return response()->json([
-                'success' => false,
-                'message' => 'الرحلة غير موجودة',
-            ], 404);
+            return json(__('Trip Not Fond'), status: 'fail', headerStatus: 422);
         }
 
         if (!$trip->isScheduled()) {
-            return response()->json([
-                'success' => false,
-                'message' => 'لا يمكن بدء رحلة غير مجدولة',
-            ], 422);
+            return json(__('Trip is not scheduled'), status: 'fail', headerStatus: 422);
+
         }
 
         DB::beginTransaction();
@@ -102,20 +91,12 @@ class BookingController extends Controller
 
             DB::commit();
 
-            return response()->json([
-                'success' => true,
-                'message' => 'تم بدء الرحلة بنجاح',
-                'data' => new TripDetailResource($trip->fresh()),
-            ]);
+            return json(new TripDetailResource($trip->fresh()));
 
         } catch (\Exception $e) {
             DB::rollBack();
 
-            return response()->json([
-                'success' => false,
-                'message' => 'حدث خطأ أثناء بدء الرحلة',
-                'error' => $e->getMessage(),
-            ], 500);
+            return json(__('Failed to start trip'), status: 'fail', headerStatus: 500);
         }
     }
 
@@ -133,17 +114,12 @@ class BookingController extends Controller
         $trip = TripInstance::forDriver($driver->id)->find($id);
 
         if (!$trip) {
-            return response()->json([
-                'success' => false,
-                'message' => 'الرحلة غير موجودة',
-            ], 404);
+            return json(__('Trip Not Fond'), status: 'fail', headerStatus: 422);
         }
 
         if (!$trip->isInProgress()) {
-            return response()->json([
-                'success' => false,
-                'message' => 'يمكن إتمام الرحلات الجارية فقط',
-            ], 422);
+            return json(__('Trip is not in progress'), status: 'fail', headerStatus: 422);
+
         }
 
         DB::beginTransaction();
@@ -166,20 +142,11 @@ class BookingController extends Controller
 
             DB::commit();
 
-            return response()->json([
-                'success' => true,
-                'message' => 'تم إتمام الرحلة بنجاح',
-                'data' => new TripDetailResource($trip->fresh()),
-            ]);
+            return json(new TripDetailResource($trip->fresh()));
 
         } catch (\Exception $e) {
             DB::rollBack();
-
-            return response()->json([
-                'success' => false,
-                'message' => 'حدث خطأ أثناء إتمام الرحلة',
-                'error' => $e->getMessage(),
-            ], 500);
+            return json(__('Failed to complete trip'), status: 'fail', headerStatus: 500);
         }
     }
 
@@ -197,26 +164,17 @@ class BookingController extends Controller
         $trip = TripInstance::forDriver($driver->id)->find($tripId);
 
         if (!$trip) {
-            return response()->json([
-                'success' => false,
-                'message' => 'الرحلة غير موجودة',
-            ], 404);
+            return json(__('Trip Not Fond'), status: 'fail', headerStatus: 422);
         }
 
         $stationProgress = $trip->stationProgress()->find($stationProgressId);
 
         if (!$stationProgress) {
-            return response()->json([
-                'success' => false,
-                'message' => 'المحطة غير موجودة',
-            ], 404);
+            return json(__('Station Not Fond'), status: 'fail', headerStatus: 422);
         }
 
         if (!$stationProgress->isPending()) {
-            return response()->json([
-                'success' => false,
-                'message' => 'المحطة تم الوصول إليها بالفعل',
-            ], 422);
+            return json(__('Station is not pending'), status: 'fail', headerStatus: 422);
         }
 
         DB::beginTransaction();
@@ -230,23 +188,12 @@ class BookingController extends Controller
 
             DB::commit();
 
-            return response()->json([
-                'success' => true,
-                'message' => 'تم تسجيل الوصول للمحطة',
-                'data' => [
-                    'station' => $stationProgress->station->city->getTranslation('name', 'ar'),
-                    'arrived_at' => $stationProgress->arrived_at->format('Y-m-d H:i:s'),
-                ],
-            ]);
+            return json(new TripDetailResource($trip->fresh()));
 
         } catch (\Exception $e) {
             DB::rollBack();
 
-            return response()->json([
-                'success' => false,
-                'message' => 'حدث خطأ أثناء تسجيل الوصول',
-                'error' => $e->getMessage(),
-            ], 500);
+            return json(__('Failed to mark station as arrived'), status: 'fail', headerStatus: 500);
         }
     }
 
@@ -260,26 +207,17 @@ class BookingController extends Controller
         $trip = TripInstance::forDriver($driver->id)->find($tripId);
 
         if (!$trip) {
-            return response()->json([
-                'success' => false,
-                'message' => 'الرحلة غير موجودة',
-            ], 404);
+            return json(__('Trip Not Fond'), status: 'fail', headerStatus: 422);
         }
 
         $stationProgress = $trip->stationProgress()->find($stationProgressId);
 
         if (!$stationProgress) {
-            return response()->json([
-                'success' => false,
-                'message' => 'المحطة غير موجودة',
-            ], 404);
+            return json(__('Station Not Fond'), status: 'fail', headerStatus: 422);
         }
 
         if (!$stationProgress->isArrived()) {
-            return response()->json([
-                'success' => false,
-                'message' => 'يجب الوصول للمحطة أولاً',
-            ], 422);
+            return json(__('Station is not arrived'), status: 'fail', headerStatus: 422);
         }
 
         DB::beginTransaction();
@@ -289,23 +227,12 @@ class BookingController extends Controller
 
             DB::commit();
 
-            return response()->json([
-                'success' => true,
-                'message' => 'تم تسجيل المغادرة من المحطة',
-                'data' => [
-                    'station' => $stationProgress->station->city->getTranslation('name', 'ar'),
-                    'departed_at' => $stationProgress->departed_at->format('Y-m-d H:i:s'),
-                ],
-            ]);
+            return json(new TripDetailResource($trip->fresh()));
 
         } catch (\Exception $e) {
             DB::rollBack();
 
-            return response()->json([
-                'success' => false,
-                'message' => 'حدث خطأ أثناء تسجيل المغادرة',
-                'error' => $e->getMessage(),
-            ], 500);
+            return json(__('Failed to mark station as departed'), status: 'fail', headerStatus: 500);
         }
     }
 
@@ -319,19 +246,13 @@ class BookingController extends Controller
         $trip = TripInstance::forDriver($driver->id)->find($tripId);
 
         if (!$trip) {
-            return response()->json([
-                'success' => false,
-                'message' => 'الرحلة غير موجودة',
-            ], 404);
+            return json(__('Trip Not Fond'), status: 'fail', headerStatus: 422);
         }
 
         $booking = $trip->bookings()->find($bookingId);
 
         if (!$booking) {
-            return response()->json([
-                'success' => false,
-                'message' => 'الحجز غير موجود',
-            ], 404);
+            return json(__('Booking Not Fond'), status: 'fail', headerStatus: 422);
         }
 
         DB::beginTransaction();
@@ -341,24 +262,12 @@ class BookingController extends Controller
 
             DB::commit();
 
-            return response()->json([
-                'success' => true,
-                'message' => 'تم تسجيل حضور الراكب',
-                'data' => [
-                    'booking_number' => $booking->booking_number,
-                    'passenger_name' => $booking->user->name,
-                    'checked_in_at' => $booking->checked_in_at->format('Y-m-d H:i:s'),
-                ],
-            ]);
+            return json(new TripDetailResource($trip->fresh()));
 
         } catch (\Exception $e) {
             DB::rollBack();
 
-            return response()->json([
-                'success' => false,
-                'message' => 'حدث خطأ أثناء تسجيل الحضور',
-                'error' => $e->getMessage(),
-            ], 500);
+            return json(__('Failed to mark passenger as checked in'), status: 'fail', headerStatus: 500);
         }
     }
 
@@ -370,57 +279,39 @@ class BookingController extends Controller
         $driver = request()->user();
 
         $validated = $request->validate([
-            'schedule_stop_id' => 'nullable|exists:schedule_stops,id',
             'driver_notes' => 'nullable|string|max:500',
         ]);
 
         $trip = TripInstance::forDriver($driver->id)->find($tripId);
 
         if (!$trip) {
-            return response()->json([
-                'success' => false,
-                'message' => 'الرحلة غير موجودة',
-            ], 404);
+            return json(__('Trip Not Fond'), status: 'fail', headerStatus: 422);
         }
 
         $booking = $trip->bookings()->find($bookingId);
 
         if (!$booking) {
-            return response()->json([
-                'success' => false,
-                'message' => 'الحجز غير موجود',
-            ], 404);
+            return json(__('Booking Not Fond'), status: 'fail', headerStatus: 422);
         }
 
         DB::beginTransaction();
 
         try {
             $booking->update([
-                'driver_notes' => $validated['driver_notes'] ?? $booking->driver_notes
+                'driver_notes' => $validated['driver_notes'] ?? $booking->driver_notes,
+                'boarded_at' => now(),
             ]);
 
-            $booking->board($validated['schedule_stop_id'] ?? null);
+            $booking->board();
 
             DB::commit();
 
-            return response()->json([
-                'success' => true,
-                'message' => 'تم تسجيل صعود الراكب',
-                'data' => [
-                    'booking_number' => $booking->booking_number,
-                    'passenger_name' => $booking->user->name,
-                    'boarded_at' => $booking->boarded_at->format('Y-m-d H:i:s'),
-                ],
-            ]);
+            return json(new TripDetailResource($trip->fresh()));
 
         } catch (\Exception $e) {
             DB::rollBack();
 
-            return response()->json([
-                'success' => false,
-                'message' => 'حدث خطأ أثناء تسجيل الصعود',
-                'error' => $e->getMessage(),
-            ], 500);
+            return json(__('Failed to mark passenger as boarded'), status: 'fail', headerStatus: 500);
         }
     }
 
@@ -434,19 +325,13 @@ class BookingController extends Controller
         $trip = TripInstance::forDriver($driver->id)->find($tripId);
 
         if (!$trip) {
-            return response()->json([
-                'success' => false,
-                'message' => 'الرحلة غير موجودة',
-            ], 404);
+            return json(__('Trip Not Fond'), status: 'fail', headerStatus: 422);
         }
 
         $booking = $trip->bookings()->find($bookingId);
 
         if (!$booking) {
-            return response()->json([
-                'success' => false,
-                'message' => 'الحجز غير موجود',
-            ], 404);
+            return json(__('Booking Not Fond'), status: 'fail', headerStatus: 422);
         }
 
         DB::beginTransaction();
@@ -456,23 +341,12 @@ class BookingController extends Controller
 
             DB::commit();
 
-            return response()->json([
-                'success' => true,
-                'message' => 'تم تسجيل عدم حضور الراكب',
-                'data' => [
-                    'booking_number' => $booking->booking_number,
-                    'passenger_name' => $booking->user->name,
-                ],
-            ]);
+            return json(new TripDetailResource($trip->fresh()));
 
         } catch (\Exception $e) {
             DB::rollBack();
 
-            return response()->json([
-                'success' => false,
-                'message' => 'حدث خطأ',
-                'error' => $e->getMessage(),
-            ], 500);
+            return json(__('Failed to mark passenger as no show'), status: 'fail', headerStatus: 500);
         }
     }
 }

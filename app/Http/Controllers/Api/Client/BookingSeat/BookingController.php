@@ -7,6 +7,7 @@ use App\Http\Requests\Api\Client\BookingSeat\AvailableSeatsRequest;
 use App\Http\Requests\Api\Client\BookingSeat\CreateBookingRequest;
 use App\Http\Resources\Api\Client\BookingSeat\BookingDetailResource;
 use App\Http\Resources\Api\Client\BookingSeat\BookingResource;
+use App\Http\Resources\Api\Client\BookingSeat\BookingSammaryResource;
 use App\Models\Booking;
 use App\Models\Schedule;
 use Illuminate\Http\Request;
@@ -17,44 +18,6 @@ use Illuminate\Support\Facades\Log;
 
 class BookingController extends Controller
 {
-    /**
-     * Get available seats for a schedule on a specific date
-     */
-    public function availableSeats(AvailableSeatsRequest $request): JsonResponse
-    {
-        $validated = $request->validated();
-
-        $schedule = Schedule::with('route')->find($validated['schedule_id']);
-
-        if (!$schedule || !$schedule->is_active) {
-            return response()->json([
-                'success' => false,
-                'message' => 'الرحلة غير متاحة',
-            ], 404);
-        }
-
-        $bookedSeats = Booking::where('schedule_id', $validated['schedule_id'])
-            ->where('travel_date', $validated['travel_date'])
-            ->whereIn('status', ['pending', 'confirmed'])
-            ->pluck('seat_numbers')
-            ->flatten()
-            ->unique()
-            ->values();
-
-        $totalSeats = 50;
-        $availableSeatsCount = $totalSeats - $bookedSeats->count();
-
-        return response()->json([
-            'success' => true,
-            'data' => [
-                'schedule_id' => $schedule->id,
-                'travel_date' => $validated['travel_date'],
-                'total_seats' => $totalSeats,
-                'available_seats' => $availableSeatsCount,
-                'booked_seats' => $bookedSeats,
-            ],
-        ]);
-    }
 
     /**
      * Create a new booking
@@ -199,7 +162,7 @@ class BookingController extends Controller
             DB::commit();
 
             return json(
-                new BookingResource($booking->load([
+                new BookingSammaryResource($booking->load([
                     'schedule.route.startCity',
                     'schedule.route.endCity',
                     'outboundBoardingStop.stop',
@@ -221,7 +184,7 @@ class BookingController extends Controller
     /**
      * Get user bookings
      */
-    public function index(Request $request)
+    public function index(Request $request): \Illuminate\Http\Resources\Json\AnonymousResourceCollection
     {
         $status = $request->query('status');
 
@@ -304,6 +267,7 @@ class BookingController extends Controller
     public function confirmPayment(int $id, Request $request): JsonResponse
     {
         $validated = $request->validate([
+            'payment_method' => 'required|in:' . implode(',', enabled_payment_methods_array()),
             'transaction_id' => 'sometimes|string',
         ]);
 
@@ -318,10 +282,6 @@ class BookingController extends Controller
         }
 
         $transactionId = $validated['transaction_id'] ?? null;
-
-        if(!in_array($booking->payment_method,['cash' ,'wallet']) && !$transactionId) {
-            return json(__('Transaction ID is required'), status: 'fail', headerStatus: 422);
-        }
 
         DB::beginTransaction();
 

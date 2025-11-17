@@ -43,14 +43,42 @@ class PassengerResource extends JsonResource
             'payment_method' => $this->payment_method,
             'total_amount' => (float) $this->total_amount,
 
-            // المحطة
-            'boarding_stop' => $this->boardingStop ? [
-                'id' => $this->boardingStop->id,
-                'stop_name' => $this->boardingStop->stop->getTranslation('name', 'ar'),
-//                'city' => $this->boardingStop->stop->city->getTranslation('name', 'ar'),
-                'order' => $this->boardingStop->order,
-                'direction' => $this->boardingStop->direction,
+            // محطات الذهاب
+            'outbound_journey' => [
+                'boarding_stop' => [
+                    'id' => $this->outboundBoardingStop->id,
+                    'name' => $this->outboundBoardingStop->stop->getTranslation('name', 'ar'),
+                    'arrival_time' => $this->outboundBoardingStop->arrival_time,
+                    'departure_time' => $this->outboundBoardingStop->departure_time,
+                    'order' => $this->outboundBoardingStop->order,
+                ],
+                'dropping_stop' => [
+                    'id' => $this->outboundDroppingStop->id,
+                    'name' => $this->outboundDroppingStop->stop->getTranslation('name', 'ar'),
+                    'arrival_time' => $this->outboundDroppingStop->arrival_time,
+                    'departure_time' => $this->outboundDroppingStop->departure_time,
+                    'order' => $this->outboundDroppingStop->order,
+                ],
+            ],
+
+            // محطات العودة (إذا كانت رحلة ذهاب وعودة)
+            'return_journey' => $this->trip_type === 'round_trip' && $this->returnBoardingStop ? [
+                'boarding_stop' => [
+                    'id' => $this->returnBoardingStop->id,
+                    'name' => $this->returnBoardingStop->stop->name,
+                    'arrival_time' => $this->returnBoardingStop->arrival_time,
+                    'departure_time' => $this->returnBoardingStop->departure_time,
+                    'order' => $this->returnBoardingStop->order,
+                ],
+                'dropping_stop' => [
+                    'id' => $this->returnDroppingStop->id,
+                    'name' => $this->returnDroppingStop->stop->name,
+                    'arrival_time' => $this->returnDroppingStop->arrival_time,
+                    'departure_time' => $this->returnDroppingStop->departure_time,
+                    'order' => $this->returnDroppingStop->order,
+                ],
             ] : null,
+
 
             // الأوقات
             'checked_in_at' => $this->checked_in_at?->format('Y-m-d H:i:s'),
@@ -60,6 +88,7 @@ class PassengerResource extends JsonResource
             // ملاحظات
             'notes' => $this->notes,
             'driver_notes' => $this->driver_notes,
+
 
             // QR Code
             'qr_code' => $this->qr_code_url,

@@ -26,7 +26,6 @@ class CreateBookingRequest extends ApiMasterRequest
             'number_of_seats' => 'required|integer|min:1|max:10',
             'seat_numbers' => 'required|array|min:1|max:10',
             'seat_numbers.*' => 'required|integer|min:1|max:50',
-            'payment_method' => 'required|in:' . implode(',', enabled_payment_methods_array()),
             'notes' => 'nullable|string|max:500',
 
             // محطات الذهاب
