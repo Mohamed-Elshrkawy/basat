@@ -21,29 +21,28 @@ class TripDetailResource extends JsonResource
 
             // التاريخ واليوم
             'trip_date' => $this->trip_date->format('Y-m-d'),
-            'trip_date_formatted' => $this->trip_date->locale('ar')->isoFormat('dddd، D MMMM YYYY'),
+            'trip_date_formatted' => $this->trip_date->translatedFormat('D d M Y h:i A'),
             'day_name' => $this->trip_date->locale('ar')->dayName,
 
             // المسار
             'route' => [
-                'id' => $this->schedule->route_id,
-                'from' => $this->schedule->route->startCity->getTranslation('name', 'ar'),
-                'from_id' => $this->schedule->route->start_city_id,
-                'to' => $this->schedule->route->endCity->getTranslation('name', 'ar'),
-                'to_id' => $this->schedule->route->end_city_id,
+                'id' => $this->schedule->route->name,
+                'from' => $this->schedule->route->startCity->name,
+                'to' => $this->schedule->route->endCity->name,
             ],
 
             // الأوقات المخططة
             'scheduled_times' => [
                 'departure' => $this->schedule->departure_time,
+                'departure_formatted' => $this->schedule->departure_time->translatedFormat('D d M Y h:i A'),
                 'arrival' => $this->schedule->arrival_time,
-                'duration' => $this->schedule->duration ?? 'N/A',
+                'arrival_formatted' => $this->schedule->arrival_time->translatedFormat('D d M Y h:i A'),
             ],
 
             // الأوقات الفعلية
             'actual_times' => [
-                'started_at' => $this->started_at?->format('Y-m-d H:i:s'),
-                'completed_at' => $this->completed_at?->format('Y-m-d H:i:s'),
+                'started_at' => $this->started_at?->translatedFormat('D d M Y h:i A'),
+                'completed_at' => $this->completed_at?->translatedFormat('D d M Y h:i A'),
             ],
 
             // الحالة
@@ -58,7 +57,18 @@ class TripDetailResource extends JsonResource
                 'total' => $this->total_passengers,
                 'checked_in' => $this->checked_in_passengers,
                 'boarded' => $this->boarded_passengers,
-                'bookings' => PassengerResource::collection($this->bookings()->with(['user', 'boardingStop.stop'])->get()),
+                'no_show' => $this->no_show_passengers,
+                'bookings' => PassengerResource::collection(
+                    $this->bookings()
+                        ->with([
+                            'user',
+                            'outboundBoardingStop.stop',
+                            'outboundDroppingStop.stop',
+                            'returnBoardingStop.stop',
+                            'returnDroppingStop.stop'
+                        ])
+                        ->get()
+                ),
             ],
 
             // ملاحظات السائق
