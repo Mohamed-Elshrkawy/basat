@@ -3,7 +3,6 @@
 namespace App\Http\Controllers\Api\Client\BookingSeat;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\Api\Client\BookingSeat\AvailableSeatsRequest;
 use App\Http\Requests\Api\Client\BookingSeat\CreateBookingRequest;
 use App\Http\Resources\Api\Client\BookingSeat\BookingDetailResource;
 use App\Http\Resources\Api\Client\BookingSeat\BookingResource;
@@ -16,7 +15,8 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 
-class BookingController extends Controller
+class
+BookingController extends Controller
 {
 
     /**
@@ -113,6 +113,7 @@ class BookingController extends Controller
             $bookedSeats = Booking::where('schedule_id', $validated['schedule_id'])
                 ->where('travel_date', $validated['travel_date'])
                 ->whereIn('status', ['pending', 'confirmed'])
+                ->lockForUpdate()
                 ->pluck('seat_numbers')
                 ->flatten()
                 ->unique()
@@ -271,7 +272,7 @@ class BookingController extends Controller
             'transaction_id' => 'sometimes|string',
         ]);
 
-        $booking = Booking::find($id);
+        $booking = Booking::where('user_id', Auth::id())->find($id);
 
         if (!$booking) {
             return json(__('Booking not found'), status: 'fail', headerStatus: 422);
