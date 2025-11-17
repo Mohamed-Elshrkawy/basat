@@ -35,11 +35,11 @@ class BookingDetailResource extends JsonResource
             'outbound_stops' => [
                 'boarding' =>[
                     'id' => $outbound_stops_boarding->id,
-                    'name' => $outbound_stops_boarding->stop->name,
+                    'name' => $outbound_stops_boarding->name,
                 ],
                 'dropping' =>[
                     'id' => $outbound_stops_dropping->id,
-                    'name' => $outbound_stops_dropping->stop->name,
+                    'name' => $outbound_stops_dropping->name,
                 ],
             ],
 
