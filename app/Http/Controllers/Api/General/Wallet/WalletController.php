@@ -16,7 +16,7 @@ class WalletController extends Controller
         return $this->service->index($request);
     }
 
-    public function transactions(Request $request): \Illuminate\Http\JsonResponse
+    public function transactions(Request $request): \Illuminate\Http\JsonResponse|\Illuminate\Http\Resources\Json\AnonymousResourceCollection
     {
         return $this->service->transactions($request);
     }
