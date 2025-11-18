@@ -142,11 +142,6 @@ class ScheduleController extends Controller
             return json(__('Seat booking is disabled'), status: 'fail', headerStatus: 422);
         }
 
-        if(!in_array($validated['payment_method'], enabled_payment_methods_array()))
-        {
-            return json(__('Payment method is not enabled'), status: 'fail', headerStatus: 422);
-        }
-
         // التحقق من تطابق عدد المقاعد
         if (count($validated['seat_numbers']) != $validated['number_of_seats']) {
             return json(__('Number of seats does not match selected seat numbers'), status: 'fail', headerStatus: 422);
