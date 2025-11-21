@@ -70,12 +70,6 @@ class TripDetailResource extends JsonResource
                         ->get()
                 ),
             ],
-
-            // ملاحظات السائق
-            'driver_notes' => $this->driver_notes,
-
-            'created_at' => $this->created_at->format('Y-m-d H:i:s'),
-            'updated_at' => $this->updated_at->format('Y-m-d H:i:s'),
         ];
     }
 

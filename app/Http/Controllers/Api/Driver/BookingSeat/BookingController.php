@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api\Driver\BookingSeat;
 
+use App\Helpers\DriverEarningsHelper;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\Api\Driver\BookingSeat\TripDetailResource;
 use App\Http\Resources\Api\Driver\BookingSeat\TripListResource;
@@ -10,6 +11,7 @@ use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 
 class BookingController extends Controller
 {
@@ -132,13 +134,26 @@ class BookingController extends Controller
             $trip->complete();
 
             // Mark all boarded passengers as completed
-            $trip->bookings()
+            $completedBookings = $trip->bookings()
                 ->where('passenger_status', 'boarded')
-                ->update([
+                ->get();
+
+            foreach ($completedBookings as $booking) {
+                $booking->update([
                     'passenger_status' => 'completed',
                     'arrived_at' => now(),
                     'status' => 'completed',
                 ]);
+
+                // معالجة مستحقات السائق لكل حجز مكتمل
+                try {
+                    $earningsResult = DriverEarningsHelper::processDriverEarnings($booking);
+                    Log::info('Driver earnings processed for booking #' . $booking->booking_number, $earningsResult);
+                } catch (\Exception $e) {
+                    Log::error('Failed to process driver earnings for booking #' . $booking->booking_number . ': ' . $e->getMessage());
+                    // نكمل العملية حتى لو فشل حساب المستحقات
+                }
+            }
 
             DB::commit();
 

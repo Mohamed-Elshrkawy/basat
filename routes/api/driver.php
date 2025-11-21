@@ -3,6 +3,7 @@
 use App\Http\Controllers\Api\Driver\Auth\PasswordController;
 use App\Http\Controllers\Api\Driver\Auth\AuthController;
 use App\Http\Controllers\Api\Driver\BookingSeat\BookingController;
+use App\Http\Controllers\Api\Driver\BookingPrivateBus\BookingPrivateBusController;
 use App\Http\Controllers\Api\Driver\Profile\ProfileController;
 use Illuminate\Support\Facades\Route;
 
@@ -78,5 +79,32 @@ Route::middleware(['auth:api'])->group(callback: function () {
              'markPassengerNoShow');
     });
 
+    /** Private Bus Bookings Routes **/
+    Route::controller(BookingPrivateBusController::class)->prefix('private-bookings')->group(function () {
+
+        // عرض جميع الحجوزات الخاصة للسائق
+        Route::get('/', 'index');
+
+        // عرض تفاصيل حجز معين
+        Route::get('{booking}', 'show');
+
+        // قبول حجز
+        Route::post('{booking}/accept', 'accept');
+
+        // رفض حجز
+        Route::post('{booking}/reject', 'reject');
+
+        // تحديث حالة الرحلة
+        Route::post('{booking}/update-trip-status', 'updateTripStatus');
+
+        // بدء الرحلة
+        Route::post('{booking}/start', 'startTrip');
+
+        // إنهاء الرحلة
+        Route::post('{booking}/complete', 'completeTrip');
+
+        // إلغاء الحجز
+        Route::post('{booking}/cancel', 'cancel');
+    });
 
 });

@@ -249,6 +249,7 @@ class ScheduleController extends Controller
                 'type' => 'public_bus',
                 'user_id' => $user->id,
                 'schedule_id' => $validated['schedule_id'],
+                'driver_id' => $schedule?->driver_id,
                 'travel_date' => $validated['travel_date'],
                 'trip_type' => $validated['trip_type'],
                 'number_of_seats' => $validated['number_of_seats'],

@@ -110,6 +110,11 @@ class User extends Authenticatable implements HasMedia
         return $this->hasMany(Booking::class, 'driver_id')->where('type', 'private_bus');
     }
 
+    public function driverBookings(): HasMany
+    {
+        return $this->hasMany(Booking::class, 'driver_id');
+    }
+
     public function getAvatarUrlAttribute(): ?string
     {
         return $this->hasMedia('avatar') ?

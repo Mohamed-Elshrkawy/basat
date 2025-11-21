@@ -1,4 +1,46 @@
 {
+    "Earnings by Bus Type": "الأرباح حسب نوع الحافلة",
+    "Earnings": "الأرباح",
+    "Today Earnings": "أرباح اليوم",
+    "Earnings from completed bookings today": "الأرباح من الحجوزات المكتملة اليوم",
+    "Week Earnings": "أرباح الأسبوع",
+    "Last 7 days": "آخر 7 أيام",
+    "Month Earnings": "أرباح الشهر",
+    "from last month": "منذ الشهر الماضي",
+    "Total Platform Earnings": "إجمالي أرباح المنصة",
+    "All time platform earnings": "إجمالي أرباح المنصة طوال الوقت",
+    "Monthly Earnings Trend": "اتجاه الأرباح الشهرية",
+    "Last Year": "العام الماضي",
+    "Earnings (SAR)": "الأرباح (ريال سعودي)",
+    "Platform Earnings": "أرباح المنصة",
+    "Driver Net Earnings": "صافي أرباح السائق",
+    "Top Drivers by Earnings": "أفضل السائقين حسب الأرباح",
+
+    "Unauthorized": "غير مصرح",
+    "Invalid booking type": "نوع حجز غير صالح",
+    "Booking details fetched successfully": "تم جلب تفاصيل الحجز بنجاح",
+
+    "Booking cannot be accepted": "لا يمكن قبول الحجز",
+    "Booking accepted successfully": "تم قبول الحجز بنجاح",
+    "Failed to accept booking": "فشل في قبول الحجز",
+
+    "Booking cannot be rejected": "لا يمكن رفض الحجز",
+    "Booking rejected successfully": "تم رفض الحجز بنجاح",
+    "Failed to reject booking": "فشل في رفض الحجز",
+
+    "Cannot update trip status": "لا يمكن تحديث حالة الرحلة",
+    "Trip status updated successfully": "تم تحديث حالة الرحلة بنجاح",
+    "Failed to update trip status": "فشل في تحديث حالة الرحلة",
+
+    "Cannot start trip": "لا يمكن بدء الرحلة",
+    "Trip started successfully": "تم بدء الرحلة بنجاح",
+
+    "Cannot complete trip": "لا يمكن إنهاء الرحلة",
+    "Failed to process driver earnings: ": "فشل في معالجة أرباح السائق: ",
+    "Trip completed successfully": "تم إنهاء الرحلة بنجاح",
+
+    "Cannot cancel this booking": "لا يمكن إلغاء هذا الحجز",
+    "Booking cancelled successfully": "تم إلغاء الحجز بنجاح",
     "Private bus is disabled": "حجز حافلة الخاص معطّل",
     "Vehicle Models": "موديلات المركبات",
     "Vehicle Model": "موديل المركبة",

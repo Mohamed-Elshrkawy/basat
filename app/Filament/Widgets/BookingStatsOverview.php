@@ -26,20 +26,24 @@ class BookingStatsOverview extends BaseWidget
 
         // إجمالي الإيرادات من الحجوزات المدفوعة
         $totalRevenue = Booking::whereIn('payment_status', ['paid', 'completed'])
+            ->where('status', 'completed')
             ->sum('total_amount');
 
         // الإيرادات هذا الشهر
         $monthlyRevenue = Booking::whereIn('payment_status', ['paid', 'completed'])
+            ->where('status', 'completed')
             ->whereMonth('created_at', now()->month)
             ->whereYear('created_at', now()->year)
             ->sum('total_amount');
 
         // معدل نمو الحجوزات (مقارنة بالشهر الماضي)
-        $lastMonthBookings = Booking::whereMonth('created_at', now()->subMonth()->month)
+        $lastMonthBookings = Booking::where('status', 'completed')
+            ->whereMonth('created_at', now()->subMonth()->month)
             ->whereYear('created_at', now()->subMonth()->year)
             ->count();
 
-        $thisMonthBookings = Booking::whereMonth('created_at', now()->month)
+        $thisMonthBookings = Booking::where('status', 'completed')
+            ->whereMonth('created_at', now()->month)
             ->whereYear('created_at', now()->year)
             ->count();
 

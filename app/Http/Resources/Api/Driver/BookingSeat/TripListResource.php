@@ -27,10 +27,13 @@ class TripListResource extends JsonResource
                 'to' => $this->schedule->route->endCity->name,
             ],
 
-            // الأوقات
-            'departure_time' => $this->schedule->departure_time->format('h:i A'),
-            'arrival_time' => $this->schedule->arrival_time->format('h:i A'),
-
+            // الأوقات المخططة
+            'scheduled_times' => [
+                'departure' => $this->schedule->departure_time,
+                'departure_formatted' => $this->schedule->departure_time->translatedFormat('h:i A'),
+                'arrival' => $this->schedule->arrival_time,
+                'arrival_formatted' => $this->schedule->arrival_time->translatedFormat('h:i A'),
+            ],
             // الركاب
             'passengers' => [
                 'total' => $this->total_passengers,
@@ -43,8 +46,10 @@ class TripListResource extends JsonResource
             'status_label' => $this->getStatusLabel(),
 
             // الأوقات الفعلية
-            'started_at' => $this->started_at?->format('Y-m-d H:i:s'),
-            'completed_at' => $this->completed_at?->format('Y-m-d H:i:s'),
+            'actual_times' => [
+                'started_at' => $this->started_at?->translatedFormat('D d M Y h:i A'),
+                'completed_at' => $this->completed_at?->translatedFormat('D d M Y h:i A'),
+            ],
         ];
     }
 
