@@ -5,6 +5,7 @@
 .env.production
 .phpactor.json
 .phpunit.result.cache
+config/google-services.json
 /.fleet
 /.idea
 /.nova
