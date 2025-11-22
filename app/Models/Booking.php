@@ -273,11 +273,13 @@ class Booking extends Model
     /**
      * Mark booking as paid
      */
-    public function markAsPaid(string $transactionId = null): void
+    public function markAsPaid(array $validated): void
     {
+        $transactionId = $validated['transaction_id'] ?? null;
         $this->update([
             'payment_status' => 'paid',
             'transaction_id' => $transactionId,
+            'payment_method' => $validated['payment_method'] ?? null,
             'paid_at' => now(),
             'status' => 'confirmed',
         ]);

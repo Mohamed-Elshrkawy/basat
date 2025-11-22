@@ -99,7 +99,7 @@ class BookingController extends Controller
         DB::beginTransaction();
 
         try {
-            if($booking->payment_method == 'wallet')
+            if($validated['payment_method'] == 'wallet')
             {
                 $desc = [
                     'ar' => 'تم خصم مبلغ ' . $booking->total_amount . ' من حسابك لحجز رقم ' . $booking->booking_number,
@@ -107,7 +107,7 @@ class BookingController extends Controller
                 ];
                 $booking->user->withdraw((float)$booking->total_amount, $desc);
             }
-            $booking->markAsPaid($transactionId);
+            $booking->markAsPaid($validated);
 
             DB::commit();
 
