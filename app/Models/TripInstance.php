@@ -50,8 +50,7 @@ class TripInstance extends Model
      */
     public function scopeUpcoming($query)
     {
-        return $query->where('status', 'scheduled')
-            ->where('trip_date')->isFuture();
+        return $query->where('status', 'scheduled');
     }
 
     public function scopeInProgress($query)
