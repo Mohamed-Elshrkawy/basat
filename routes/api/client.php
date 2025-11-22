@@ -4,6 +4,7 @@ use App\Http\Controllers\Api\Client\Auth\AuthController;
 use App\Http\Controllers\Api\Client\Auth\PasswordController;
 use App\Http\Controllers\Api\Client\Booking\BookingController;
 use App\Http\Controllers\Api\Client\BookingSeat\ScheduleController;
+use App\Http\Controllers\Api\Client\Child\ChildController;
 use App\Http\Controllers\Api\Client\PrivateTrip\PrivateTripController;
 use App\Http\Controllers\Api\Client\Profile\ProfileController;
 use Illuminate\Support\Facades\Route;
@@ -62,6 +63,15 @@ Route::middleware(['auth:api', 'client'])->group(callback: function () {
         Route::post('/search', 'search');
         Route::post('/calculate-price', 'calculatePrice');
         Route::post('/book', 'store');
+    });
+
+    /** Children Management Routes **/
+    Route::controller(ChildController::class)->prefix('children')->group(function () {
+        Route::get('/', 'index');
+        Route::post('/', 'store');
+        Route::get('/{id}', 'show');
+        Route::post('/{id}', 'update'); // Using POST for multipart/form-data
+        Route::delete('/{id}', 'destroy');
     });
 
 });

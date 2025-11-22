@@ -57,6 +57,12 @@ class User extends Authenticatable implements HasMedia
             ->withTimestamps();
     }
 
+    public function schools(): \Illuminate\Database\Eloquent\Relations\BelongsToMany
+    {
+        return $this->belongsToMany(School::class, 'driver_school', 'driver_id', 'school_id')
+            ->withTimestamps();
+    }
+
     public function trips(): HasMany
     {
         return $this->hasMany(Trip::class, 'driver_id');
@@ -113,6 +119,27 @@ class User extends Authenticatable implements HasMedia
     public function driverBookings(): HasMany
     {
         return $this->hasMany(Booking::class, 'driver_id');
+    }
+
+    public function tripeCount($type)
+    {
+        $count = 0;
+        if ($type == 'private_bus') {
+            $count = $this->driverBookings()->where('status', 'completed')->count();
+        } else if ($type == 'public_bus') {
+            $count = TripInstance::forDriver($this->id)->where('status', 'completed')->count();
+        }
+        return $count;
+    }
+
+
+    public function totalEarning($type)
+    {
+        $count = 0;
+        if (in_array($type ,['private_bus', 'public_bus'])) {
+            $count = $this->driverBookings()->where('status', 'completed')->sum('driver_earnings');
+        }
+        return $count;
     }
 
     public function getAvatarUrlAttribute(): ?string

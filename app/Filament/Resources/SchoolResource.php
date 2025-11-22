@@ -51,12 +51,12 @@ class SchoolResource extends Resource
                         Forms\Components\Grid::make(2)
                             ->schema([
                                 Forms\Components\TextInput::make('name.ar')
-                                    ->label(__('City Name (Arabic)'))
+                                    ->label(__('School Name (Arabic)'))
                                     ->required()
                                     ->maxLength(255),
 
                                 Forms\Components\TextInput::make('name.en')
-                                    ->label(__('City Name (English)'))
+                                    ->label(__('School Name (English)'))
                                     ->required()
                                     ->maxLength(255),
                             ]),
@@ -66,6 +66,11 @@ class SchoolResource extends Resource
 
                         Forms\Components\Hidden::make('lng')
                             ->default(46.6753),
+
+                        Forms\Components\Toggle::make('is_active')
+                            ->label(__('Active'))
+                            ->default(true)
+                            ->inline(false),
                     ]),
 
                 Forms\Components\Section::make(__('Select Location On Map'))
@@ -76,6 +81,40 @@ class SchoolResource extends Resource
                     ])
                     ->collapsible(),
 
+                Forms\Components\Section::make(__('Schedule & Working Days'))
+                    ->schema([
+                        Forms\Components\Grid::make(2)
+                            ->schema([
+                                Forms\Components\TimePicker::make('departure_time')
+                                    ->label(__('Departure Time'))
+                                    ->seconds(false)
+                                    ->displayFormat('H:i')
+                                    ->helperText(__('Time students are picked up in the morning')),
+
+                                Forms\Components\TimePicker::make('return_time')
+                                    ->label(__('Return Time'))
+                                    ->seconds(false)
+                                    ->displayFormat('H:i')
+                                    ->helperText(__('Time students are dropped off in the afternoon')),
+                            ]),
+
+                        Forms\Components\CheckboxList::make('working_days')
+                            ->label(__('Working Days'))
+                            ->options([
+                                'sunday' => __('Sunday'),
+                                'monday' => __('Monday'),
+                                'tuesday' => __('Tuesday'),
+                                'wednesday' => __('Wednesday'),
+                                'thursday' => __('Thursday'),
+                                'friday' => __('Friday'),
+                                'saturday' => __('Saturday'),
+                            ])
+                            ->columns(3)
+                            ->gridDirection('row')
+                            ->helperText(__('Select the days the school operates')),
+                    ])
+                    ->collapsible(),
+
                 Forms\Components\Section::make(__('Available Packages'))
                     ->schema([
                         Forms\Components\Select::make('packages')
@@ -83,7 +122,8 @@ class SchoolResource extends Resource
                             ->relationship('packages', 'name')
                             ->multiple()
                             ->preload()
-                            ->searchable(),
+                            ->searchable()
+                            ->helperText(__('Select packages available for this school')),
                     ])
                     ->collapsible(),
             ]);
@@ -100,11 +140,42 @@ class SchoolResource extends Resource
                     ->weight('bold')
                     ->size('lg'),
 
+                Tables\Columns\TextColumn::make('departure_time')
+                    ->label(__('Departure'))
+                    ->time('H:i')
+                    ->icon('heroicon-o-arrow-up-circle')
+                    ->sortable(),
+
+                Tables\Columns\TextColumn::make('return_time')
+                    ->label(__('Return'))
+                    ->time('H:i')
+                    ->icon('heroicon-o-arrow-down-circle')
+                    ->sortable(),
+
+                Tables\Columns\TextColumn::make('working_days')
+                    ->label(__('Working Days'))
+                    ->badge()
+                    ->color('info'),
+
                 Tables\Columns\TextColumn::make('packages_count')
-                    ->label(__('Packages Count'))
+                    ->label(__('Packages'))
                     ->counts('packages')
                     ->badge()
                     ->color('success'),
+
+                Tables\Columns\TextColumn::make('drivers_count')
+                    ->label(__('Drivers'))
+                    ->counts('drivers')
+                    ->badge()
+                    ->color('warning'),
+
+                Tables\Columns\IconColumn::make('is_active')
+                    ->label(__('Status'))
+                    ->boolean()
+                    ->trueIcon('heroicon-o-check-circle')
+                    ->falseIcon('heroicon-o-x-circle')
+                    ->trueColor('success')
+                    ->falseColor('danger'),
 
                 Tables\Columns\TextColumn::make('created_at')
                     ->label(__('Created At'))
@@ -175,6 +246,7 @@ class SchoolResource extends Resource
     {
         return [
             RelationManagers\PackagesRelationManager::class,
+            RelationManagers\DriversRelationManager::class,
         ];
     }
 

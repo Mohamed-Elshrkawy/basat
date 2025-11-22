@@ -26,58 +26,33 @@ class ListDrivers extends ListRecords
             'all' => Tab::make(__('ALL'))
                 ->badge(fn () => $this->getModel()::where('user_type', 'driver')->count()),
 
-            'available' => Tab::make(__('Available'))
-                ->modifyQueryUsing(fn (Builder $query) =>
-                $query->whereHas('driver', fn($q) => $q->where('availability_status', 'available'))
-                )
+            'public_bus' => Tab::make(__('Public Bus'))
+                ->modifyQueryUsing(fn (Builder $query) => $query->whereHas('vehicle', fn($q) => $q->where('type', 'public_bus')))
                 ->badge(fn () =>
                 $this->getModel()::where('user_type', 'driver')
-                    ->whereHas('driver', fn($q) => $q->where('availability_status', 'available'))
-                    ->count()
-                )
-                ->badgeColor('success'),
-
-            'on_trip' => Tab::make(__('On Trip'))
-                ->modifyQueryUsing(fn (Builder $query) =>
-                $query->whereHas('driver', fn($q) => $q->where('availability_status', 'on_trip'))
-                )
-                ->badge(fn () =>
-                $this->getModel()::where('user_type', 'driver')
-                    ->whereHas('driver', fn($q) => $q->where('availability_status', 'on_trip'))
-                    ->count()
-                )
-                ->badgeColor('warning'),
-
-            'unavailable' => Tab::make(__('Unavailable'))
-                ->modifyQueryUsing(fn (Builder $query) =>
-                $query->whereHas('driver', fn($q) => $q->where('availability_status', 'unavailable'))
-                )
-                ->badge(fn () =>
-                $this->getModel()::where('user_type', 'driver')
-                    ->whereHas('driver', fn($q) => $q->where('availability_status', 'unavailable'))
-                    ->count()
-                )
-                ->badgeColor('danger'),
-
-            'verified' => Tab::make(__('Verified'))
-                ->modifyQueryUsing(fn (Builder $query) =>
-                $query->whereNotNull('mobile_verified_at')
-                )
-                ->badge(fn () =>
-                $this->getModel()::where('user_type', 'driver')
-                    ->whereNotNull('mobile_verified_at')
-                    ->count()
-                )
-                ->badgeColor('success'),
-
-            'with_vehicle' => Tab::make(__('With Vehicle'))
-                ->modifyQueryUsing(fn (Builder $query) => $query->has('vehicle'))
-                ->badge(fn () =>
-                $this->getModel()::where('user_type', 'driver')
-                    ->has('vehicle')
+                    ->whereHas('vehicle', fn($q) => $q->where('type', 'public_bus'))
                     ->count()
                 )
                 ->badgeColor('info'),
+
+            'private_bus' => Tab::make(__('Private Bus'))
+                ->modifyQueryUsing(fn (Builder $query) => $query->whereHas('vehicle', fn($q) => $q->where('type', 'private_bus')))
+                ->badge(fn () =>
+                $this->getModel()::where('user_type', 'driver')
+                    ->whereHas('vehicle', fn($q) => $q->where('type', 'private_bus'))
+                    ->count()
+                )
+                ->badgeColor('info'),
+
+            'school_bus' => Tab::make(__('School Bus'))
+                ->modifyQueryUsing(fn (Builder $query) => $query->whereHas('vehicle', fn($q) => $q->where('type', 'school_bus')))
+                ->badge(fn () =>
+                $this->getModel()::where('user_type', 'driver')
+                    ->whereHas('vehicle', fn($q) => $q->where('type', 'school_bus'))
+                    ->count()
+                )
+                ->badgeColor('info'),
+
         ];
     }
 }

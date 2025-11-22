@@ -56,13 +56,21 @@ class ShowProfileResource extends JsonResource
 
     private function driverResource(): array
     {
+        $vehicle = $this->vehicle;
+        $balance = $this->balance() ?? 0;
+        $total_earning = $this->totalEarning($vehicle?->type) ?? 0;
+
         return array_merge($this->baseUserData(), [
-            'type' => $this->vehicle->type,
-            'type_arabic' => $this->vehicle->getTypeArabic(),
-            'brand' => $this->vehicle->brand->name,
-            'seat_count' => $this->vehicle->seat_count,
-            'plate_number' => $this->vehicle->plate_number,
-            'is_active' => (bool) $this->vehicle->is_active,
+            'type' => $vehicle?->type,
+            'type_arabic' => $vehicle?->getTypeArabic(),
+            'brand' => $vehicle?->brand?->name,
+            'seat_count' => $vehicle?->seat_count,
+            'plate_number' => $vehicle?->plate_number,
+            'tripe_count' => $this->tripeCount($vehicle?->type),
+            'total_earnings' => $total_earning,
+            'total_receivables' => $balance,
+            'transferred_receivables' => $total_earning - $balance,
+            'is_active' => (bool) $vehicle?->is_active,
         ]);
     }
 }

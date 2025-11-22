@@ -87,12 +87,12 @@ class PackagesRelationManager extends RelationManager
         return $table
             ->recordTitleAttribute('name')
             ->columns([
-                Tables\Columns\TextColumn::make('name.ar')
+                Tables\Columns\TextColumn::make('name')
                     ->label(__('Package name'))
                     ->searchable()
                     ->sortable(),
 
-                Tables\Columns\TextColumn::make('description.ar')
+                Tables\Columns\TextColumn::make('description')
                     ->label(__('Description'))
                     ->limit(40)
                     ->toggleable(),

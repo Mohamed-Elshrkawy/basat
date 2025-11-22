@@ -3,239 +3,163 @@
 namespace Database\Seeders;
 
 use App\Models\School;
-use App\Models\City;
+use App\Models\SchoolPackage;
+use App\Models\User;
 use Illuminate\Database\Seeder;
 
 class SchoolsSeeder extends Seeder
 {
     public function run(): void
     {
-        $cities = City::all();
+        // الحصول على الباقات المتاحة
+        $packages = SchoolPackage::where('is_active', true)->get();
 
-        if ($cities->isEmpty()) {
-            $this->command->warn('⚠️ لا توجد مدن في قاعدة البيانات!');
+        if ($packages->isEmpty()) {
+            $this->command->warn('⚠️ لا توجد باقات في قاعدة البيانات! قم بتشغيل SchoolPackagesSeeder أولاً.');
             return;
         }
+
+        // الحصول على السائقين الذين لديهم باص مدرسي
+        $drivers = User::where('user_type', 'driver')
+            ->where('is_active', true)
+            ->whereHas('vehicle', function ($query) {
+                $query->where('type', 'school_bus');
+            })
+            ->get();
 
         $schools = [
             [
                 'name' => [
-                    'ar' => 'مدرسة النور الأهلية',
-                    'en' => 'Al Noor Private School'
+                    'ar' => 'مدرسة الأمل الابتدائية',
+                    'en' => 'Al Amal Elementary School',
                 ],
-                'city' => 'الرياض',
-                'address' => 'حي العليا، شارع الملك فهد',
-                'phone' => '0112345678',
-                'email' => 'info@alnoor-school.edu.sa',
-                'principal_name' => 'أحمد بن سعيد المحمود',
-                'principal_phone' => '0501111111',
-                'latitude' => 24.7136,
-                'longitude' => 46.6753,
-                'school_start_time' => '07:00',
-                'school_end_time' => '13:30',
+                'lat' => 24.7136,
+                'lng' => 46.6753,
+                'departure_time' => '06:30',
+                'return_time' => '13:30',
+                'working_days' => ['sunday', 'monday', 'tuesday', 'wednesday', 'thursday'],
+                'is_active' => true,
+            ],
+            [
+                'name' => [
+                    'ar' => 'مدرسة النجاح المتوسطة',
+                    'en' => 'Al Najah Middle School',
+                ],
+                'lat' => 24.7245,
+                'lng' => 46.6854,
+                'departure_time' => '06:45',
+                'return_time' => '14:00',
+                'working_days' => ['sunday', 'monday', 'tuesday', 'wednesday', 'thursday'],
+                'is_active' => true,
+            ],
+            [
+                'name' => [
+                    'ar' => 'مدرسة المستقبل الثانوية',
+                    'en' => 'Al Mustaqbal High School',
+                ],
+                'lat' => 24.7356,
+                'lng' => 46.6955,
+                'departure_time' => '07:00',
+                'return_time' => '14:30',
+                'working_days' => ['sunday', 'monday', 'tuesday', 'wednesday', 'thursday'],
+                'is_active' => true,
+            ],
+            [
+                'name' => [
+                    'ar' => 'مدرسة الفجر الابتدائية',
+                    'en' => 'Al Fajr Elementary School',
+                ],
+                'lat' => 24.7020,
+                'lng' => 46.6640,
+                'departure_time' => '06:30',
+                'return_time' => '13:00',
+                'working_days' => ['sunday', 'monday', 'tuesday', 'wednesday', 'thursday'],
+                'is_active' => true,
+            ],
+            [
+                'name' => [
+                    'ar' => 'مدرسة الرياض العالمية',
+                    'en' => 'Riyadh International School',
+                ],
+                'lat' => 24.7467,
+                'lng' => 46.7056,
+                'departure_time' => '07:15',
+                'return_time' => '15:00',
+                'working_days' => ['sunday', 'monday', 'tuesday', 'wednesday', 'thursday'],
                 'is_active' => true,
             ],
             [
                 'name' => [
                     'ar' => 'مدرسة العلم والمعرفة',
-                    'en' => 'Knowledge School'
+                    'en' => 'Knowledge School',
                 ],
-                'city' => 'الرياض',
-                'address' => 'حي الملز، طريق الملك عبدالله',
-                'phone' => '0112345679',
-                'email' => 'info@knowledge-school.edu.sa',
-                'principal_name' => 'فاطمة بنت محمد الدوسري',
-                'principal_phone' => '0502222222',
-                'latitude' => 24.6877,
-                'longitude' => 46.7219,
-                'school_start_time' => '07:15',
-                'school_end_time' => '14:00',
+                'lat' => 24.6890,
+                'lng' => 46.6530,
+                'departure_time' => '06:45',
+                'return_time' => '13:45',
+                'working_days' => ['sunday', 'monday', 'tuesday', 'wednesday', 'thursday'],
                 'is_active' => true,
             ],
             [
                 'name' => [
-                    'ar' => 'مدرسة الرواد العالمية',
-                    'en' => 'Al Ruwad International School'
+                    'ar' => 'مدرسة النور الأهلية',
+                    'en' => 'Al Noor Private School',
                 ],
-                'city' => 'جدة',
-                'address' => 'حي الحمراء، شارع فلسطين',
-                'phone' => '0122345678',
-                'email' => 'info@ruwad-school.edu.sa',
-                'principal_name' => 'خالد بن عبدالرحمن الغامدي',
-                'principal_phone' => '0503333333',
-                'latitude' => 21.5811,
-                'longitude' => 39.1570,
-                'school_start_time' => '07:00',
-                'school_end_time' => '13:45',
+                'lat' => 24.7578,
+                'lng' => 46.7157,
+                'departure_time' => '07:00',
+                'return_time' => '14:15',
+                'working_days' => ['sunday', 'monday', 'tuesday', 'wednesday', 'thursday'],
                 'is_active' => true,
             ],
             [
                 'name' => [
-                    'ar' => 'مدرسة المستقبل الواعد',
-                    'en' => 'Promising Future School'
+                    'ar' => 'مدرسة التميز الابتدائية',
+                    'en' => 'Excellence Elementary School',
                 ],
-                'city' => 'جدة',
-                'address' => 'حي البلد، الكورنيش الشمالي',
-                'phone' => '0122345679',
-                'email' => 'info@future-school.edu.sa',
-                'principal_name' => 'سارة بنت علي الزهراني',
-                'principal_phone' => '0504444444',
-                'latitude' => 21.4858,
-                'longitude' => 39.1925,
-                'school_start_time' => '07:30',
-                'school_end_time' => '14:00',
+                'lat' => 24.6780,
+                'lng' => 46.6420,
+                'departure_time' => '06:30',
+                'return_time' => '13:30',
+                'working_days' => ['sunday', 'monday', 'tuesday', 'wednesday', 'thursday'],
                 'is_active' => true,
-            ],
-            [
-                'name' => [
-                    'ar' => 'مدرسة التميز الأهلية',
-                    'en' => 'Excellence Private School'
-                ],
-                'city' => 'الدمام',
-                'address' => 'حي الفيصلية، شارع الظهران',
-                'phone' => '0132345678',
-                'email' => 'info@excellence-school.edu.sa',
-                'principal_name' => 'عبدالله بن فهد العجمي',
-                'principal_phone' => '0505555555',
-                'latitude' => 26.4207,
-                'longitude' => 50.0888,
-                'school_start_time' => '07:00',
-                'school_end_time' => '13:30',
-                'is_active' => true,
-            ],
-            [
-                'name' => [
-                    'ar' => 'مدرسة الإبداع النموذجية',
-                    'en' => 'Creativity Model School'
-                ],
-                'city' => 'الخبر',
-                'address' => 'حي الراكة، شارع الأمير محمد',
-                'phone' => '0132345679',
-                'email' => 'info@creativity-school.edu.sa',
-                'principal_name' => 'نورة بنت سعد القحطاني',
-                'principal_phone' => '0506666666',
-                'latitude' => 26.2885,
-                'longitude' => 50.2080,
-                'school_start_time' => '07:15',
-                'school_end_time' => '13:45',
-                'is_active' => true,
-            ],
-            [
-                'name' => [
-                    'ar' => 'مدرسة الأمل الدولية',
-                    'en' => 'Hope International School'
-                ],
-                'city' => 'مكة المكرمة',
-                'address' => 'حي العزيزية، شارع مكة جدة السريع',
-                'phone' => '0122456789',
-                'email' => 'info@hope-school.edu.sa',
-                'principal_name' => 'محمد بن إبراهيم الشريف',
-                'principal_phone' => '0507777777',
-                'latitude' => 21.4247,
-                'longitude' => 39.8175,
-                'school_start_time' => '07:00',
-                'school_end_time' => '13:30',
-                'is_active' => true,
-            ],
-            [
-                'name' => [
-                    'ar' => 'مدرسة الفجر الجديد',
-                    'en' => 'New Dawn School'
-                ],
-                'city' => 'المدينة المنورة',
-                'address' => 'حي قباء، طريق المدينة المنورة',
-                'phone' => '0142345678',
-                'email' => 'info@newdawn-school.edu.sa',
-                'principal_name' => 'عمر بن حسن الحربي',
-                'principal_phone' => '0508888888',
-                'latitude' => 24.4418,
-                'longitude' => 39.6170,
-                'school_start_time' => '07:30',
-                'school_end_time' => '14:00',
-                'is_active' => true,
-            ],
-            [
-                'name' => [
-                    'ar' => 'مدرسة الأجيال الذكية',
-                    'en' => 'Smart Generations School'
-                ],
-                'city' => 'أبها',
-                'address' => 'حي الجبل الأخضر، طريق الملك فهد',
-                'phone' => '0172345678',
-                'email' => 'info@smartgen-school.edu.sa',
-                'principal_name' => 'ريم بنت خالد القرني',
-                'principal_phone' => '0509999999',
-                'latitude' => 18.2164,
-                'longitude' => 42.5053,
-                'school_start_time' => '07:00',
-                'school_end_time' => '13:45',
-                'is_active' => true,
-            ],
-            [
-                'name' => [
-                    'ar' => 'مدرسة الطائف النموذجية',
-                    'en' => 'Taif Model School'
-                ],
-                'city' => 'الطائف',
-                'address' => 'حي الحوية، شارع الستين',
-                'phone' => '0122567890',
-                'email' => 'info@taif-model.edu.sa',
-                'principal_name' => 'بندر بن مشعل الثبيتي',
-                'principal_phone' => '0500000001',
-                'latitude' => 21.2703,
-                'longitude' => 40.4158,
-                'school_start_time' => '07:15',
-                'school_end_time' => '13:30',
-                'is_active' => true,
-            ],
-            // مدرسة غير نشطة (للاختبار)
-            [
-                'name' => [
-                    'ar' => 'مدرسة الأفق - مغلقة مؤقتاً',
-                    'en' => 'Horizon School - Temporarily Closed'
-                ],
-                'city' => 'الرياض',
-                'address' => 'حي النخيل',
-                'phone' => '0112999999',
-                'email' => 'info@horizon-school.edu.sa',
-                'principal_name' => 'غير محدد',
-                'principal_phone' => '0500000000',
-                'latitude' => 24.7500,
-                'longitude' => 46.6500,
-                'school_start_time' => '07:00',
-                'school_end_time' => '13:30',
-                'is_active' => false,
             ],
         ];
+
+        $this->command->info("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
+        $this->command->info("🏫 جاري إنشاء المدارس...");
+        $this->command->info("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
 
         $createdCount = 0;
 
         foreach ($schools as $schoolData) {
-            try {
-                $city = City::where('name->ar', $schoolData['city'])->first();
+            $school = School::firstOrCreate(
+                ['name' => $schoolData['name']],
+                $schoolData
+            );
 
-                if (!$city) {
-                    $this->command->warn("⚠️ المدينة '{$schoolData['city']}' غير موجودة");
-                    continue;
+            if ($school->wasRecentlyCreated) {
+                $createdCount++;
+
+                // ربط 3-5 باقات عشوائية بالمدرسة
+                $randomPackages = $packages->random(rand(3, min(5, $packages->count())));
+                $school->packages()->syncWithoutDetaching($randomPackages->pluck('id'));
+
+                // ربط 1-3 سائقين عشوائيين بالمدرسة (إن وجدوا)
+                if ($drivers->isNotEmpty()) {
+                    $randomDrivers = $drivers->random(rand(1, min(3, $drivers->count())));
+                    $school->drivers()->syncWithoutDetaching($randomDrivers->pluck('id'));
                 }
 
-                School::create([
-                    'name' => $schoolData['name'],
-                    'lat' => $schoolData['latitude'],
-                    'lng' => $schoolData['longitude'],
-                    'is_active' => $schoolData['is_active'],
-                ]);
+                $packageCount = $school->packages()->count();
+                $driverCount = $school->drivers()->count();
 
-                $createdCount++;
-                $this->command->info("✅ تم إنشاء المدرسة: {$schoolData['name']['ar']}");
-
-            } catch (\Exception $e) {
-                $this->command->error("❌ فشل إنشاء المدرسة: {$schoolData['name']['ar']}");
-                $this->command->error("   السبب: {$e->getMessage()}");
+                $this->command->line("  ✅ {$schoolData['name']['ar']} - {$packageCount} باقات، {$driverCount} سائقين");
             }
         }
 
         $this->command->info("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
         $this->command->info("✅ تم إنشاء {$createdCount} مدرسة بنجاح!");
+        $this->command->info("📊 إجمالي المدارس في النظام: " . School::count());
     }
 }
