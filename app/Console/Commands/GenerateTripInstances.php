@@ -15,7 +15,7 @@ class GenerateTripInstances extends Command
      *
      * @var string
      */
-    protected $signature = 'trips:generate {days=7}';
+    protected $signature = 'trips:generate {days=7} {driver_id?}';
 
     /**
      * The console command description.
@@ -30,18 +30,26 @@ class GenerateTripInstances extends Command
     public function handle()
     {
         $days = (int) $this->argument('days');
+        $driverId = $this->argument('driver_id');
 
         $this->info("🚌 Generating trip instances for the next {$days} days...");
         $this->newLine();
 
-        $schedules = Schedule::where('is_active', true)
-            ->with('scheduleStops')
-            ->get();
+        $query = Schedule::where('is_active', true)
+            ->with('scheduleStops');
+
+        if ($driverId) {
+            $this->info("👨‍✈️ Filtering schedules for driver ID: {$driverId}");
+            $query->where('driver_id', $driverId);
+        }
+
+        $schedules = $query->get();
 
         if ($schedules->isEmpty()) {
             $this->error('❌ No active schedules found!');
             return 1;
         }
+
 
         $this->info("📋 Found {$schedules->count()} active schedule(s)");
         $this->newLine();
@@ -51,15 +59,14 @@ class GenerateTripInstances extends Command
 
         for ($i = 0; $i < $days; $i++) {
             $date = Carbon::today()->addDays($i);
-            $dayOfWeek = $date->format('l'); // Monday, Tuesday, etc.
+            $dayOfWeek = $date->format('l');
 
             foreach ($schedules as $schedule) {
-                // تحقق من أن الرحلة تعمل في هذا اليوم
+
                 if (!in_array($dayOfWeek, $schedule->days_of_week ?? [])) {
                     continue;
                 }
 
-                // تحقق من عدم وجود الرحلة بالفعل
                 $exists = TripInstance::where('schedule_id', $schedule->id)
                     ->where('trip_date', $date->toDateString())
                     ->exists();
@@ -68,14 +75,12 @@ class GenerateTripInstances extends Command
                     continue;
                 }
 
-                // إنشاء trip instance
                 $trip = TripInstance::create([
                     'schedule_id' => $schedule->id,
                     'trip_date' => $date->toDateString(),
                     'status' => 'scheduled',
                 ]);
 
-                // إنشاء station progress لكل محطة (outbound + return إذا وجد)
                 $allStops = $schedule->scheduleStops()->ordered()->get();
 
                 foreach ($allStops as $index => $scheduleStop) {

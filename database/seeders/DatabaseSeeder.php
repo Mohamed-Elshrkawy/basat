@@ -34,13 +34,15 @@ class DatabaseSeeder extends Seeder
             UsersSeeder::class,
             DriversSeeder::class, // سائقو الحافلات العامة
             PrivateDriversSeeder::class, // سائقو الحافلات الخاصة
+            SchoolDriversSeeder::class, // سائقو الحافلات المدرسية
 
             // المسارات والجداول (يحتاج سائقين)
             RoutesSeeder::class,
 
             // المدارس والأطفال
-//            SchoolsSeeder::class,
-//            ChildrenSeeder::class,
+            SchoolPackagesSeeder::class,
+            SchoolsSeeder::class,
+            ChildrenSeeder::class,
 
             // الحجوزات (يحتاج مستخدمين وجداول)
             BookingsSeeder::class,

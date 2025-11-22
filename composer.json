@@ -19,6 +19,7 @@
         "hasnayeen/themes": "^3.0",
         "laravel/framework": "^12.0",
         "laravel/sanctum": "^4.2",
+        "laravel/telescope": "^5.15",
         "laravel/tinker": "^2.10.1",
         "pxlrbt/filament-excel": "^2.5",
         "simplesoftwareio/simple-qrcode": "^4.2",

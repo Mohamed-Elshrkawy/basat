@@ -72,6 +72,7 @@ class ScheduleController extends Controller
                     return $this->formatSchedule($schedule, $currentDate);
                 });
 
+
             if ($daySchedules->isNotEmpty()) {
                 $schedules[] = [
                     'date' => $currentDate->format('Y-m-d'),

@@ -65,7 +65,9 @@ class ScheduleResource extends Resource
 
                             Forms\Components\Select::make('driver_id')
                                 ->label(__('Driver'))
-                                ->options(User::where('user_type', 'driver')->pluck('name', 'id'))
+                                ->options(User::where('user_type', 'driver')
+                                    ->whereHas('vehicle', fn ($query) => $query->where('type', 'public_bus'))
+                                    ->pluck('name', 'id'))
                                 ->searchable()
                                 ->nullable()
                                 ->helperText(__('Driver Can Be Assigned Later'))

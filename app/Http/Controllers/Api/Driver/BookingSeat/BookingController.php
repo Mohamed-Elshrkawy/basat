@@ -9,6 +9,7 @@ use App\Http\Resources\Api\Driver\BookingSeat\TripListResource;
 use App\Models\TripInstance;
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
@@ -21,10 +22,9 @@ class BookingController extends Controller
     public function index(Request $request): JsonResponse
     {
         $driver = request()->user();
-
         $filter = $request->query('filter', 'all');
 
-        $query = TripInstance::with([
+        $baseQuery = TripInstance::with([
             'schedule.route.startCity',
             'schedule.route.endCity'
         ])
@@ -32,6 +32,9 @@ class BookingController extends Controller
             ->thisWeek()
             ->orderBy('trip_date', 'asc')
             ->orderBy('created_at', 'asc');
+
+        // Clone query before applying filter (لإعادة الاستعلام بعد التوليد)
+        $query = clone $baseQuery;
 
         // Apply filters
         match($filter) {
@@ -42,6 +45,19 @@ class BookingController extends Controller
         };
 
         $trips = $query->get();
+
+        // 🎯 لو طلب upcoming ومفيش ولا رحلة → شغّل الكوماند
+        if ($filter === 'upcoming' && $trips->isEmpty()) {
+            Artisan::call('trips:generate', [
+                'days' => 7,
+                'driver_id' => $driver->id
+            ]);
+
+            // بعد التشغيل: نعيد جلب الـ upcoming
+            $query = clone $baseQuery;
+            $query->upcoming();
+            $trips = $query->get();
+        }
 
         return json(TripListResource::collection($trips), __('Trips fetched successfully'));
     }
