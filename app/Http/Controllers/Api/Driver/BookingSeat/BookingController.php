@@ -29,7 +29,6 @@ class BookingController extends Controller
             'schedule.route.endCity'
         ])
             ->forDriver($driver->id)
-            ->thisWeek()
             ->orderBy('trip_date', 'asc')
             ->orderBy('created_at', 'asc');
 
